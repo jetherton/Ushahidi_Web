@@ -70,6 +70,8 @@
 					sphericalMercator: true,
 					maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
 					});
+					
+					<?php  Event::run('ushahidi_action.google_earth_layers'); ?>
 			}
 			map.addLayer(map_layer);
 			

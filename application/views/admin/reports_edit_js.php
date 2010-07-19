@@ -193,6 +193,8 @@
 					sphericalMercator: true,
 					maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34)
 					});
+					
+					<?php  Event::run('ushahidi_action.google_earth_layers'); ?>
 			}
 			
 			map.addLayer(map_layer);
@@ -200,6 +202,7 @@
 			map.addControl(new OpenLayers.Control.Navigation());
 			map.addControl(new OpenLayers.Control.PanZoomBar());
 			map.addControl(new OpenLayers.Control.MousePosition());
+			map.addControl(new OpenLayers.Control.LayerSwitcher());
 			
 			// Create the markers layer
 			markers = new OpenLayers.Layer.Markers("Markers");
