@@ -294,8 +294,8 @@
 			
 			gCategoryId = '0';
 			gMediaType = 0;
-			//$("#startDate").val(startTime);
-			//$("#endDate").val(endTime);
+			$("#startDate").val(startTime);
+			$("#endDate").val(endTime);
 			
 			// Initialize Map
 			addMarkers(gCategoryId, startTime, endTime, '', '', gMediaType);
