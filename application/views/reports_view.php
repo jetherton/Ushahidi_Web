@@ -161,6 +161,36 @@
 					</div>
 					<?php
 					}?>
+					
+					
+					
+					<!--links -->
+					<?php
+					if( count($incident_news) > 0 ) 
+					{
+					?>
+					<!-- start images -->
+					<div class="report-description">
+						<h3>Links</h3>
+						<div style="margin-left: 30px; text-size: 120%;">
+						
+						<ul>
+							<?php
+							foreach ($incident_news as $news)
+							{					
+								echo("<li><a href='".$news."'>".$news."</a></li> ");
+							}
+							?>
+						</ul>
+						</div>
+					</div>
+					<?php 
+					} 
+					?> 
+					<!-- end links -->
+					
+					
+					
 
 
 					<div class="report-description">
