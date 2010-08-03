@@ -68,6 +68,9 @@
 	<img src="<?php echo url::site() . 'scheduler'; ?>" height="1" width="1" border="0" />
  
         <!-- script for share button -->
+	<!-- In Liberia we don't need any more hits to other websites sucking up bandwidth, requireing new DNS look
+	ups and other such expenditures of time.
         <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pub=ushahidi"></script>
+	--> 
 </body>
 </html>
