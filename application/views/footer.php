@@ -32,10 +32,10 @@
 			<!-- footer menu -->
 			<div class="footermenu">
 				<ul class="clearingfix">
-					<li><a class="item1" href="<?php echo url::site() ?>"><?php echo Kohana::lang('ui_main.home'); ?></a></li>
-					<li><a href="<?php echo url::site() . "reports/submit" ?>"><?php echo Kohana::lang('ui_main.report_an_incident'); ?></a></li>
-					<li><a href="<?php echo url::site() . "alerts" ?>"><?php echo Kohana::lang('ui_main.alerts'); ?></a></li>
-					<li><a href="<?php echo url::site() . "help" ?>"><?php echo Kohana::lang('ui_main.help'); ?></a></li>
+					<li><a class="item1" href="<?php echo url::site(); ?>"><?php echo Kohana::lang('ui_main.home'); ?></a></li>
+					<li><a href="<?php echo url::site()."reports/submit"; ?>"><?php echo Kohana::lang('ui_main.report_an_incident'); ?></a></li>
+					<li><a href="<?php echo url::site()."alerts"; ?>"><?php echo Kohana::lang('ui_main.alerts'); ?></a></li>
+					<li><a href="<?php echo url::site()."help"; ?>"><?php echo Kohana::lang('ui_main.help'); ?></a></li>
 					<li><a href="#"><?php echo Kohana::lang('ui_main.about'); ?></a></li>
 					<li><a href="#"><?php echo Kohana::lang('ui_main.contact'); ?></a></li>
 					<li><a href="#"><?php echo Kohana::lang('ui_main.blog'); ?></a></li>
@@ -63,9 +63,10 @@
 	<img src="<?php // echo $tracker_url; ?>" />
 	<?php // echo $ushahidi_stats; ?>
 	<?php // echo $google_analytics; ?>
+
 	
 	<!-- Task Scheduler -->
-	<img src="<?php echo url::site() . 'scheduler'; ?>" height="1" width="1" border="0" />
+	<img src="<?php echo url::site().'scheduler'; ?>" height="1" width="1" border="0" />
  
         <!-- script for share button -->
 	<!-- In Liberia we don't need any more hits to other websites sucking up bandwidth, requireing new DNS look
