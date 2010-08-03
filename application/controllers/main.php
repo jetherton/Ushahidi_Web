@@ -325,10 +325,9 @@ class Main_Controller extends Template_Controller {
 		Event::run('ushahidi_filter.startDate', $startDate);
 		Event::run('ushahidi_filter.endDate', $endDate);		
 		
+		$this->template->content->div_timeline->startDate = $startDate;
+		$this->template->content->div_timeline->endDate = $endDate;
 		
-		$this->template->content->startDate = $startDate;
-		$this->template->content->endDate = $endDate;
-
 
 		// Javascript Header
 		$this->template->header->map_enabled = TRUE;
