@@ -111,7 +111,7 @@
 				
 				// Destroy any open popups
 				onPopupClose();
-				
+
 				// Get Current Zoom
 				currZoom = map.getZoom();
 				
@@ -122,17 +122,12 @@
 				var startTime = new Date($("#startDate").val() * 1000);
 				var endTime = new Date($("#endDate").val() * 1000);
 				addMarkers(catID, $("#startDate").val(), $("#endDate").val(), currZoom, currCenter, gMediaType);
-								
-				graphData = "";
-				$.getJSON("<?php echo url::site()."json/timeline/"?>"+catID, function(data) {
-					graphData = data[0];
+				
 
-					gTimeline = $.timeline({categoryId: catID, startTime: startTime, endTime: endTime,
-						graphData: graphData,
-						mediaType: gMediaType
-					});
-					gTimeline.plot();
-				});
+				
+				var startDate = $("#startDate").val();
+				var endDate = $("#endDate").val();
+				refreshGraph(startDate, endDate);
 				
 				return false;
 			});
