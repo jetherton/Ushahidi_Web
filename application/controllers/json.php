@@ -496,14 +496,14 @@ class Json_Controller extends Template_Controller
 		$graph_data[0]['color'] = $category_color;
 		$graph_data[0]['data'] = array();
 		
-		$query_text = "SELECT UNIX_TIMESTAMP(" . $select_date_text . ") AS time,
-			COUNT(*) AS number
-			FROM ".$this->table_prefix."incident AS i
-			INNER JOIN ".$this->table_prefix."incident_category AS ic ON ic.incident_id = i.id
-			INNER JOIN ".$this->table_prefix."category AS c ON ic.category_id = c.id
-			WHERE incident_active = 1 ".$category_query." 
-			GROUP BY " . $groupby_date_text;				
 		
+		$query_text = "SELECT UNIX_TIMESTAMP(" . $select_date_text . ") AS time, COUNT(*) AS number 
+			FROM ".$this->table_prefix."incident AS i
+			WHERE EXISTS (SELECT * FROM ".$this->table_prefix."incident_category ic
+				WHERE EXISTS(SELECT * FROM ".$this->table_prefix."category c
+					WHERE i.id = ic.incident_id AND ic.category_id = c.id AND i.incident_active = 1".$category_query."))
+			GROUP BY " . $groupby_date_text;
+				
 		$query = $db->query($query_text);
 		
 		foreach ( $query as $items )
