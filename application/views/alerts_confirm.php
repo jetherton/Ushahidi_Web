@@ -20,14 +20,20 @@
 						<div class="big-block">
 							<h1>Get Alerts</h1>
 							
+							<?php //if the site admin hasn't set up clickatell then don't bother show this
+								$settings = ORM::factory('settings', 1);
+								if(strlen($settings->clickatell_api) > 2)
+								{ 
+							?>
+
+							<?php
+							if ($alert_mobile)
+							{
+								echo "<h3>".Kohana::lang('alerts.mobile_ok_head')."</h3>";
+							}
+							?>
 							<!-- Mobile Alert -->
 							<div class="green-box">
-								<?php
-								if ($alert_mobile)
-								{
-									echo "<h3>".Kohana::lang('alerts.mobile_ok_head')."</h3>";
-								}
-								?>
 								<div class="alert_response">
 									<?php 
 									if ($alert_mobile)
@@ -52,7 +58,7 @@
 								</div>
 							</div>
 							<!-- / Mobile Alert -->
-							
+							<?php } ?>
 							
 							<!-- Email Alert -->
 							<div class="green-box">
