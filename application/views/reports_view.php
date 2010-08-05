@@ -83,7 +83,7 @@
 				</div>
 		
 				<div class="report-description">
-					<h3>Incident Report Description</h3>
+					<h3>Location Description</h3>
 						<div class="content">
 							<?php echo $incident_description; ?>
 							<div class="credibility">
@@ -129,7 +129,7 @@
 					?> 
 
 					<div class="report-description">
-						<h3>Related Mainstream News of Incident</h3>
+						<h3>Related Information</h3>
 						<table cellpadding="0" cellspacing="0">
 							<tr class="title">
 								<th class="w-01">TITLE</th>
@@ -194,7 +194,7 @@
 
 
 					<div class="report-description">
-						<h3>Incident Report(s)</h3>
+						<h3>Other Places Near By</h3>
 						<table cellpadding="0" cellspacing="0">
 							<tr class="title">
 								<th class="w-01">TITLE</th>
