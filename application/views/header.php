@@ -151,7 +151,7 @@
 				<div class="search-form">
 					<form method="get" id="search" action="<?php echo url::site() . 'search/'; ?>">
 						<ul>
-							<li><input type="text" name="k" value="" class="text" /></li>
+							<li><input id="searchinput" type="text" name="k" value="" class="text" /></li>
 							<li><input type="submit" name="b" class="searchbtn" value="search" /></li>
 						</ul>
 					</form>
