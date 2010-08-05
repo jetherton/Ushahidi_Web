@@ -68,6 +68,11 @@
 								<div class="step-2">
 									<h2><?php echo Kohana::lang('ui_main.alerts_step2_send_alerts'); ?></h2>
 									<div class="holder">
+										<?php //if the site admin hasn't set up clickatell then don't bother show this
+											$settings = ORM::factory('settings', 1);
+											if(strlen($settings->clickatell_api) > 2)
+											{ 
+										?>
 										<div class="box">
 											<label>
 												<?php
@@ -84,6 +89,7 @@
 											</label>
 											<span><?php print form::input('alert_mobile', $form['alert_mobile'], ' class="text long"'); ?></span>
 										</div>
+										<?php } ?>
 										<div class="box">
 											<label>
 												<?php
