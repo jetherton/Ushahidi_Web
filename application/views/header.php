@@ -137,21 +137,12 @@
 
 			<!-- searchbox -->
 			<div id="searchbox">
-				<a class="share addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pub=xa-4aee423643f8276e">Share</a>
-
-				<!-- languages -->
-				<div class="language-box">
-					<form>
-						<?php print form::dropdown('l', $locales_array, $l, ' onChange="this.form.submit()" '); ?>
-					</form>
-				</div>
-				<!-- / languages -->
 
 				<!-- searchform -->
 				<div class="search-form">
 					<form method="get" id="search" action="<?php echo url::site() . 'search/'; ?>">
 						<ul>
-							<li><input type="text" name="k" value="" class="text" /></li>
+							<li><input id="searchinput" type="text" name="k" value="" class="text" /></li>
 							<li><input type="submit" name="b" class="searchbtn" value="search" /></li>
 						</ul>
 					</form>
@@ -163,21 +154,10 @@
 
 			<!-- logo -->
 			<div id="logo">
-				<h1><?php echo $site_name; ?></h1>
-				<span><?php echo $site_tagline; ?></span>
 			</div>
 			<!-- / logo -->
 			
-			<?php
-			if (Kohana::config('settings.allow_reports'))
-			{
-				?><!-- submit incident -->
-			<div class="submit-incident clearingfix">
-				<a href="<?php echo url::site() . "reports/submit" ?>"><?php echo Kohana::lang('ui_main.submit'); ?></a>
-			</div>
-			<!-- / submit incident --><?php
-			}
-			?>
+			
 		</div>
 		<!-- / header -->
 
