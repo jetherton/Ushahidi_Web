@@ -548,7 +548,7 @@ CREATE TABLE IF NOT EXISTS `location` (                                         
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
-INSERT INTO `location` VALUES (1,'Nairobi',NULL,-1.2873000707050097, 36.821451182008204,1,'2009-06-30 00:00:00');
+INSERT INTO `location` VALUES (1,'Monrovia',NULL, 6.310556, -10.804722,1,'2009-06-30 00:00:00');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -893,7 +893,7 @@ CREATE TABLE IF NOT EXISTS `settings` (                                         
 -- Dumping data for table `settings`
 
 INSERT INTO `settings` (`id`, `site_name`, `api_google`, `api_yahoo`, `api_live`, `default_country`, `default_city`, `default_lat`, `default_lon`, `default_zoom`, `items_per_page`, `items_per_page_admin`, `date_modify`) VALUES
-(1, 'Ushahidi', 'ABQIAAAAjsEM5UsvCPCIHp80spK1kBQKW7L4j6gYznY0oMkScAbKwifzxxRhJ3SP_ijydkmJpN3jX8kn5r5fEQ', '5CYeWbfV34E21JOW1a4.54Mf6e9jLNkD0HVzaKoQmJZi2qzmSZd5mD8X49x7', NULL, 115, 'nairobi', '-1.2873000707050097', '36.821451182008204', 13, 20, 20, '2008-08-25 10:25:18');
+(1, 'Ushahidi', 'ABQIAAAAjsEM5UsvCPCIHp80spK1kBQKW7L4j6gYznY0oMkScAbKwifzxxRhJ3SP_ijydkmJpN3jX8kn5r5fEQ', '5CYeWbfV34E21JOW1a4.54Mf6e9jLNkD0HVzaKoQmJZi2qzmSZd5mD8X49x7', NULL, 131, 'Monrovia', '6.428055', '-9.429499', 7, 20, 20, '2008-08-25 10:25:18');
 
 
 /**
