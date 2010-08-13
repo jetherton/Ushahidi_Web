@@ -36,89 +36,113 @@ jQuery(function() {
 			map = new OpenLayers.Map('divMap', options);
 			map.addControl( new OpenLayers.Control.LoadingPanel({minSize: new OpenLayers.Size(573, 366)}) );
 			
+
+
+			/*
+			- Select A Mapping API
+			- Live/Yahoo/OSM/Google
+			- Set Bounds					
+			*/
+
 			<?php echo map::layers_js(FALSE); ?>
 			map.addLayers(<?php echo map::layers_array(FALSE); ?>);
-	
+
 			map.addControl(new OpenLayers.Control.Navigation());
-			map.addControl(new OpenLayers.Control.PanZoom());
-			map.addControl(new OpenLayers.Control.Scale('mapScale'));
-			map.addControl(new OpenLayers.Control.ScaleLine());
+			map.addControl(new OpenLayers.Control.PanZoomBar());
+			map.addControl(new OpenLayers.Control.Attribution());
+			map.addControl(new OpenLayers.Control.MousePosition());
 			map.addControl(new OpenLayers.Control.LayerSwitcher());
 			
 			
-map.addControl(new OpenLayers.Control.Attribution());
-map.addControl(new OpenLayers.Control.MousePosition());
-// Create the Circle/Radius layer
-var radiusLayer = new OpenLayers.Layer.Vector("Radius Layer");
-// Create the markers layer
-var markers = new OpenLayers.Layer.Markers("Markers");
-map.addLayers([radiusLayer, markers]);
-// create a lat/lon object
-var myPoint = new OpenLayers.LonLat(<?php echo $longitude; ?>, <?php echo $latitude; ?>);
-myPoint.transform(proj_4326, proj_900913);
-// create a marker positioned at a lon/lat
-var marker = new OpenLayers.Marker(myPoint);
-markers.addMarker(marker);
-// draw circle around point
-drawCircle(<?php echo $longitude; ?>,<?php echo $latitude; ?>,radius);
-// display the map centered on a latitude and longitude (Google zoom levels)
-map.setCenter(myPoint, 9);
-// Detect Map Clicks
-map.events.register("click", map, function(e){
-var lonlat = map.getLonLatFromViewPortPx(e.xy);
-var lonlat2 = map.getLonLatFromViewPortPx(e.xy);
-m = new OpenLayers.Marker(lonlat);
-markers.clearMarkers();
-markers.addMarker(m);
-currRadius = $("#alert_radius").val();
-radius = currRadius * 1000
-lonlat2.transform(proj_900913,proj_4326);
-drawCircle(lonlat2.lon,lonlat2.lat, radius);
-// Update form values (jQuery)
-$("#alert_lat").attr("value", lonlat2.lat);
-$("#alert_lon").attr("value", lonlat2.lon);
-});
-// Draw circle around point
-function drawCircle(lon,lat,radius)
-{
-radiusLayer.destroyFeatures();
-var circOrigin = new OpenLayers.Geometry.Point(lon,lat);
-circOrigin.transform(proj_4326, proj_900913);
-var circStyle = OpenLayers.Util.extend( {},OpenLayers.Feature.Vector.style["default"] );
-var circleFeature = new OpenLayers.Feature.Vector(
-OpenLayers.Geometry.Polygon.createRegularPolygon( circOrigin, radius, 40, 0 ),
-null,
-circStyle
-);
-radiusLayer.addFeatures( [circleFeature] );
-}
-/*
-Google GeoCoder
-TODO - Add Yahoo and Bing Geocoding Services
-*/
-$('.btn_find').live('click', function () {
-address = $("#location_find").val();
-if ( typeof GBrowserIsCompatible == 'undefined' ) {
-alert('GeoCoding is only currently supported by Google Maps.\n\nPlease pinpoint the location on the map\nusing your mouse.');
-} else {
-var geocoder = new GClientGeocoder();
-if (geocoder) {
-$('#find_loading').html('<img src="<?php echo url::base() . "media/img/loading_g.gif"; ?>">');
-geocoder.getLatLng(
-address,
-function(point) {
-if (!point) {
-alert(address + " not found!\n\n***************************\nFind a city or town close by and zoom in\nto find your precise location");
-$('#find_loading').html('');
-} else {
-var lonlat = new OpenLayers.LonLat(point.lng(), point.lat());
-lonlat.transform(proj_4326,proj_900913);
-m = new OpenLayers.Marker(lonlat);
-markers.clearMarkers();
-markers.addMarker(m);
-map.setCenter(lonlat, <?php echo $default_zoom; ?>);
-newRadius = $("#alert_radius").val();
-radius = newRadius * 1000
+			// Create the Circle/Radius layer
+			var radiusLayer = new OpenLayers.Layer.Vector("Radius Layer");
+			
+			
+			// Create the markers layer
+			var markers = new OpenLayers.Layer.Markers("Markers");
+			map.addLayers([radiusLayer, markers]);
+			
+			// create a lat/lon object
+			var myPoint = new OpenLayers.LonLat(<?php echo $longitude; ?>, <?php echo $latitude; ?>);
+			myPoint.transform(proj_4326, proj_900913);
+			
+			// create a marker positioned at a lon/lat
+			var marker = new OpenLayers.Marker(myPoint);
+			markers.addMarker(marker);
+			
+			// draw circle around point
+			drawCircle(<?php echo $longitude; ?>,<?php echo $latitude; ?>,radius);
+			
+			// display the map centered on a latitude and longitude (Google zoom levels)
+			map.setCenter(myPoint, 9);
+			
+			
+			// Detect Map Clicks
+			map.events.register("click", map, function(e){
+				var lonlat = map.getLonLatFromViewPortPx(e.xy);
+				var lonlat2 = map.getLonLatFromViewPortPx(e.xy);
+			    m = new OpenLayers.Marker(lonlat);
+				markers.clearMarkers();
+		    	markers.addMarker(m);
+		
+				currRadius = $("#alert_radius").val();
+				radius = currRadius * 1000
+				
+				lonlat2.transform(proj_900913,proj_4326);
+				drawCircle(lonlat2.lon,lonlat2.lat, radius);
+							
+				// Update form values (jQuery)
+				$("#alert_lat").attr("value", lonlat2.lat);
+				$("#alert_lon").attr("value", lonlat2.lon);
+			});
+			
+			
+			// Draw circle around point
+			function drawCircle(lon,lat,radius)
+			{
+				radiusLayer.destroyFeatures();
+				var circOrigin = new OpenLayers.Geometry.Point(lon,lat);
+				circOrigin.transform(proj_4326, proj_900913);
+				
+				var circStyle = OpenLayers.Util.extend( {},OpenLayers.Feature.Vector.style["default"] );
+				var circleFeature = new OpenLayers.Feature.Vector(
+					OpenLayers.Geometry.Polygon.createRegularPolygon( circOrigin, radius, 40, 0 ),
+					null,
+					circStyle
+				);
+				radiusLayer.addFeatures( [circleFeature] );
+			}			
+			
+			/* 
+			Google GeoCoder
+			TODO - Add Yahoo and Bing Geocoding Services
+			 */
+			$('.btn_find').live('click', function () {
+				address = $("#location_find").val();
+				if ( typeof GBrowserIsCompatible == 'undefined' ) {
+					alert('GeoCoding is only currently supported by Google Maps.\n\nPlease pinpoint the location on the map\nusing your mouse.');
+				} else {
+					var geocoder = new GClientGeocoder();
+					if (geocoder) {
+						$('#find_loading').html('<img src="<?php echo url::base() . "media/img/loading_g.gif"; ?>">');
+						geocoder.getLatLng(
+							address,
+							function(point) {
+								if (!point) {
+									alert(address + " not found!\n\n***************************\nFind a city or town close by and zoom in\nto find your precise location");
+									$('#find_loading').html('');
+								} else {
+									var lonlat = new OpenLayers.LonLat(point.lng(), point.lat());
+									lonlat.transform(proj_4326,proj_900913);
+								
+									m = new OpenLayers.Marker(lonlat);
+									markers.clearMarkers();
+							    	markers.addMarker(m);
+									map.setCenter(lonlat, <?php echo $default_zoom; ?>);
+								
+									newRadius = $("#alert_radius").val();
+									radius = newRadius * 1000
+
 
 drawCircle(point.lng(),point.lat(), radius);
 // Update form values (jQuery)
