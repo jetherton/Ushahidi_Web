@@ -33,6 +33,7 @@ class feed_Core {
 		
 		$data->enable_cache(false);
 		$data->enable_order_by_date(true);
+		$data->set_stupidly_fast(true); //put this in here so that the google feeds that use < b> and & display properly
 		$data->init();
 		$data->handle_content_type();
 
