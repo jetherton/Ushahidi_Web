@@ -150,6 +150,7 @@ $lang = array(
 	'help' => 'How to Help',
 	'has_been' => 'Has Been',
 	'hashtag' => 'Hashtag',
+	'hide'=> 'Hide',
 	'hide_this_message'=> 'hide this message',
 	'home' => 'Home',
 	'how_to_report' => 'How to Report',
