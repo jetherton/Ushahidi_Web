@@ -2,7 +2,7 @@
 /**
  * The Ushahidi Engine version
  */
-$config['ushahidi_version'] = "2.0b3";
+$config['ushahidi_version'] = "2.0b5";
 
 
 /**
@@ -10,4 +10,4 @@ $config['ushahidi_version'] = "2.0b3";
  * Increments when changes are made to the Ushahidi DB schema.
  */
 
-$config['ushahidi_db_version'] = "28";
+$config['ushahidi_db_version'] = "29";

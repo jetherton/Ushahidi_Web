@@ -103,6 +103,10 @@
 	}
 
 	
+	// Turn on picbox
+	echo html::script('media/js/picbox', true);
+	echo html::stylesheet('media/css/picbox/picbox');
+	
 	// Render CSS and Javascript Files from Plugins
 	plugin::render('stylesheet');
 	plugin::render('javascript');
@@ -110,9 +114,6 @@
 	// Action::header_scripts_admin - Additional Inline Scripts
 	Event::run('ushahidi_action.header_scripts_admin');
 
-	// Turn on picbox
-	echo html::script('media/js/picbox', true);
-	echo html::stylesheet('media/css/picbox/picbox');
 	?>
 	<script type="text/javascript" charset="utf-8">
 		<?php echo $js . "\n"; ?>
@@ -127,6 +128,10 @@
 		<div id="header">
 			<!-- top-area -->
 			<div class="top">
+				<?php
+				// Action::admin_header_top_left - Admin Header Menu
+				Event::run('ushahidi_action.admin_header_top_left');
+				?>
 				<ul>
 					<li class="none-separator"> <?php echo Kohana::lang('ui_admin.welcome');echo $admin_name; ?>!</li>
 					<li class="none-separator"><a href="<?php echo url::site() ?>" title="View the home page">

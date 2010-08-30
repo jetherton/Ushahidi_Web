@@ -1,5 +1,5 @@
 -- Ushahidi Engine
--- version 27
+-- version 29
 -- http://www.ushahidi.com
 
 
@@ -839,7 +839,7 @@ CREATE TABLE IF NOT EXISTS `settings` (                                         
     `allow_comments` tinyint(4) NOT NULL default '1',                               -- field description
     `allow_feed` tinyint(4) NOT NULL default '1',                                   -- field description
     `allow_stat_sharing` tinyint(4) NOT NULL default '1',                           -- field description
-    `allow_clustering` tinyint(4) NOT NULL default '1',                             -- field description
+    `allow_clustering` tinyint(4) NOT NULL default '0',                             -- field description
     `default_map` varchar(100) NOT NULL DEFAULT 'google_normal',
     `default_map_all` varchar(20) NOT NULL default 'CC0000',                        -- field description
     `api_google` varchar(200) default NULL,                                         -- field description
@@ -1575,5 +1575,5 @@ ALTER TABLE `user_tokens`
 * Version information for table `settings`
 * 
 */
-UPDATE `settings` SET `ushahidi_version` = '2.0b3' WHERE `id`=1 LIMIT 1;
-UPDATE `settings` SET `db_version` = '28' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `ushahidi_version` = '2.0b5' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `db_version` = '29' WHERE `id`=1 LIMIT 1;

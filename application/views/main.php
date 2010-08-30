@@ -169,16 +169,20 @@
 							
 								<!-- filters -->
 								<div class="filters clearingfix">
-								<div style="float:left; width: 65%">
-									<strong><?php echo Kohana::lang('ui_main.filters'); ?></strong>
-									<ul>
-										<li><a id="media_0" class="active" href="#"><span><?php echo Kohana::lang('ui_main.reports'); ?></span></a></li>
-										<li><a id="media_4" href="#"><span><?php echo Kohana::lang('ui_main.news'); ?></span></a></li>
-										<li><a id="media_1" href="#"><span><?php echo Kohana::lang('ui_main.pictures'); ?></span></a></li>
-										<li><a id="media_2" href="#"><span><?php echo Kohana::lang('ui_main.video'); ?></span></a></li>
-										<li><a id="media_0" href="#"><span><?php echo Kohana::lang('ui_main.all'); ?></span></a></li>
-									</ul>
-</div>
+									<div style="float:left; width: 65%">
+										<strong><?php echo Kohana::lang('ui_main.filters'); ?></strong>
+										<ul>
+											<li><a id="media_0" class="active" href="#"><span><?php echo Kohana::lang('ui_main.reports'); ?></span></a></li>
+											<li><a id="media_4" href="#"><span><?php echo Kohana::lang('ui_main.news'); ?></span></a></li>
+											<li><a id="media_1" href="#"><span><?php echo Kohana::lang('ui_main.pictures'); ?></span></a></li>
+											<li><a id="media_2" href="#"><span><?php echo Kohana::lang('ui_main.video'); ?></span></a></li>
+											<li><a id="media_0" href="#"><span><?php echo Kohana::lang('ui_main.all'); ?></span></a></li>
+										</ul>
+									</div>
+									<?php
+									// Action::main_filters - Add items to the main_filters
+									Event::run('ushahidi_action.map_main_filters');
+									?>
 								</div>
 								<!-- / filters -->
 								
@@ -281,18 +285,6 @@
 				
 					</div>
 					<!-- /content blocks -->
-<?php
-/*
- *					<!-- site footer -->
- *					<div class="site-footer">
- *
- *						<h5>Site Footer</h5>
- *						Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris porta. Sed eget nisi. Fusce rhoncus lorem ac erat. Maecenas turpis tellus, volutpat quis, sodales et, consectetuer ac, est. Nullam sed est sed augue vestibulum condimentum. In tellus. Integer luctus odio eu arcu. Pellentesque imperdiet felis eu tortor. Morbi ante dui, iaculis id, vulputate sit amet, venenatis in, turpis. Fusce in risus.
- *
- *					</div>
- *					<!-- / site footer -->
-*/
-?>
 			
 				</div>
 				<!-- content -->

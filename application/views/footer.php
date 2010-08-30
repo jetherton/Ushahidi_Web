@@ -60,16 +60,18 @@
 	</div>
 	<!-- / footer -->
  
-	<img src="<?php // echo $tracker_url; ?>" />
-	<?php // echo $ushahidi_stats; ?>
-	<?php // echo $google_analytics; ?>
 
+	<?php echo $ushahidi_stats; ?>
+	<?php echo $google_analytics; ?>
 	
 	<!-- Task Scheduler -->
 	<img src="<?php echo url::site().'scheduler'; ?>" height="1" width="1" border="0" />
  
-    <!-- script for share button -->
-    <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pub=ushahidi"></script>
-
+	<!-- script for share button -->
+	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pub=ushahidi"></script>
+	<?php
+	// Action::main_footer - Add items before the </body> tag
+	Event::run('ushahidi_action.main_footer');
+	?>
 </body>
 </html>
