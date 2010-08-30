@@ -123,13 +123,6 @@ class Main_Controller extends Template_Controller {
 		}
 		$this->template->header->l = Kohana::config('locale.language');
 
-		//Set up tracking gif
-		if($_SERVER['SERVER_NAME'] != 'localhost' && $_SERVER['SERVER_NAME'] != '127.0.0.1'){
-			$track_url = $_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-		}else{
-			$track_url = 'null';
-		}
-		$this->template->footer->tracker_url = 'http://tracker.ushahidi.com/track.php?url='.urlencode($track_url).'&lang='.$this->template->header->l.'&version='.Kohana::config('version.ushahidi_version');
         // Load profiler
         // $profiler = new Profiler;
 
@@ -201,10 +194,9 @@ class Main_Controller extends Template_Controller {
 		$shares = array();
 		foreach (ORM::factory('sharing')
 				  ->where('sharing_active', 1)
-				  ->where('sharing_type', 1)
 				  ->find_all() as $share)
 		{
-			$shares[$share->id] = array($share->sharing_site_name, $share->sharing_color);
+			$shares[$share->id] = array($share->sharing_name, $share->sharing_color);
 		}
 		$this->template->content->shares = $shares;
 
@@ -217,7 +209,6 @@ class Main_Controller extends Template_Controller {
 			->where('incident_active', '1')
 			->limit('10')
 			->orderby('incident_date', 'desc')
-			->with('location')
 			->find_all();
 
 		// Get Default Color
@@ -320,14 +311,12 @@ class Main_Controller extends Template_Controller {
 			}
 			$endDate .= "</optgroup>";
 		}
-
 		
 		Event::run('ushahidi_filter.startDate', $startDate);
 		Event::run('ushahidi_filter.endDate', $endDate);		
 		
 		$this->template->content->div_timeline->startDate = $startDate;
 		$this->template->content->div_timeline->endDate = $endDate;
-		
 
 		// Javascript Header
 		$this->template->header->map_enabled = TRUE;

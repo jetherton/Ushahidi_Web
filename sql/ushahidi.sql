@@ -1,5 +1,5 @@
 -- Ushahidi Engine
--- version 26
+-- version 29
 -- http://www.ushahidi.com
 
 
@@ -36,15 +36,9 @@ CREATE TABLE IF NOT EXISTS `category` (                                         
 -- Dumping data for table `category`
 
 INSERT INTO `category` (`id`, `category_type`, `category_title`, `category_description`, `category_color`, `category_visible`) VALUES
-(1, 5, 'RIOTS', 'RIOTS', '9900CC', 1),
-(2, 5, 'DEATHS', 'DEATHS', '3300FF', 1),
-(3, 5, 'PROPERTY LOSS', 'PROPERTY LOSS', '663300', 1),
-(4, 5, 'SEXUAL ASSAULT', 'SEXUAL ASSAULT', 'CC0000', 1),
-(5, 5, 'INTERNALLY DISPLACED PEOPLE ', 'INTERNALLY DISPLACED PEOPLE 	', 'CC9933', 1),
-(6, 5, 'GOVERNMENT FORCES', 'GOVERNMENT FORCES', '9999FF', 1),
-(7, 5, 'CIVILIANS', 'CIVILIANS', '66CC00', 1),
-(8, 5, 'LOOTING', 'LOOTING', 'FFCC00', 1),
-(9, 5, 'PEACE EFFORTS', 'PEACE EFFORTS', 'FAEBD7', 1);
+(1, 5, 'Category 1', 'Category 1', '9900CC', 1),
+(2, 5, 'Category 2', 'Category 2', '3300FF', 1),
+(3, 5, 'Category 3', 'Category 3', '663300', 1);
 
 
 
@@ -402,7 +396,7 @@ CREATE TABLE IF NOT EXISTS `incident` (                                         
 
 LOCK TABLES `incident` WRITE;
 /*!40000 ALTER TABLE `incident` DISABLE KEYS */;
-INSERT INTO `incident` VALUES (1,1,1,'en_US',1,'Hello Ushahidi!','Welcome to Ushahidi. Please replace this report with a valid incident','2009-06-30 12:00:00',1,1,1,'0','2009-06-30 12:00:00','0',NULL,NULL,NULL,'0');
+INSERT INTO `incident` VALUES (1,1,1,'en_US',1,'Hello Ushahidi!','Welcome to Ushahidi. Please replace this report with a valid incident','2010-01-01 12:00:00',1,1,1,'0','2010-01-01 12:00:00','0',NULL,NULL,NULL,'0');
 /*!40000 ALTER TABLE `incident` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `incident_category` (                                
 -- Dumping data for table `incident_category`
 LOCK TABLES `incident_category` WRITE;
 /*!40000 ALTER TABLE `incident_category` DISABLE KEYS */;
-INSERT INTO `incident_category` VALUES (1,1,7);
+INSERT INTO `incident_category` VALUES (1,1,1);
 /*!40000 ALTER TABLE `incident_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -548,7 +542,7 @@ CREATE TABLE IF NOT EXISTS `location` (                                         
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
-INSERT INTO `location` VALUES (1,'Nairobi',NULL,-1.2873000707050097, 36.821451182008204,1,'2009-06-30 00:00:00');
+INSERT INTO `location` VALUES (1,'Monrovia',NULL, 6.310556, -10.804722,1,'2009-06-30 00:00:00');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -845,7 +839,7 @@ CREATE TABLE IF NOT EXISTS `settings` (                                         
     `allow_comments` tinyint(4) NOT NULL default '1',                               -- field description
     `allow_feed` tinyint(4) NOT NULL default '1',                                   -- field description
     `allow_stat_sharing` tinyint(4) NOT NULL default '1',                           -- field description
-    `allow_clustering` tinyint(4) NOT NULL default '1',                             -- field description
+    `allow_clustering` tinyint(4) NOT NULL default '0',                             -- field description
     `default_map` varchar(100) NOT NULL DEFAULT 'google_normal',
     `default_map_all` varchar(20) NOT NULL default 'CC0000',                        -- field description
     `api_google` varchar(200) default NULL,                                         -- field description
@@ -869,8 +863,6 @@ CREATE TABLE IF NOT EXISTS `settings` (                                         
     `clickatell_password` varchar(100) default NULL,                                -- field description
     `google_analytics` text,                                                        -- field description
     `twitter_hashtags` text default NULL,                                           -- field description
-    `twitter_username` varchar(50) default NULL,                                    -- field description
-    `twitter_password` varchar(50) default NULL,                                    -- field description
     `laconica_username` varchar(50) default NULL,                                   -- field description
     `laconica_password` varchar(50) default NULL,                                   -- field description
     `laconica_site` varchar(30) default NULL COMMENT 'a laconica site',             -- field description
@@ -893,7 +885,7 @@ CREATE TABLE IF NOT EXISTS `settings` (                                         
 -- Dumping data for table `settings`
 
 INSERT INTO `settings` (`id`, `site_name`, `api_google`, `api_yahoo`, `api_live`, `default_country`, `default_city`, `default_lat`, `default_lon`, `default_zoom`, `items_per_page`, `items_per_page_admin`, `date_modify`) VALUES
-(1, 'Ushahidi', 'ABQIAAAAjsEM5UsvCPCIHp80spK1kBQKW7L4j6gYznY0oMkScAbKwifzxxRhJ3SP_ijydkmJpN3jX8kn5r5fEQ', '5CYeWbfV34E21JOW1a4.54Mf6e9jLNkD0HVzaKoQmJZi2qzmSZd5mD8X49x7', NULL, 115, 'nairobi', '-1.2873000707050097', '36.821451182008204', 13, 20, 20, '2008-08-25 10:25:18');
+(1, 'Ushahidi', 'ABQIAAAAjsEM5UsvCPCIHp80spK1kBQKW7L4j6gYznY0oMkScAbKwifzxxRhJ3SP_ijydkmJpN3jX8kn5r5fEQ', '5CYeWbfV34E21JOW1a4.54Mf6e9jLNkD0HVzaKoQmJZi2qzmSZd5mD8X49x7', NULL, 131, 'Monrovia', '6.428055', '-9.429499', 7, 20, 20, '2008-08-25 10:25:18');
 
 
 /**
@@ -1304,28 +1296,14 @@ CREATE TABLE IF NOT EXISTS `feedback_person` (                                  
 */
 
 CREATE TABLE IF NOT EXISTS `sharing` (                                              -- table description
-    `id` int(10) unsigned NOT NULL auto_increment,                                  -- field description
-    `sharing_type` tinyint(4) default '1' COMMENT '1 - PULLing Data, 2 - PUSHing Data, 3 - TWO way',    -- field description
-    `sharing_limits` tinyint(4) NOT NULL default '1' COMMENT '1 - Once Per Hour, 2 - Once Every 6 Hours, 3 - Once Every 12 Hours, 4 - Once Daily',    -- field description
-    `sharing_color` varchar(20) default NULL,                                       -- field description
-    `sharing_site_name` varchar(255) default NULL,                                  -- field description
-    `sharing_email` varchar(255) default NULL,                                      -- field description
-    `sharing_url` varchar(255) default NULL,                                        -- field description
-    `sharing_key` varchar(50) default NULL,                                         -- field description
-    `sharing_ushahidi` tinyint(4) NOT NULL default '1',                             -- field description
-    `sharing_report` tinyint(4) NOT NULL default '1',                               -- field description
-    `sharing_media` tinyint(4) NOT NULL default '1',                                -- field description
-    `sharing_category` tinyint(4) NOT NULL default '1',                             -- field description
-    `sharing_personaldata` tinyint(4) NOT NULL default '0',                         -- field description
-    `sharing_active` tinyint(4) NOT NULL default '0',                               -- field description
-    `sharing_date` datetime NOT NULL,                                               -- field description
-    `sharing_dateaccess` int(10) unsigned default '0',                              -- field description
-  PRIMARY KEY  (`id`),
-  KEY `sharing_key` (`sharing_key`),
-  KEY `sharing_url` (`sharing_url`)
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`sharing_name` VARCHAR(150) NOT NULL,				-- name of the sharing website
+	`sharing_url` VARCHAR(255) NOT NULL,				-- main url of the sharing website
+	`sharing_color` VARCHAR(20) DEFAULT 'CC0000',		-- color for the map layer selector
+	`sharing_active` TINYINT DEFAULT 1 NOT NULL,		-- sharing layer active?
+	`sharing_date` DATETIME,							-- date of last update
+	PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
 
 
 /**
@@ -1333,11 +1311,15 @@ CREATE TABLE IF NOT EXISTS `sharing` (                                          
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `sharing_log` (                                          -- table description
-    `id` int(10) unsigned NOT NULL auto_increment,                                  -- field description
-    `sharing_id` int(11) NOT NULL,                                                  -- field description
-    `sharing_log_date` int(10) unsigned default NULL,                               -- field description
-  PRIMARY KEY  (`id`)
+CREATE TABLE IF NOT EXISTS `sharing_incident` (                                          -- table description
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`sharing_id` INT UNSIGNED NOT NULL,
+	`incident_id` INT NOT NULL,							-- remote website incident ID
+	`incident_title` VARCHAR(255) NOT NULL,				-- remote incident title
+	`latitude` DOUBLE NOT NULL,							-- remote incident latitude
+	`longitude` DOUBLE NOT NULL,						-- remote incident longitude
+	`incident_date` DATETIME,							-- remote incident date
+	PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -1593,5 +1575,5 @@ ALTER TABLE `user_tokens`
 * Version information for table `settings`
 * 
 */
-UPDATE `settings` SET `ushahidi_version` = '2.0b3' WHERE `id`=1 LIMIT 1;
-UPDATE `settings` SET `db_version` = '26' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `ushahidi_version` = '2.0b5' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `db_version` = '29' WHERE `id`=1 LIMIT 1;

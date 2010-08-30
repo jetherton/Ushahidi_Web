@@ -32,7 +32,6 @@
 								<?php
 								foreach ($errors as $error_item => $error_description)
 								{
-									// print "<li>" . $error_description . "</li>";
 									print (!$error_description) ? '' : "<li>" . $error_description . "</li>";
 								}
 								?>
@@ -102,6 +101,12 @@
 								<h4><?php echo Kohana::lang('ui_main.description');?> <span><?php echo Kohana::lang('ui_main.include_detail');?>.</span></h4>
 								<?php print form::textarea('incident_description', $form['incident_description'], ' rows="12" cols="40"') ?>
 							</div>
+
+							<?php
+							// Action::report_form_admin - Runs just after the report description
+							Event::run('ushahidi_action.report_form_admin', $id);
+							?>
+
 							<?php
 							if (!($id))
 							{ // Use default date for new report
@@ -186,11 +191,7 @@
 			                        </ul>
 								</div>
 							</div>
-							<?php
-							// Action::report_form_admin - Runs right before the end of the report submit form
-							// entry form
-							Event::run('ushahidi_action.report_form_admin', $id);
-							?>
+							
 							<div id="custom_forms">
 								<?php
 								foreach ($disp_custom_fields as $field_id => $field_property)
@@ -204,15 +205,15 @@
 										{
 											echo form::input('custom_field['.$field_id.']', $form['custom_field'][$field_id],
 												' id="custom_field_'.$field_id.'" class="text"');
-											echo "<script type=\"text/javascript\">
+											echo '<script type="text/javascript">
 													$(document).ready(function() {
-													$(\"#custom_field_".$field_id."\").datepicker({ 
-													showOn: \"both\", 
-													buttonImage: \"" . url::base() . "media/img/icon-calendar.gif\", 
+													$("#custom_field_'.$field_id.'").datepicker({ 
+													showOn: "both", 
+													buttonImage: "'.url::base().'media/img/icon-calendar.gif", 
 													buttonImageOnly: true 
 													});
 													});
-												</script>";
+												</script>';
 										}
 										else
 										{
@@ -363,7 +364,14 @@
                         					if ($photo->media_type == 1)
                         					{
                         						print "<div class=\"report_thumbs\" id=\"photo_". $photo->id ."\">";
-                        						print "<img src=\"".url::base().Kohana::config('upload.relative_directory')."/".$photo->media_thumb."\" >";
+
+                        						$thumb = $photo->media_thumb;
+                        						$photo_link = $photo->media_link;
+												$prefix = url::base().Kohana::config('upload.relative_directory');
+                        						print "<a class='photothumb' rel='lightbox-group1' href='$prefix/$photo_link'>";
+                        						print "<img src=\"$prefix/$thumb\" >";
+                        						print "</a>";
+
                         						print "&nbsp;&nbsp;<a href=\"#\" onClick=\"deletePhoto('".$photo->id."', 'photo_".$photo->id."'); return false;\" >".Kohana::lang('ui_main.delete')."</a>";
                         						print "</div>";
                         					}

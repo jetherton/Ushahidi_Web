@@ -446,6 +446,7 @@ div.map {
     border: #999 1px solid;
     width: 573px;
     height: 366px;
+	position:relative;
 }
 #mapStatus
 {
@@ -504,6 +505,17 @@ div.cat-filters strong{
     margin: 0 10px 0 0;
     background: url(../img/cat-filters-bg.jpg) 0 3px no-repeat;
     padding: 0 0 0 10px;
+}
+
+div.cat-filters span{
+	font-weight:normal;
+	font-size:90%;
+	margin-left:5px;
+	color:#666;
+	letter-spacing:2px;
+}
+div.cat-filters span a{
+	color:#666;
 }
 
 ul.category-filters{

@@ -24,7 +24,7 @@ class Api_Controller extends Controller {
 	private $messages = array(); // form validation error messages
 	private $domain; // the domain name of the calling site
 	protected $table_prefix; // Table Prefix
-	
+
 	/**
 	 * constructor
 	*/
@@ -36,13 +36,10 @@ class Api_Controller extends Controller {
 		$this->domain = $this->_getDomain();
 		$this->table_prefix = Kohana::config('database.default.table_prefix');
 	}
-	
+
 	// get the FQDN
 	function _getDomain() {
-		$domain = ((empty($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] === 'off') ? 
-			'http' : 'https').'://'.$_SERVER['SERVER_NAME'];
-		
-		return $domain;
+		return url::base();
 	}
 
 	/**
@@ -267,7 +264,7 @@ class Api_Controller extends Controller {
 				* there are several ways to get incidents by
 				*/
 				$by = '';
-				$sort = 'asc';
+				$sort = 'DESC';
 				$orderfield = 'incidentid';
 
 				if(!$this->_verifyArrayIndex($request, 'by')){
@@ -276,43 +273,54 @@ class Api_Controller extends Controller {
 				} else {
 					$by = $request['by'];
 				}
-				/*IF we have an order by, 0=default=asc 1=desc */
+				/*IF we have an order by, 0=asc 1=default=desc */
 				if($this->_verifyArrayIndex($request, 'sort')){
-					if ( $request['sort'] == '1' ){
-						$sort = 'desc';
+					if ( $request['sort'] == '0' )
+					{
+						$sort = 'ASC';
+					}
+					elseif ( $request['sort'] == '1' )
+					{
+						$sort = 'DESC';
 					}
 				}
 
                 /*Specify how many incidents to return */
 				if($this->_verifyArrayIndex($request, 'limit')){
+
 					if ( $request['limit'] > 0 ){
 						$limit = $request['limit'];
 					} else {
+						$limit = 20;
+					}
+				// Make limit variable optional
+				} else {
 					$limit = 20;
-				}
 				}
 
 				/* Order field  */
 				if($this->_verifyArrayIndex($request, 'orderfield')){
 					switch ( $request['orderfield'] ){
-						case 'id':
-							$orderfield = 'id';
+						case 'incidentid':
+							$orderfield = 'i.id';
 							break;
-						case 'locid':
-							$orderfield = 'location_id';
+						case 'locationid':
+							$orderfield = 'l.location_id';
 							break;
-						case 'date':
-							$orderfield = 'incident_date';
+						case 'incidentdate':
+							$orderfield = 'i.incident_date';
 							break;
 						default:
 							/* Again... it's set but let's cast it in concrete */
-							$orderfield = 'id';
+							$orderfield = 'i.id';
 					}
 
 				}
 				switch ($by){
 					case "all": // incidents
+
 						$ret = $this->_incidentsByAll($orderfield, $sort, $limit);
+
 						break;
 
 					case "latlon": //latitude and longitude
@@ -487,7 +495,7 @@ class Api_Controller extends Controller {
 		$xml->startDocument('1.0', 'UTF-8');
 		$xml->startElement('response');
 		$xml->startElement('payload');
-		$this->writeElement('domain',$this->domain);
+		$xml->writeElement('domain',$this->domain);
 		$xml->startElement('incidents');
 
 		//find incidents
@@ -506,6 +514,7 @@ class Api_Controller extends Controller {
                 ."$where $limit";
 
 		$items = $this->db->query($query);
+
 		$i = 0;
 		foreach ($items as $item){
 
@@ -1502,9 +1511,11 @@ class Api_Controller extends Controller {
  	* Fetch all incidents
  	*/
 	function _incidentsByAll($orderfield,$sort,$limit) {
+
 		$where = "\nWHERE i.incident_active = 1 ";
-		$sortby = "\nORDER BY $orderfield $sort";
+		$sortby = "\nGROUP BY i.id ORDER BY $orderfield $sort";
 		$limit = "\nLIMIT 0, $limit";
+
 		/* Not elegant but works */
 		return $this->_getIncidents($where.$sortby, $limit);
 	}
@@ -1535,7 +1546,7 @@ class Api_Controller extends Controller {
  	*/
 	function _incidentsByLocationId($locid,$orderfield,$sort){
 		$where = "\nWHERE i.location_id = $locid AND i.incident_active = 1 ";
-		$sortby = "\nORDER BY $orderfield $sort";
+		$sortby = "\nGROUP BY i.id ORDER BY $orderfield $sort";
 		$limit = "\nLIMIT 0, $this->list_limit";
 		return $this->_getIncidents($where.$sortby, $limit);
 	}
@@ -1546,7 +1557,7 @@ class Api_Controller extends Controller {
 	function _incidentsByLocationName($locname,$orderfield,$sort){
 		$where = "\nWHERE l.location_name = '$locname' AND
 				i.incident_active = 1 ";
-		$sortby = "\nORDER BY $orderfield $sort";
+		$sortby = "\nGROUP BY i.id ORDER BY $orderfield $sort";
 		$limit = "\nLIMIT 0, $this->list_limit";
 		return $this->_getIncidents($where.$sortby, $limit);
 	}
@@ -1587,7 +1598,7 @@ class Api_Controller extends Controller {
 		$join .= "\nINNER JOIN ".$this->table_prefix."category AS c ON c.id = ic.category_id";
 		$where = $join."\nWHERE i.id > $since_id AND
 				i.incident_active = 1";
-		$sortby = "\nORDER BY $orderfield $sort";
+		$sortby = "\nGROUP BY i.id ORDER BY $orderfield $sort";
 		$limit = "\nLIMIT 0, $this->list_limit";
 		return $this->_getIncidents($where.$sortby, $limit);
 

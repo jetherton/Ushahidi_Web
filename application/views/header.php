@@ -33,7 +33,6 @@
 		{
 
 			echo html::script('media/js/OpenLayers', true);
-			echo html::script('media/js/OpenStreetMap.js', true);
 			echo "<script type=\"text/javascript\">OpenLayers.ImgPath = '".url::site().'media/img/openlayers/'."';</script>";
 			echo html::stylesheet('media/css/openlayers','',true);
 		}
@@ -111,9 +110,6 @@
 		// Render CSS and Javascript Files from Plugins
 		plugin::render('stylesheet');
 		plugin::render('javascript');
-
-		// Action::header_scripts - Additional Inline Scripts
-		Event::run('ushahidi_action.header_scripts');
 	?>
 
 	<!--[if IE 6]>
@@ -126,6 +122,11 @@
 		}
 		<?php echo $js . "\n"; ?>
 	</script>
+	
+	<?php
+	// Action::header_scripts - Additional Inline Scripts
+	Event::run('ushahidi_action.header_scripts');
+	?>
 </head>
 
 <body id="page">
@@ -157,7 +158,15 @@
 			</div>
 			<!-- / logo -->
 			
+			<?php
+			// Action::pre_nav_submit - Add items before the submit button
+			Event::run('ushahidi_action.pre_nav_submit');
 			
+			
+			// Action::post_nav_submit - Add items after the submit button
+			Event::run('ushahidi_action.post_nav_submit');
+			?>
+
 		</div>
 		<!-- / header -->
 
@@ -186,6 +195,8 @@
 							<?php
 						}
 
+						// Commenting out "How to Help" page for now
+						/*
 						// Help Page
 						if ($site_help_page)
 						{
@@ -193,6 +204,7 @@
 							<li><a href="<?php echo url::site() . "help" ?>" <?php if ($this_page == 'help') echo 'class="active"'; ?>><?php echo Kohana::lang('ui_main.help'); ?></a></li>
 							<?php
 						}
+						*/
 
 						// Custom Pages
 						foreach ($pages as $page)

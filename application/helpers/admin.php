@@ -48,7 +48,8 @@ class admin_Core {
 		if (Kohana::config('config.enable_mhi') == TRUE AND Kohana::config('settings.subdomain') == '')
 		{
 			$main_right_tabs = array(
-				'users' => Kohana::lang('ui_admin.users')
+				'users' => Kohana::lang('ui_admin.users'),
+				'mhi/settings' => Kohana::lang('ui_admin.settings')
 			);
 		}
 		else
@@ -159,8 +160,6 @@ class admin_Core {
 
 		$menu .= ($this_sub_page == "sms") ? Kohana::lang('ui_main.sms') : "<a href=\"".url::site()."admin/settings/sms\">".Kohana::lang('ui_main.sms')."</a>";
 
-		$menu .= ($this_sub_page == "sharing") ? Kohana::lang('ui_main.sharing') : "<a href=\"".url::site()."admin/settings/sharing\">".Kohana::lang('ui_main.sharing')."</a>";
-
 		$menu .= ($this_sub_page == "email") ? Kohana::lang('ui_main.email') : "<a href=\"".url::site()."admin/settings/email\">".Kohana::lang('ui_main.email')."</a>";
 
 		$menu .= ($this_sub_page == "themes") ? Kohana::lang('ui_main.themes') : "<a href=\"".url::site()."admin/settings/themes\">".Kohana::lang('ui_main.themes')."</a>";
@@ -191,7 +190,10 @@ class admin_Core {
 
 		$menu .= ($this_sub_page == "forms") ? Kohana::lang('ui_main.forms')."&nbsp;<span>(<a href=\"#add\">Add New</a>)</span>" : "<a href=\"".url::site()."admin/manage/forms\">".Kohana::lang('ui_main.forms')."</a>";
 
-		$menu .= ($this_sub_page == "organizations") ? Kohana::lang('ui_main.organizations')."&nbsp;<span>(<a href=\"#add\">Add New</a>)</span>" : "<a href=\"".url::site()."admin/manage/organizations\">".Kohana::lang('ui_main.organizations')."</a>";
+		//** Not sure Organizations is necessary any more?
+		//$menu .= ($this_sub_page == "organizations") ? Kohana::lang('ui_main.organizations')."&nbsp;<span>(<a href=\"#add\">Add New</a>)</span>" : "<a href=\"".url::site()."admin/manage/organizations\">".Kohana::lang('ui_main.organizations')."</a>";
+		
+		$menu .= ($this_sub_page == "sharing") ? Kohana::lang('ui_main.sharing') : "<a href=\"".url::site()."admin/manage/sharing\">".Kohana::lang('ui_main.sharing')."</a>";
 
 		$menu .= ($this_sub_page == "pages") ? Kohana::lang('ui_main.pages')."&nbsp;<span>(<a href=\"#add\">Add New</a>)</span>" : "<a href=\"".url::site()."admin/manage/pages\">".Kohana::lang('ui_main.pages')."</a>";
 

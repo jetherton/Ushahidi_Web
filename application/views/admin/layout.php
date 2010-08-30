@@ -43,7 +43,7 @@
 	echo html::script('media/js/jquery.ui.min', true);
 	echo html::script('media/js/selectToUISlider.jQuery', true);
 	echo html::script('media/js/jquery.hovertip-1.0', true);
-	echo html::stylesheet('media/css/jquery.hovertip-1.0', '', true);	
+	echo html::stylesheet('media/css/jquery.hovertip-1.0', '', true);
 	
 	echo "<script type=\"text/javascript\">
 		$(function() {
@@ -101,6 +101,11 @@
 	{
 		echo html::script('media/js/tinymce/tiny_mce', true);
 	}
+
+	
+	// Turn on picbox
+	echo html::script('media/js/picbox', true);
+	echo html::stylesheet('media/css/picbox/picbox');
 	
 	// Render CSS and Javascript Files from Plugins
 	plugin::render('stylesheet');
@@ -108,6 +113,7 @@
 
 	// Action::header_scripts_admin - Additional Inline Scripts
 	Event::run('ushahidi_action.header_scripts_admin');
+
 	?>
 	<script type="text/javascript" charset="utf-8">
 		<?php echo $js . "\n"; ?>
@@ -122,6 +128,10 @@
 		<div id="header">
 			<!-- top-area -->
 			<div class="top">
+				<?php
+				// Action::admin_header_top_left - Admin Header Menu
+				Event::run('ushahidi_action.admin_header_top_left');
+				?>
 				<ul>
 					<li class="none-separator"> <?php echo Kohana::lang('ui_admin.welcome');echo $admin_name; ?>!</li>
 					<li class="none-separator"><a href="<?php echo url::site() ?>" title="View the home page">

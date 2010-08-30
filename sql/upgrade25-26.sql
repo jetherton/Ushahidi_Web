@@ -13,4 +13,3 @@ UPDATE `settings` SET `db_version` = '26' WHERE `id`=1 LIMIT 1;
 UPDATE `settings` SET `ushahidi_version` = '2.0b3' WHERE `id`=1 LIMIT 1;
 
 ALTER TABLE `settings` CHANGE `default_map` `default_map` varchar(100) NOT NULL DEFAULT 'google_normal';
-
