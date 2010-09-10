@@ -126,7 +126,7 @@ class Reports_Controller extends Main_Controller {
 
 		// Get Incidents
 
-		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' ORDER BY incident_date DESC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
+		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' ORDER BY incident_title ASC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
 
 		$incidents = $db->query($query);
 		$total_incidents = $incidents->count();
@@ -172,7 +172,7 @@ class Reports_Controller extends Main_Controller {
 
 				$this->template->content->pagination = $pagination;
 			} else { // If we don't want to show pagination
-				$this->template->content->pagination_stats = $pagination->total_items.' '.Kohana::lang('ui_admin.reports');
+				$this->template->content->pagination_stats = $pagination->total_items;
 			}
 		} else {
 			$this->template->content->pagination_stats = '('.$pagination->total_items.' report'.$plural.')';
@@ -605,6 +605,14 @@ class Reports_Controller extends Main_Controller {
 
 		}else{
 			$incident = ORM::factory('incident', $id);
+			
+			$incident_persons = ORM::factory('Incident_Person')->where('incident_id',$incident->id)->find_all();
+			$incident_person = null;
+			foreach ($incident_persons as $person)
+			{
+				$incident_person = $person;
+			}
+					
 
 			if ( $incident->id == 0 )	// Not Found
 			{
@@ -767,10 +775,28 @@ class Reports_Controller extends Main_Controller {
 
 			// Filters
 			$incident_title = $incident->incident_title;
-			$incident_description = nl2br($incident->incident_description);
+			//$incident_description = nl2br($incident->incident_description); //tinyMCE doesn't like this
+			$incident_description = $incident->incident_description;
 			Event::run('ushahidi_filter.report_title', $incident_title);
 			Event::run('ushahidi_filter.report_description', $incident_description);
-
+			
+			if($incident_person)
+			{
+				$this->template->content->person_first = $incident_person->person_first ? $incident_person->person_first : "";
+				$this->template->content->person_last = $incident_person->person_last ? $incident_person->person_last : "";
+				$this->template->content->person_phone = $incident_person->person_phone ? $incident_person->person_phone : "";
+				$this->template->content->person_email = $incident_person->person_email ? $incident_person->person_email : "";
+				$this->template->content->person_title = $incident_person->person_title ? $incident_person->person_title : "";
+			}
+			else
+			{
+				$this->template->content->person_first = "";
+				$this->template->content->person_last = "";
+				$this->template->content->person_phone = "";
+				$this->template->content->person_email = "";
+				$this->template->content->person_title = "";
+			}
+			
 			$this->template->content->incident_id = $incident->id;
 			$this->template->content->incident_title = $incident_title;
 			$this->template->content->incident_description = $incident_description;
@@ -833,8 +859,7 @@ class Reports_Controller extends Main_Controller {
 
 		// Add Neighbors
 
-		$this->template->content->incident_neighbors = $this->_get_neighbors($incident->location->latitude,
-																								 	 $incident->location->longitude);
+		//$this->template->content->incident_neighbors = $this->_get_neighbors($incident->location->latitude,$incident->location->longitude);
 
 		// Get RSS News Feeds
 

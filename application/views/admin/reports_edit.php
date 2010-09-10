@@ -64,7 +64,8 @@
 							</div>
 						</div>
 						<!-- f-col -->
-						<div class="f-col">
+						<!--<div class="f-col">-->
+						<div >
 							<?php
 							// Action::report_pre_form_admin - Runs right before report form is rendered
 							Event::run('ushahidi_action.report_pre_form_admin', $id);
@@ -94,64 +95,20 @@
 								<div id="form_loader" style="float:left;"></div>
 							</div>
 							<div class="row">
-								<h4><?php echo Kohana::lang('ui_main.title');?></h4>
+								<h4>Member Name</h4>
 								<?php print form::input('incident_title', $form['incident_title'], ' class="text title"'); ?>
 							</div>
-							<div class="row">
-								<h4><?php echo Kohana::lang('ui_main.description');?> <span><?php echo Kohana::lang('ui_main.include_detail');?>.</span></h4>
-								<?php print form::textarea('incident_description', $form['incident_description'], ' rows="12" cols="40"') ?>
-							</div>
+							
 
 							<?php
 							// Action::report_form_admin - Runs just after the report description
 							Event::run('ushahidi_action.report_form_admin', $id);
 							?>
 
-							<?php
-							if (!($id))
-							{ // Use default date for new report
-								?>
-								<div class="row" id="datetime_default">
-									<h4><a href="#" id="date_toggle" class="new-cat"><?php echo Kohana::lang('ui_main.modify_date');?></a><?php echo Kohana::lang('ui_main.modify_date');?>: 
-									<?php echo Kohana::lang('ui_main.today_at').' '.$form['incident_hour']
-										.":".$form['incident_minute']." ".$form['incident_ampm']; ?></h4>
-								</div>
-								<?php
-							}
-							?>
-							<div class="row <?php
-								if (!($id))
-								{ // Hide date editor for new report
-									echo "hide";
-								}?> " id="datetime_edit">
-								<div class="date-box">
-									<h4><?php echo Kohana::lang('ui_main.date');?> <span><?php echo Kohana::lang('ui_main.date_format');?></span></h4>
-									<?php print form::input('incident_date', $form['incident_date'], ' class="text"'); ?>								
-									<?php print $date_picker_js; ?>				    
-								</div>
-								<div class="time">
-									<h4><?php echo Kohana::lang('ui_main.time');?> <span>(<?php echo Kohana::lang('ui_main.approximate');?>)</span></h4>
-									<?php
-									print '<span class="sel-holder">' .
-								    form::dropdown('incident_hour', $hour_array,
-									$form['incident_hour']) . '</span>';
-									
-									print '<span class="dots">:</span>';
-									
-									print '<span class="sel-holder">' .
-									form::dropdown('incident_minute',
-									$minute_array, $form['incident_minute']) .
-									'</span>';
-									print '<span class="dots">:</span>';
-									
-									print '<span class="sel-holder">' .
-									form::dropdown('incident_ampm', $ampm_array,
-									$form['incident_ampm']) . '</span>';
-									?>
-								</div>
-							</div>
+							
+								
 							<div class="row">
-								<h4><a href="#" id="category_toggle" class="new-cat"><?php echo Kohana::lang('ui_main.new_category');?></a><?php echo Kohana::lang('ui_main.categories');?> 
+								<h4><a href="#" id="category_toggle" class="new-cat" style="margin-right:600px;"><?php echo Kohana::lang('ui_main.new_category');?></a><?php echo Kohana::lang('ui_main.categories');?> 
 								<span><?php echo Kohana::lang('ui_main.select_multiple');?>.</span></h4>
 								<?php print $new_category_toggle_js; ?>
 								<!--category_add form goes here-->
@@ -228,18 +185,27 @@
 									echo "</div>";
 								}
 								?>
-							</div>			
+							</div>
+							<div class="row">
+								<h4><?php echo Kohana::lang('ui_main.description');?> <span><?php echo Kohana::lang('ui_main.include_detail');?>.</span></h4>
+								<?php print form::textarea('incident_description', $form['incident_description'], ' rows="12" cols="40"') ?>
+							</div>
 						</div>
 						<!-- f-col-1 -->
-						<div class="f-col-1">
+						<!--<div class="f-col-1">-->
+						<div >
 							<div class="incident-location">
-								<h4><?php echo Kohana::lang('ui_main.incident_location');?></h4>
-								<div class="location-info">
+								<h4>Member Location</h4>
+								<br/>
+								<br/>
+								<div class="location-info" style="margin-right:500px;">
 									<span><?php echo Kohana::lang('ui_main.latitude');?>:</span>
 									<?php print form::input('latitude', $form['latitude'], ' class="text"'); ?>
 									<span><?php echo Kohana::lang('ui_main.longitude');?>:</span>
 									<?php print form::input('longitude', $form['longitude'], ' class="text"'); ?>
 								</div>
+								<br/>
+								<br/>
 								<div id="divMap" class="map_holder_reports"></div>
 							</div>
 							<div class="incident-find-location">
@@ -262,7 +228,7 @@
 				
 							<!-- News Fields -->
 							<div class="row link-row">
-								<h4><?php echo Kohana::lang('ui_main.reports_news');?></h4>
+								<h4>Links</h4>
 							</div>
 							<div id="divNews">
 								<?php
@@ -391,7 +357,7 @@
 									$i = 1;
 									print "<div class=\"row link-row\">";
 									print form::upload($this_field . '[]', '', ' class="text long"');
-									print "<a href=\"#\" class=\"add\" onClick=\"addFormField('$this_div','$this_field','$this_startid','$this_field_type'); return false;\">add</a>";
+									print "<a href=\"#\" class=\"add\" onClick=\"addFormField('$this_div','$this_field','$this_startid','$this_field_type'); return false;\" style=\"margin-right:200px;\">add photo</a>";
 									print "</div>";
 								}
 								else
@@ -426,7 +392,7 @@
 						<div class="f-col-bottom-container">
 							<div class="f-col-bottom">
 								<div class="row">
-									<h4><?php echo Kohana::lang('ui_main.personal_information');?></span></h4>
+									<h4><?php echo "Contact Information";?></span></h4>
 									<label>
 										<span><?php echo Kohana::lang('ui_main.first_name');?></span>
 										<?php print form::input('person_first', $form['person_first'], ' class="text"'); ?>
@@ -442,12 +408,24 @@
 										<?php print form::input('person_email', $form['person_email'], ' class="text"'); ?>
 									</label>
 								</div>
+								<div class="row">
+									<label>
+										<span>Phone Number</span>
+										<?php print form::input('person_phone', $form['person_phone'], ' class="text"'); ?>
+									</label>
+								</div>
+								<div class="row">
+									<label>
+										<span>Title</span>
+										<?php print form::input('person_title', $form['person_title'], ' class="text"'); ?>
+									</label>
+								</div>
 							</div>
 							<!-- f-col-bottom-1 -->
 							<div class="f-col-bottom-1">
 								<h4><?php echo Kohana::lang('ui_main.information_evaluation');?></h4>
 								<div class="row">
-									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.approve_this_report');?>?</div>
+									<div class="f-col-bottom-1-col">Show member on map and in list?</div>
 									<input type="radio" name="incident_active" value="1"
 									<?php if ($form['incident_active'] == 1)
 									{
@@ -459,45 +437,6 @@
 										echo " checked=\"checked\" ";
 									}?>> <?php echo Kohana::lang('ui_main.no');?>
 								</div>
-								<div class="row">
-									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.verify_this_report');?>?</div>
-									<input type="radio" name="incident_verified" value="1"
-									<?php if ($form['incident_verified'] == 1)
-									{
-										echo " checked=\"checked\" ";
-									}?>> <?php echo Kohana::lang('ui_main.yes');?>
-									<input type="radio" name="incident_verified" value="0"
-									<?php if ($form['incident_verified'] == 0)
-									{
-										echo " checked=\"checked\" ";
-									}?>> <?php echo Kohana::lang('ui_main.no');?>									
-								</div>
-								<div class="row">
-									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.report_edit_dropdown_1_title');?>:</div>
-									<?php print form::dropdown('incident_source', 
-									array(""=> Kohana::lang('ui_main.report_edit_dropdown_1_default'), 
-									"1"=> Kohana::lang('ui_main.report_edit_dropdown_1_item_1'), 
-									"2"=> Kohana::lang('ui_main.report_edit_dropdown_1_item_2'), 
-									"3"=> Kohana::lang('ui_main.report_edit_dropdown_1_item_3'), 
-									"4"=> Kohana::lang('ui_main.report_edit_dropdown_1_item_4'), 
-									"5"=> Kohana::lang('ui_main.report_edit_dropdown_1_item_5'), 
-									"6"=> Kohana::lang('ui_main.report_edit_dropdown_1_item_6')
-									)
-									, $form['incident_source']) ?>									
-								</div>
-								<div class="row">
-									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.report_edit_dropdown_2_title');?>:</div>
-									<?php print form::dropdown('incident_information', 
-									array(""=> Kohana::lang('ui_main.report_edit_dropdown_1_default'), 
-									"1"=> Kohana::lang('ui_main.report_edit_dropdown_2_item_1'), 
-									"2"=> Kohana::lang('ui_main.report_edit_dropdown_2_item_2'), 
-									"3"=> Kohana::lang('ui_main.report_edit_dropdown_2_item_3'), 
-									"4"=> Kohana::lang('ui_main.report_edit_dropdown_2_item_4'), 
-									"5"=> Kohana::lang('ui_main.report_edit_dropdown_2_item_5'), 
-									"6"=> Kohana::lang('ui_main.report_edit_dropdown_2_item_6')
-									)
-									, $form['incident_information']) ?>									
-								</div>								
 							</div>
 							<div style="clear:both;"></div>
 						</div>

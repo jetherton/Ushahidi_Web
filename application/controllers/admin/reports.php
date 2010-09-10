@@ -309,12 +309,8 @@ class Reports_Controller extends Admin_Controller
 			'form_id'      => '',
 			'locale'		   => '',
 			'incident_title'      => '',
-	        'incident_description'    => '',
-	        'incident_date'  => '',
-	        'incident_hour'      => '',
-			'incident_minute'      => '',
-			'incident_ampm' => '',
-			'latitude' => '',
+			'incident_description'    => '',
+	        	'latitude' => '',
 			'longitude' => '',
 			'location_name' => '',
 			'country_id' => '',
@@ -325,11 +321,10 @@ class Reports_Controller extends Admin_Controller
 			'person_first' => '',
 			'person_last' => '',
 			'person_email' => '',
+			'person_phone' => '',
+			'person_title' => '',
 			'custom_field' => array(),
 			'incident_active' => '',
-			'incident_verified' => '',
-			'incident_source' => '',
-			'incident_information' => ''
 	    );
 
 		//  copy the form as errors, so the errors will be stored with keys corresponding to the form field names
@@ -349,10 +344,6 @@ class Reports_Controller extends Admin_Controller
 		//$form['latitude'] = Kohana::config('settings.default_lat');
 		//$form['longitude'] = Kohana::config('settings.default_lon');
 		$form['country_id'] = Kohana::config('settings.default_country');
-		$form['incident_date'] = date("m/d/Y",time());
-		$form['incident_hour'] = date('g');
-		$form['incident_minute'] = date('i');
-		$form['incident_ampm'] = date('a');
 		// initialize custom field array
 		$form['custom_field'] = $this->_get_custom_form_fields($id,'',true);
 
@@ -421,10 +412,6 @@ class Reports_Controller extends Admin_Controller
 					 	. $message->message_detail;
 				}
 				$form['incident_description'] = $incident_description;
-				$form['incident_date'] = date('m/d/Y', strtotime($message->message_date));
-				$form['incident_hour'] = date('h', strtotime($message->message_date));
-				$form['incident_minute'] = date('i', strtotime($message->message_date));
-				$form['incident_ampm'] = date('a', strtotime($message->message_date));
 				$form['person_first'] = $message->reporter->reporter_first;
 				$form['person_last'] = $message->reporter->reporter_last;
 
@@ -459,10 +446,7 @@ class Reports_Controller extends Admin_Controller
 
 				$form['incident_title'] = $feed_item->item_title;
 				$form['incident_description'] = $feed_item->item_description;
-				$form['incident_date'] = date('m/d/Y', strtotime($feed_item->item_date));
-				$form['incident_hour'] = date('h', strtotime($feed_item->item_date));
-				$form['incident_minute'] = date('i', strtotime($feed_item->item_date));
-				$form['incident_ampm'] = date('a', strtotime($feed_item->item_date));
+
 
 				// News Link
 				$form['incident_news'][0] = $feed_item->item_link;
@@ -497,13 +481,6 @@ class Reports_Controller extends Admin_Controller
 			$post->add_rules('message_id','numeric');
 			$post->add_rules('incident_title','required', 'length[3,200]');
 			$post->add_rules('incident_description','required');
-			$post->add_rules('incident_date','required','date_mmddyyyy');
-			$post->add_rules('incident_hour','required','between[1,12]');
-			$post->add_rules('incident_minute','required','between[0,59]');
-			if ($_POST['incident_ampm'] != "am" && $_POST['incident_ampm'] != "pm")
-			{
-				$post->add_error('incident_ampm','values');
-	        }
 			$post->add_rules('latitude','required','between[-90,90]');		// Validate for maximum and minimum latitude values
 			$post->add_rules('longitude','required','between[-180,180]');	// Validate for maximum and minimum longitude values
 			$post->add_rules('location_name','required', 'length[3,200]');
@@ -559,6 +536,16 @@ class Reports_Controller extends Admin_Controller
 			{
 				$post->add_rules('person_email', 'email', 'length[3,100]');
 			}
+			
+			if (!empty($_POST['person_phone']))
+			{
+				$post->add_rules('person_phone',  'length[0,60]');
+			}
+			
+			if (!empty($_POST['person_title']))
+			{
+				$post->add_rules('person_title',  'length[0,80]');
+			}
 
 			// Validate Custom Fields
 			if (isset($post->custom_field) && !$this->_validate_custom_form_fields($post->custom_field))
@@ -567,9 +554,6 @@ class Reports_Controller extends Admin_Controller
 			}
 
 			$post->add_rules('incident_active','required', 'between[0,1]');
-			$post->add_rules('incident_verified','required', 'length[0,1]');
-			$post->add_rules('incident_source','numeric', 'length[1,1]');
-			$post->add_rules('incident_information','numeric', 'length[1,1]');
 
 
 			// Action::report_submit_admin - Report Posted
@@ -598,12 +582,7 @@ class Reports_Controller extends Admin_Controller
 				$incident->incident_title = $post->incident_title;
 				$incident->incident_description = $post->incident_description;
 
-				$incident_date=explode("/",$post->incident_date);
-				// where the $_POST['date'] is a value posted by form in mm/dd/yyyy format
-					$incident_date=$incident_date[2]."-".$incident_date[0]."-".$incident_date[1];
-
-				$incident_time = $post->incident_hour . ":" . $post->incident_minute . ":00 " . $post->incident_ampm;
-				$incident->incident_date = date( "Y-m-d H:i:s", strtotime($incident_date . " " . $incident_time) );
+				$incident->incident_date = date( "Y-m-d H:i:s", time() ); //always show the last date/time updated
 				// Is this new or edit?
 				if ($id)	// edit
 				{
@@ -638,9 +617,6 @@ class Reports_Controller extends Admin_Controller
 				}
 				// Incident Evaluation Info
 				$incident->incident_active = $post->incident_active;
-				$incident->incident_verified = $post->incident_verified;
-				$incident->incident_source = $post->incident_source;
-				$incident->incident_information = $post->incident_information;
 				//Save
 				$incident->save();
 				
@@ -667,14 +643,6 @@ class Reports_Controller extends Admin_Controller
 				if ($post->incident_active == 1)
 				{
 					$verify->verified_status = '1';
-				}
-				elseif ($post->incident_verified == 1)
-				{
-					$verify->verified_status = '2';
-				}
-				elseif ($post->incident_active == 1 && $post->incident_verified == 1)
-				{
-					$verify->verified_status = '3';
 				}
 				else
 				{
@@ -764,6 +732,8 @@ class Reports_Controller extends Admin_Controller
 				$person->person_first = $post->person_first;
 				$person->person_last = $post->person_last;
 				$person->person_email = $post->person_email;
+				$person->person_phone = $post->person_phone;
+				$person->person_title = $post->person_title;
 				$person->person_date = date("Y-m-d H:i:s",time());
 				$person->save();
 
@@ -903,11 +873,10 @@ class Reports_Controller extends Admin_Controller
 						'person_first' => $incident->incident_person->person_first,
 						'person_last' => $incident->incident_person->person_last,
 						'person_email' => $incident->incident_person->person_email,
+						'person_phone' => $incident->incident_person->person_phone,
+						'person_title' => $incident->incident_person->person_title,
 						'custom_field' => $this->_get_custom_form_fields($id,$incident->form_id,true),
 						'incident_active' => $incident->incident_active,
-						'incident_verified' => $incident->incident_verified,
-						'incident_source' => $incident->incident_source,
-						'incident_information' => $incident->incident_information
 				    );
 
 					// Merge To Form Array For Display
@@ -946,8 +915,9 @@ class Reports_Controller extends Admin_Controller
 
 		// Javascript Header
 		$this->template->map_enabled = TRUE;
-        $this->template->colorpicker_enabled = TRUE;
+		$this->template->colorpicker_enabled = TRUE;
 		$this->template->treeview_enabled = TRUE;
+		$this->template->editor_enabled = TRUE;
 		$this->template->js = new View('admin/reports_edit_js');
 		$this->template->js->default_map = Kohana::config('settings.default_map');
 		$this->template->js->default_zoom = Kohana::config('settings.default_zoom');

@@ -18,17 +18,7 @@
 						<!-- start incident block -->
 						<div class="reports">
 							<div class="report-details">
-								<div class="verified <?php
-								if ($incident_verified == 1)
-								{
-									echo " verified_yes";
-								}
-								?>"><?php
-									echo ($incident_verified == 1) ?
-										"<span>Verified</span>" :
-										"<span>Unverified</span>";
-									?>
-								</div>
+								
 								<h1><?php
 								echo $incident_title;
 								
@@ -38,18 +28,31 @@
 									echo " [&nbsp;<a href=\"".url::site()."admin/reports/edit/".$incident_id."\">Edit</a>&nbsp;]";
 								}
 								?></h1>
+								
+								<?php
+								foreach ($incident_photos as $photo)
+								{
+									
+									$prefix = url::base().Kohana::config('upload.relative_directory');
+									echo("<img src='$prefix/$photo'/>");
+									break;
+								}
+								?>
 								<ul class="details">
 									<li>
 										<small>Location</small>
 										<?php echo $incident_location; ?>
 									</li>
 									<li>
-										<small>Date</small>
+										<small>Date Last Updated</small>
 										<?php echo $incident_date; ?>
 									</li>
 									<li>
-										<small>Time</small>
-										<?php echo $incident_time; ?>
+										<small>Contact</small>
+										<?php echo $person_first. " ". $person_last. "<br/>".
+											$person_title. "<br/>Phone: ". $person_phone
+											. '<br/>Email: <a href="mailto:'.$person_email.'">'.
+											$person_email.'</a>';?>
 									</li>
 									<li>
 										<small>Category</small>
@@ -70,8 +73,7 @@
 							<div class="location">
 								<div class="incident-notation clearingfix">
 									<ul>
-										<li><img align="absmiddle" alt="Incident" src="<?php echo url::base(); ?>media/img/incident-pointer.jpg"/> Incident</li>
-										<li><img align="absmiddle" alt="Nearby Incident" src="<?php echo url::base(); ?>media/img/nearby-incident-pointer.jpg"/> Nearby Incident</li>
+										<li><img align="absmiddle" alt="Member" src="<?php echo url::base(); ?>media/img/incident-pointer.jpg"/> Member</li>
 									</ul>
 								</div>
 								<div class="report-map">
@@ -83,16 +85,9 @@
 				</div>
 		
 				<div class="report-description">
-					<h3>Location Description</h3>
+					<h3>Member Description</h3>
 						<div class="content">
 							<?php echo $incident_description; ?>
-							<div class="credibility">
-								Credibility:
-								<a href="javascript:rating('<?php echo $incident_id; ?>','add','original','oloader_<?php echo $incident_id; ?>')"><img id="oup_<?php echo $incident_id; ?>" src="<?php echo url::base() . 'media/img/'; ?>thumb-up.jpg" alt="UP" title="UP" border="0" /></a>&nbsp;
-								<a href="javascript:rating('<?php echo $incident_id; ?>','subtract','original')"><img id="odown_<?php echo $incident_id; ?>" src="<?php echo url::base() . 'media/img/'; ?>thumb-down.jpg" alt="DOWN" title="DOWN" border="0" /></a>&nbsp;
-								<a href="" class="rating_value" id="orating_<?php echo $incident_id; ?>"><?php echo $incident_rating; ?></a>
-								<a href="" id="oloader_<?php echo $incident_id; ?>" class="rating_loading" ></a>
-							</div>
 						</div>
 						<?php
 						// Action::report_extra - Add Items to the Report Extra block
@@ -192,28 +187,6 @@
 					
 					
 
-
-					<div class="report-description">
-						<h3>Other Places Near By</h3>
-						<table cellpadding="0" cellspacing="0">
-							<tr class="title">
-								<th class="w-01">TITLE</th>
-								<th class="w-02">LOCATION</th>
-								<th class="w-03">DATE</th>
-							</tr>
-							<?php
-								foreach($incident_neighbors as $neighbor)
-								{
-									echo "<tr>";
-									echo "<td class=\"w-01\"><a href=\"" . url::site(); 
-									echo "reports/view/" . $neighbor->id . "\">" . $neighbor->incident_title . "</a></td>";
-									echo "<td class=\"w-02\">" . $neighbor->location->location_name . "</td>";
-									echo "<td class=\"w-03\">" . date('M j Y', strtotime($neighbor->incident_date)) . "</td>";
-									echo "</tr>";
-								}
-								?>
-						</table>
-					</div>
 
 					<?php 
 					if( $incident_photos <= 0) 

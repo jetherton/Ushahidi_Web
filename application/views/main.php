@@ -189,13 +189,12 @@
 				
 						<!-- left content block -->
 						<div class="content-block-left">
-							<h5><?php echo Kohana::lang('ui_main.incidents_listed'); ?></h5>
+							<h5>Members</h5>
 							<table class="table-list">
 								<thead>
 									<tr>
-										<th scope="col" class="title"><?php echo Kohana::lang('ui_main.title'); ?></th>
+										<th scope="col" class="title">Name</th>
 										<th scope="col" class="location"><?php echo Kohana::lang('ui_main.location'); ?></th>
-										<th scope="col" class="date"><?php echo Kohana::lang('ui_main.date'); ?></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -203,7 +202,7 @@
 	 								if ($total_items == 0)
 									{
 									?>
-									<tr><td colspan="3">No Reports In The System</td></tr>
+									<tr><td colspan="3">No Members In The System</td></tr>
 
 									<?php
 									}
@@ -214,11 +213,12 @@
 										$incident_date = $incident->incident_date;
 										$incident_date = date('M j Y', strtotime($incident->incident_date));
 										$incident_location = $incident->location->location_name;
+										
+										$incident_person = $incident->incident_person;
 									?>
 									<tr>
 										<td><a href="<?php echo url::site() . 'reports/view/' . $incident_id; ?>"> <?php echo $incident_title ?></a></td>
 										<td><?php echo $incident_location ?></td>
-										<td><?php echo $incident_date; ?></td>
 									</tr>
 									<?php
 									}
@@ -226,44 +226,9 @@
 
 								</tbody>
 							</table>
-							<a class="more" href="<?php echo url::site() . 'reports/' ?>">View More...</a>
+							<a class="more" href="<?php echo url::site() . 'reports/' ?>">View List</a>
 						</div>
 						<!-- / left content block -->
-				
-						<!-- right content block -->
-						<div class="content-block-right">
-							<h5><?php echo Kohana::lang('ui_main.official_news'); ?></h5>
-							<table class="table-list">
-								<thead>
-									<tr>
-										<th scope="col"><?php echo Kohana::lang('ui_main.title'); ?></th>
-										<th scope="col"><?php echo Kohana::lang('ui_main.source'); ?></th>
-										<th scope="col"><?php echo Kohana::lang('ui_main.date'); ?></th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-									foreach ($feeds as $feed)
-									{
-										$feed_id = $feed->id;
-										$feed_title = text::limit_chars($feed->item_title, 40, '...', True);
-										$feed_link = $feed->item_link;
-										$feed_date = date('M j Y', strtotime($feed->item_date));
-										$feed_source = text::limit_chars($feed->feed->feed_name, 15, "...");
-									?>
-									<tr>
-										<td><a href="<?php echo $feed_link; ?>" target="_blank"><?php echo $feed_title ?></a></td>
-										<td><?php echo $feed_source; ?></td>
-										<td><?php echo $feed_date; ?></td>
-									</tr>
-									<?php
-									}
-									?>
-								</tbody>
-							</table>
-							<a class="more" href="<?php echo url::site() . 'feeds' ?>">View More...</a>
-						</div>
-						<!-- / right content block -->
 				
 					</div>
 					<!-- /content blocks -->
