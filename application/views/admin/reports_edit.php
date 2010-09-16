@@ -273,11 +273,13 @@
 
 
 							<!-- Video Fields -->
+							<!-- until Liberia gets some seriously fast internet, this is kind of pointless
 							<div class="row link-row">
-								<h4><?php echo Kohana::lang('ui_main.reports_video');?></h4>
+								<h4><?php //echo Kohana::lang('ui_main.reports_video');?></h4>
 							</div>
 							<div id="divVideo">
 								<?php
+								/* NO VIDEO IN LIBERIA
 								$this_div = "divVideo";
 								$this_field = "incident_video";
 								$this_startid = "video_id";
@@ -314,8 +316,11 @@
 									}
 								}
 								print "<input type=\"hidden\" name=\"$this_startid\" value=\"$i\" id=\"$this_startid\">";
+								
+								NO VIDEO IN LIBERIA*/
 								?>
 							</div>
+							END OF NO VIDEO IN LIBERIA-->
 				
 				
 							<!-- Photo Fields -->
@@ -436,6 +441,20 @@
 									{
 										echo " checked=\"checked\" ";
 									}?>> <?php echo Kohana::lang('ui_main.no');?>
+								</div>
+
+								<div class="row">
+									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.verify_this_report');?>?</div>
+									<input type="radio" name="incident_verified" value="1"
+									<?php if ($form['incident_verified'] == 1)
+									{
+										echo " checked=\"checked\" ";
+									}?>> <?php echo Kohana::lang('ui_main.yes');?>
+									<input type="radio" name="incident_verified" value="0"
+									<?php if ($form['incident_verified'] == 0)
+									{
+										echo " checked=\"checked\" ";
+									}?>> <?php echo Kohana::lang('ui_main.no');?>									
 								</div>
 							</div>
 							<div style="clear:both;"></div>

@@ -133,7 +133,8 @@
 												Event::run('ushahidi_action.message_extra_admin', $message_id);
 												?>
 												<?php
-												if ($service_id == 1 && $message_type == 1)
+												$settings = ORM::factory('settings', 1);
+												if ($service_id == 1 && $message_type == 1 && strlen($settings->clickatell_api) > 2)
 												{
 													?>
 													<div id="replies">

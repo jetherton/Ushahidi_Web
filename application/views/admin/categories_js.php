@@ -29,8 +29,14 @@ function fillFields(id, parent_id, category_title, category_description, categor
 function catAction ( action, confirmAction, id )
 {
 	var statusMessage;
+	var deleteMessage = "";
+	if(confirmAction == "DELETE")
+	{
+		deleteMessage = "? WARNING: If you delete a parent category it will delete all its children!";
+	}
+	
 	var answer = confirm('Are You Sure You Want To ' 
-		+ confirmAction)
+		+ confirmAction + deleteMessage)
 	if (answer){
 		// Set Category ID
 		$("#category_id_action").attr("value", id);
