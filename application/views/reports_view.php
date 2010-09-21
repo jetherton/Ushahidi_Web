@@ -55,7 +55,7 @@
 											$person_email.'</a>';?>
 									</li>
 									<li>
-										<small>Category</small>
+										<small>Sector(s)</small>
 										<?php
 											foreach($incident_category as $category) 
 											{ 
