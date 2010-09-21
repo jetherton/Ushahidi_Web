@@ -43,7 +43,7 @@
 											$color_css = '';
 										}
 										echo '<li><a href="#" id="cat_'. $category .'"><div '.$color_css.'>'.$category_image.'</div><div class="category-title">'.$category_title.'</div></a>';
-										echo '<a href="http://john.com" style="background:none;font-size:6pt;text-align:right;color:grey;font-weight:400;margin:1px;padding:1px;">Members in the '.$category_title.' sector</a>'; 
+										echo '<a href="'.url::site() . 'reports/?c='.$category.'" style="background:none;font-size:6pt;text-align:right;color:grey;font-weight:400;margin:1px;padding:1px;">Members in the '.$category_title.' sector</a>'; 
 										// Get Children
 										echo '<div class="hide" id="child_'. $category .'"><ul>';
 										foreach ($category_info[3] as $child => $child_info)
