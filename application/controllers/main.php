@@ -79,6 +79,7 @@ class Main_Controller extends Template_Controller {
 		$this->template->header->site_style = Kohana::config('settings.site_style');
 
 		// Javascript Header
+		$this->template->header->editor_enabled = FALSE;
 		$this->template->header->map_enabled = FALSE;
 		$this->template->header->validator_enabled = TRUE;
 		$this->template->header->treeview_enabled = FALSE;

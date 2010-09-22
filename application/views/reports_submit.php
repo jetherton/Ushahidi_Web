@@ -50,7 +50,7 @@
 								</div>
 								<div class="report_row">
 									<h4><?php echo Kohana::lang('ui_main.reports_description'); ?></h4>
-									<?php print form::textarea('incident_description', $form['incident_description'], ' rows="10" class="textarea long" ') ?>
+									<?php print form::textarea('incident_description', $form['incident_description'], ' rows="15" class="textarea long" ') ?>
 								</div>
 								<div class="report_row" id="datetime_default">
 									<h4><a href="#" id="date_toggle" class="show-more"><?php echo Kohana::lang('ui_main.modify_date'); ?></a><?php echo Kohana::lang('ui_main.date_time'); ?>: 

@@ -15,6 +15,7 @@
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
 ?>		
+
 		// jQuery Textbox Hints Plugin
 		// Will move to separate file later or attach to forms plugin
 		jQuery.fn.hint = function (blurClass) {
@@ -327,3 +328,20 @@
 	      });
 	
 		});
+
+
+
+				// Initialize tinyMCE Wysiwyg Editor
+				tinyMCE.init({
+				mode : "exact",
+				elements : "incident_description",
+				theme : "advanced",
+				plugins : "pagebreak,advhr,advimage,advlink,iespell,inlinepopups,contextmenu,paste,directionality,noneditable,advlist",
+				// Theme options
+				theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect",
+				theme_advanced_buttons2 : "outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,code,|,forecolor,backcolor",
+				theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,hr,removeformat,visualaid,|,sub,sup,|,advhr,|,ltr,rtl",
+				theme_advanced_toolbar_location : "top",
+				theme_advanced_toolbar_align : "left"
+				});
+

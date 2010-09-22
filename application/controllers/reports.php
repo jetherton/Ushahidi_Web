@@ -580,6 +580,7 @@ class Reports_Controller extends Main_Controller {
 
 
 		// Javascript Header
+		$this->template->header->editor_enabled = TRUE;
 		$this->template->header->map_enabled = TRUE;
 		$this->template->header->datepicker_enabled = TRUE;
 		$this->template->header->treeview_enabled = TRUE;

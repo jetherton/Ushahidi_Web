@@ -36,6 +36,7 @@
 			echo "<script type=\"text/javascript\">OpenLayers.ImgPath = '".url::site().'media/img/openlayers/'."';</script>";
 			echo html::stylesheet('media/css/openlayers','',true);
 		}
+		
 
 		// Load jQuery
 
@@ -97,6 +98,14 @@
 			echo '<![endif]-->';
 			echo html::script('media/js/protochart/ProtoChart', true);
 		}
+		
+		// Load TinyMCE
+		if ($editor_enabled)
+		{
+			echo html::script('media/js/tinymce/tiny_mce', true);
+			
+		}
+
 
 		if (Kohana::config('settings.allow_feed'))
 		{
