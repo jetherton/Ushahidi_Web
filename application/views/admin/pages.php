@@ -125,6 +125,7 @@
 					</ul>
 					<!-- tab -->
 					<div class="tab">
+						<?php Event::run('ushahidi_action.page_pre_form_admin', $id); ?>
 						<?php print form::open(NULL,array('id' => 'pageMain',
 						 	'name' => 'pageMain')); ?>
 						<input type="hidden" id="page_id" 
@@ -143,6 +144,7 @@
 							<strong><?php echo Kohana::lang('ui_main.page_description');?>:</strong><br />
 							<?php print form::textarea('page_description', $form['page_description'], ' rows="12" cols="60" '); ?>
 						</div>
+						<?php Event::run('ushahidi_action.page_form_admin', $id); ?>
 						<div class="tab_form_item">
 							&nbsp;<br />
 							<input type="image" src="<?php echo url::base() ?>media/img/admin/btn-save.gif" class="save-rep-btn" />
