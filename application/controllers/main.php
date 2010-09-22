@@ -150,7 +150,7 @@ class Main_Controller extends Template_Controller {
 		$parent_categories = array();
 		foreach (ORM::factory('category')
 				->where('category_visible', '1')
-				->where('parent_id', '0')
+				->where('parent_id', '0')->orderby('category_title', 'asc')
 				->find_all() as $category)
 		{
             // Get The Children

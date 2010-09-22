@@ -49,10 +49,21 @@
 									</li>
 									<li>
 										<small>Contact</small>
-										<?php echo $person_first. " ". $person_last. "<br/>".
-											$person_title. "<br/>Phone: ". $person_phone
-											. '<br/>Email: <a href="mailto:'.$person_email.'">'.
-											$person_email.'</a>';?>
+										<?php
+											echo $person_first. " ". $person_last. "<br/>";
+											if($person_title)
+											{
+												echo $person_title. "<br/>";
+											}
+											if($person_phone)
+											{
+												echo "Phone: ". $person_phone;
+											}
+											if($person_email)
+											{
+												echo '<br/>Email: <a href="mailto:'.$person_email.'">'.$person_email.'</a>';
+											}
+											?>
 									</li>
 									<li>
 										<small>Sector(s)</small>
@@ -123,37 +134,6 @@
 					} else {
 					?> 
 
-					<div class="report-description">
-						<h3>Related Information</h3>
-						<table cellpadding="0" cellspacing="0">
-							<tr class="title">
-								<th class="w-01">TITLE</th>
-								<th class="w-02">SOURCE</th>
-								<th class="w-03">DATE</th>
-							</tr>
-							<?php
-								foreach ($feeds as $feed)
-								{
-									$feed_id = $feed->id;
-									$feed_title = text::limit_chars($feed->item_title, 40, '...', True);
-									$feed_link = $feed->item_link;
-									$feed_date = date('M j Y', strtotime($feed->item_date));
-									$feed_source = text::limit_chars($feed->feed->feed_name, 15, "...");
-							?>
-							<tr>
-								<td class="w-01">
-									<a href="<?php echo $feed_link; ?>" target="_blank">
-									<?php echo $feed_title ?></a>
-								</td>
-								<td class="w-02"><?php echo $feed_source; ?></td>
-								<td class="w-03"><?php echo $feed_date; ?></td>
-							</tr>
-							<?php
-							}
-							?>
-						</table>
-						<!-- end mainstream news of incident -->
-					</div>
 					<?php
 					}?>
 					

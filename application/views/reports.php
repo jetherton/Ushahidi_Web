@@ -47,6 +47,8 @@
 								$incident_id = $incident->id;
 								$incident_title = $incident->incident_title;
 								$incident_description = $incident->incident_description;
+								$incident_active = $incident->incident_active;
+
 
 								// Trim to 150 characters without cutting words
 								// XXX: Perhaps delcare 150 as constant

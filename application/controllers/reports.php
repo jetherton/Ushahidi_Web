@@ -54,11 +54,16 @@ class Reports_Controller extends Main_Controller {
 			$category_id = mysql_escape_string($_GET['c']);
 			$query = 'SELECT ic.incident_id AS incident_id FROM '.$this->table_prefix.'incident_category AS ic INNER JOIN '.$this->table_prefix.'category AS c ON (ic.category_id = c.id)  WHERE c.id='.$category_id.' OR c.parent_id='.$category_id.';';
 			$query = $db->query($query);
-
 			foreach ( $query as $items )
 			{
 				$allowed_ids[] = $items->incident_id;
 			}
+			
+			if (count($allowed_ids) == 0)
+			{
+				$allowed_ids[] = -1;
+			}
+			
 		}
 
 		// Get location_ids if we are to filter by location
@@ -126,7 +131,7 @@ class Reports_Controller extends Main_Controller {
 
 		// Get Incidents
 
-		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' ORDER BY incident_title ASC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
+		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified, incident_active FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' AND (incident_active = 1) ORDER BY incident_title ASC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
 
 		$incidents = $db->query($query);
 		$total_incidents = $incidents->count();
@@ -143,13 +148,16 @@ class Reports_Controller extends Main_Controller {
 
 		// Get location names
 
-		$query = 'SELECT id, location_name FROM '.$this->table_prefix.'location WHERE id IN ('.implode(',',$location_in).')';
-		$locations_query = $db->query($query);
-
 		$locations = array();
-		foreach ($locations_query as $loc)
+		if(count($location_in) > 0)
 		{
-			$locations[$loc->id] = $loc->location_name;
+			$query = 'SELECT id, location_name FROM '.$this->table_prefix.'location WHERE id IN ('.implode(',',$location_in).')';
+			$locations_query = $db->query($query);
+		
+			foreach ($locations_query as $loc)
+			{
+				$locations[$loc->id] = $loc->location_name;
+			}
 		}
 
 		$this->template->content->locations = $locations;

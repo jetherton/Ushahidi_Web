@@ -60,6 +60,7 @@
 												$color_css = '';
 											}
 											echo '<li style="padding-left:20px;"><a href="#" id="cat_'. $child .'"><div '.$color_css.'>'.$child_image.'</div><div class="category-title">'.$child_title.'</div></a></li>';
+											echo '<a href="'.url::site() . 'reports/?c='.$child.'" style="background:none;font-size:6pt;text-align:right;color:grey;font-weight:400;margin:1px;padding:1px;">Members in the '.$child_title.' sector</a>'; 
 										}
 										echo '</ul></div></li>';
 									}
