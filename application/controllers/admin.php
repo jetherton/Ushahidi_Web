@@ -27,7 +27,7 @@ class Admin_Controller extends Template_Controller
 	protected $auth_required = FALSE;
 
 	protected $user;
-	
+
 	// Table Prefix
 	protected $table_prefix;
 
@@ -37,23 +37,24 @@ class Admin_Controller extends Template_Controller
 
 		// Load cache
 		$this->cache = new Cache;
-		
+
 		// Load session
 		$this->session = new Session;
-		
+
 		// Load database
 		$this->db = new Database();
-		
+
 		$upgrade = new Upgrade;
-		
+
 		$this->auth = new Auth();
 		$this->session = Session::instance();
 		$this->auth->auto_login();
-		
-		if (!$this->auth->logged_in('admin') && !$this->auth->logged_in('login')) {
+
+		if ( ! $this->auth->logged_in('login'))
+		{
 			url::redirect('login');
 		}
-		
+
 		// Set Table Prefix
 		$this->table_prefix = Kohana::config('database.default.table_prefix');
 
@@ -63,9 +64,9 @@ class Admin_Controller extends Template_Controller
 		$this->template->version = $version_number;
 
 		// Get Session Information
-		$user = new User_Model($_SESSION['auth_user']->id);
+		$this->user = new User_Model($_SESSION['auth_user']->id);
 
-		$this->template->admin_name = $user->name;
+		$this->template->admin_name = $this->user->name;
 
 		// Retrieve Default Settings
 		$this->template->site_name = Kohana::config('settings.site_name');
@@ -89,7 +90,7 @@ class Admin_Controller extends Template_Controller
 		$this->template->main_tabs = admin::main_tabs();
 		// Generate sub navigation list (in default layout, sits on right side).
         $this->template->main_right_tabs = admin::main_right_tabs($this->auth);
-		
+
 		// Load profiler
 		// $profiler = new Profiler;	
     }
@@ -108,8 +109,9 @@ class Admin_Controller extends Template_Controller
 	{
 		$auth = new Auth;
 		$auth->logout(TRUE);
-		
+
 		url::redirect('login');
 	}
-	
+
 } // End Admin
+

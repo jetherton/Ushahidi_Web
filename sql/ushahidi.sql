@@ -1,5 +1,5 @@
 -- Ushahidi Engine
--- version 29
+-- version 30
 -- http://www.ushahidi.com
 
 
@@ -674,7 +674,7 @@ CREATE TABLE IF NOT EXISTS `message`                                            
     `message_detail` text default NULL,                                             -- field description
     `message_type` TINYINT default 1 COMMENT '1 - INBOX, 2 - OUTBOX (From Admin)',  -- field description
     `message_date` DATETIME default NULL,                                           -- field description
-    `message_level` TINYINT NULL DEFAULT 0,                                         -- field description
+    `message_level` TINYINT NULL DEFAULT 0 COMMENT '0 - UNREAD, 1 - READ, 99 - SPAM',                                         -- field description
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -764,7 +764,19 @@ CREATE TABLE IF NOT EXISTS `pending_users` (                                    
 CREATE TABLE IF NOT EXISTS `roles` (                                                -- table description
     `id` int(11) unsigned NOT NULL auto_increment,                                  -- field description
     `name` varchar(32) NOT NULL,                                                    -- field description
-    `description` varchar(255) NOT NULL,                                            -- field description
+    `description` varchar(255) NOT NULL,                                         -- field description
+	`reports_view` tinyint(4) NOT NULL default '0',
+	`reports_edit` tinyint(4) NOT NULL default '0',
+	`reports_evaluation` tinyint(4) NOT NULL default '0',
+	`reports_comments` tinyint(4) NOT NULL default '0',
+	`reports_download` tinyint(4) NOT NULL default '0',
+	`reports_upload` tinyint(4) NOT NULL default '0',
+	`messages` tinyint(4) NOT NULL default '0',
+	`messages_reporters` tinyint(4) NOT NULL default '0',
+	`stats` tinyint(4) NOT NULL default '0',
+	`settings` tinyint(4) NOT NULL default '0',
+	`manage` tinyint(4) NOT NULL default '0',
+	`users` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -773,10 +785,10 @@ CREATE TABLE IF NOT EXISTS `roles` (                                            
 
 -- Dumping data for table `roles`
 
-INSERT INTO `roles` (`id`, `name`, `description`) VALUES
-(1, 'login', 'Login privileges, granted after account confirmation'),
-(2, 'admin', 'Administrative user, has access to almost everything.'),
-(3, 'superadmin','Super administrative user, has access to everything.');
+INSERT INTO `roles` (`id`, `name`, `description`, `reports_view`, `reports_edit`, `reports_evaluation`, `reports_comments`, `reports_download`, `reports_upload`, `messages`, `messages_reporters`, `stats`, `settings`, `manage`, `users`) VALUES
+(1, 'login', 'Login privileges, granted after account confirmation', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(2, 'admin', 'Administrative user, has access to almost everything.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+(3, 'superadmin','Super administrative user, has access to everything.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 
 /**
@@ -1201,7 +1213,7 @@ INSERT INTO `level` (`id`, `level_title`, `level_description`, `level_weight`) V
 (2, 'SPAM', 'SPAM', -1),
 (3, 'Untrusted', 'Untrusted', 0),
 (4, 'Trusted', 'Trusted', 1),
-(5, 'Trusted + Verifiy', 'Trusted + Verify', 2);
+(5, 'Trusted + Verify', 'Trusted + Verify', 2);
 
 
 
@@ -1522,7 +1534,7 @@ CREATE TABLE `mhi_log` (
 CREATE TABLE `mhi_log_actions` (
   `id` int(11) NOT NULL,
   `description` text NOT NULL,
-  PRIMARY KEY  (`int`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `mhi_log_actions` (`id`, `description`) VALUES
@@ -1575,5 +1587,5 @@ ALTER TABLE `user_tokens`
 * Version information for table `settings`
 * 
 */
-UPDATE `settings` SET `ushahidi_version` = '2.0b5' WHERE `id`=1 LIMIT 1;
-UPDATE `settings` SET `db_version` = '29' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `ushahidi_version` = '2.0b7' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `db_version` = '30' WHERE `id`=1 LIMIT 1;

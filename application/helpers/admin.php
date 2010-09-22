@@ -54,6 +54,7 @@ class admin_Core {
 		}
 		else
 		{
+			
 			if ($auth AND $auth->logged_in('superadmin'))
 			{
 				$main_right_tabs = array(
@@ -201,13 +202,51 @@ class admin_Core {
 
 		$menu .= ($this_sub_page == "layers") ? Kohana::lang('ui_main.layers')."&nbsp;<span>(<a href=\"#add\">Add New</a>)</span>" : "<a href=\"".url::site()."admin/manage/layers\">".Kohana::lang('ui_main.layers')."</a>";
 
-		$menu .= ($this_sub_page == "reporters") ? Kohana::lang('ui_main.reporters')."&nbsp;<span>(<a href=\"#add\">Add New</a>)</span>" : "<a href=\"".url::site()."admin/manage/reporters\">".Kohana::lang('ui_main.reporters')."</a>";
-
 		$menu .= ($this_sub_page == "scheduler") ? Kohana::lang('ui_main.scheduler') : "<a href=\"".url::site()."admin/manage/scheduler\">".Kohana::lang('ui_main.scheduler')."</a>";
 
 		echo $menu;
 		
 		// Action::nav_admin_manage - Add items to the admin manage navigation tabs
 		Event::run('ushahidi_action.nav_admin_manage', $this_sub_page);
+	}
+	
+	
+	/**
+	 * Generate User Sub Tab Menus
+     * @param string $this_sub_page
+	 * @return string $menu
+     */
+	public static function user_subtabs($this_sub_page = FALSE)
+	{
+		$menu = "";
+		
+		$menu .= ($this_sub_page == "users") ? Kohana::lang('ui_admin.manage_users') : "<a href=\"".url::site()."admin/users/\">".Kohana::lang('ui_admin.manage_users')."</a>";
+		
+		$menu .= ($this_sub_page == "users_edit") ? Kohana::lang('ui_admin.manage_users_edit') : "<a href=\"".url::site()."admin/users/edit/\">".Kohana::lang('ui_admin.manage_users_edit')."</a>";
+		
+		$menu .= ($this_sub_page == "roles") ? Kohana::lang('ui_admin.manage_roles') : "<a href=\"".url::site()."admin/users/roles/\">".Kohana::lang('ui_admin.manage_roles')."</a>";
+		
+		echo $menu;
+	}
+	
+	public static function permissions($user = FALSE, $section = FALSE)
+	{
+		if ($user AND $section)
+		{
+			$access = FALSE;
+			foreach ($user->roles as $user_role)
+			{
+				if ($user_role->$section == 1)
+				{
+					$access = TRUE;
+				}
+			}
+			
+			return $access;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
