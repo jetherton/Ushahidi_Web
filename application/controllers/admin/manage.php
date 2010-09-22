@@ -83,7 +83,7 @@ class Manage_Controller extends Admin_Controller
 				// Add some rules, the input field, followed by a list of checks, carried out in order
 				$post->add_rules('parent_id','required','numeric');
 				$post->add_rules('category_title','required', 'length[3,80]');
-				$post->add_rules('category_description','required');
+				//$post->add_rules('category_description','required'); //this is never used anywhere in the program
 				$post->add_rules('category_color','required', 'length[6,6]');
 				$post->add_rules('category_image', 'upload::valid', 
 					'upload::type[gif,jpg,png]', 'upload::size[50K]');
