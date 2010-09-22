@@ -59,6 +59,13 @@ class Reports_Controller extends Main_Controller {
 			{
 				$allowed_ids[] = $items->incident_id;
 			}
+			
+			//this catches the instance when no incidents fall into a certain category. 
+			//the ID -1 is added so that nothing is returned from the DB
+			if(count($allowed_ids) == 0)
+			{
+				$allowed_ids[] = -1;
+			}
 		}
 
 		// Get location_ids if we are to filter by location
@@ -109,7 +116,7 @@ class Reports_Controller extends Main_Controller {
 
 		// Get Count
 
-		$query = 'SELECT COUNT(id) as count FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.'';
+		$query = 'SELECT COUNT(id) as count FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' AND (incident_active = 1)';
 		foreach ($db->query($query) as $item)
 		{
 			$total_incidents = $item->count;
@@ -126,7 +133,7 @@ class Reports_Controller extends Main_Controller {
 
 		// Get Incidents
 
-		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' ORDER BY incident_date DESC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
+		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified, incident_active FROM '.$this->table_prefix.'incident WHERE 1=1'.$location_id_in.''.$incident_id_in.' AND (incident_active = 1) ORDER BY incident_date DESC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
 
 		$incidents = $db->query($query);
 		$total_incidents = $incidents->count();
