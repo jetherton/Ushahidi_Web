@@ -284,8 +284,8 @@ class Reports_Controller extends Main_Controller {
 			'location_name' => '',
 			'country_id' => '',
 			'incident_category' => array(),
-			'incident_news' => array(),
-			'incident_video' => array(),
+			//'incident_news' => array(),
+			//'incident_video' => array(),
 			'incident_photo' => array(),
 			'person_first' => '',
 			'person_last' => '',
@@ -360,6 +360,7 @@ class Reports_Controller extends Main_Controller {
 			}
 
 			// Validate only the fields that are filled in
+			/*
 			if (!empty($_POST['incident_news']))
 			{
 				foreach ($_POST['incident_news'] as $key => $url)
@@ -371,8 +372,10 @@ class Reports_Controller extends Main_Controller {
 					}
 				}
 			}
+			*/
 
 			// Validate only the fields that are filled in
+			/*
 			if (!empty($_POST['incident_video']))
 			{
 				foreach ($_POST['incident_video'] as $key => $url)
@@ -385,6 +388,7 @@ class Reports_Controller extends Main_Controller {
 					}
 				}
 			}
+			*/
 
 			// Validate photo uploads
 			$post->add_rules('incident_photo', 'upload::valid',
@@ -448,6 +452,7 @@ class Reports_Controller extends Main_Controller {
 
 				// STEP 4: SAVE MEDIA
 				// a. News
+				/*
 				foreach($post->incident_news as $item)
 				{
 					if (!empty($item))
@@ -461,8 +466,10 @@ class Reports_Controller extends Main_Controller {
 						$news->save();
 					}
 				}
+				*/
 
 				// b. Video
+				/*
 				foreach($post->incident_video as $item)
 				{
 					if (!empty($item))
@@ -476,6 +483,7 @@ class Reports_Controller extends Main_Controller {
 						$video->save();
 					}
 				}
+				*/
 
 				// c. Photos
 				$filenames = upload::save('incident_photo');
@@ -803,19 +811,19 @@ class Reports_Controller extends Main_Controller {
 
 			// Retrieve Media
 
-			$incident_news = array();
-			$incident_video = array();
+			//$incident_news = array();
+			//$incident_video = array();
 			$incident_photo = array();
 
 			foreach($incident->media as $media)
 			{
 				if ($media->media_type == 4)
 				{
-					$incident_news[] = $media->media_link;
+					//$incident_news[] = $media->media_link;
 				}
 				elseif ($media->media_type == 2)
 				{
-					$incident_video[] = $media->media_link;
+					//$incident_video[] = $media->media_link;
 				}
 				elseif ($media->media_type == 1)
 				{
@@ -858,7 +866,7 @@ class Reports_Controller extends Main_Controller {
 
 		// Video links
 
-		$this->template->content->incident_videos = $incident_video;
+		//$this->template->content->incident_videos = $incident_video;
 
 		// Images
 

@@ -257,9 +257,9 @@
 							</div>
 				
 				
-							<!-- News Fields -->
+							<!-- News Fields
 							<div class="row link-row">
-								<h4><?php echo Kohana::lang('ui_main.reports_news');?></h4>
+								<h4><? /*php echo Kohana::lang('ui_main.reports_news');?></h4>
 							</div>
 							<div id="divNews">
 								<?php
@@ -299,8 +299,9 @@
 									}
 								}
 								print "<input type=\"hidden\" name=\"$this_startid\" value=\"$i\" id=\"$this_startid\">";
-								?>
+								*/ ?>
 							</div>
+							end of news links -->
 
 
 							<!-- Video Fields -->
@@ -449,7 +450,7 @@
 							<div class="f-col-bottom-1">
 								<h4><?php echo Kohana::lang('ui_main.information_evaluation');?></h4>
 								<div class="row">
-									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.approve_this_report');?>?</div>
+									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.approve_this_report');?></div>
 									<input type="radio" name="incident_active" value="1"
 									<?php if ($form['incident_active'] == 1)
 									{
@@ -462,7 +463,7 @@
 									}?>> <?php echo Kohana::lang('ui_main.no');?>
 								</div>
 								<div class="row">
-									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.verify_this_report');?>?</div>
+									<div class="f-col-bottom-1-col"><?php echo Kohana::lang('ui_main.verify_this_report');?></div>
 									<input type="radio" name="incident_verified" value="1"
 									<?php if ($form['incident_verified'] == 1)
 									{

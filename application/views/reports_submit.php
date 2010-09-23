@@ -205,10 +205,10 @@ $("#incident_ampm option[value='"+ampm+"']").attr("selected","true");
 									<?php print form::input('location_name', $form['location_name'], ' class="text long"'); ?>
 								</div>
 			
-								<!-- News Fields -->
+								<!-- News Fields
 								<div id="divNews" class="report_row">
-									<h4><?php echo Kohana::lang('ui_main.reports_news'); ?></h4>
-									<?php
+									<h4><?php //echo Kohana::lang('ui_main.reports_news'); ?></h4>
+									<?php /*
 										$this_div = "divNews";
 										$this_field = "incident_news";
 										$this_startid = "news_id";
@@ -238,14 +238,15 @@ $("#incident_ampm option[value='"+ampm+"']").attr("selected","true");
 										}
 									}
 									print "<input type=\"hidden\" name=\"$this_startid\" value=\"$i\" id=\"$this_startid\">";
-								?>
+								 */  ?>
 								</div>
-			
-			
-								<!-- Video Fields -->
+								 end of news link fields, now replaced by the TinyMCE editor -->
+
+								<!-- Video Fields 
 								<div id="divVideo" class="report_row">
-									<h4><?php echo Kohana::lang('ui_main.reports_video'); ?></h4>
+									<h4><?php //echo Kohana::lang('ui_main.reports_video'); ?></h4>
 									<?php
+									     /*
 										$this_div = "divVideo";
 										$this_field = "incident_video";
 										$this_startid = "video_id";
@@ -276,9 +277,12 @@ $("#incident_ampm option[value='"+ampm+"']").attr("selected","true");
 											}
 										}
 										print "<input type=\"hidden\" name=\"$this_startid\" value=\"$i\" id=\"$this_startid\">";
+										*/
 									?>
 								</div>
-	
+								End video field
+								-->
+								
 								<!-- Photo Fields -->
 								<div id="divPhoto" class="report_row">
 									<h4><?php echo Kohana::lang('ui_main.reports_photos'); ?></h4>

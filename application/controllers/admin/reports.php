@@ -340,7 +340,7 @@ class Reports_Controller extends Admin_Controller
 			'country_id' => '',
 			'incident_category' => array(),
 			'incident_news' => array(),
-			'incident_video' => array(),
+			//'incident_video' => array(),
 			'incident_photo' => array(),
 			'person_first' => '',
 			'person_last' => '',
@@ -547,7 +547,8 @@ class Reports_Controller extends Admin_Controller
 			}
 
 			// Validate only the fields that are filled in
-	        if (!empty($_POST['incident_news']))
+	        /*
+		if (!empty($_POST['incident_news']))
 			{
 	        	foreach ($_POST['incident_news'] as $key => $url) {
 					if (!empty($url) AND !(bool) filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED))
@@ -556,8 +557,10 @@ class Reports_Controller extends Admin_Controller
 					}
 	        	}
 	        }
+		*/
 
 			// Validate only the fields that are filled in
+		/*
 	        if (!empty($_POST['incident_video']))
 			{
 	        	foreach ($_POST['incident_video'] as $key => $url) {
@@ -567,7 +570,7 @@ class Reports_Controller extends Admin_Controller
 					}
 	        	}
 	        }
-
+		*/
 			// Validate photo uploads
 			$post->add_rules('incident_photo', 'upload::valid', 'upload::type[gif,jpg,png]');
 
@@ -725,6 +728,7 @@ class Reports_Controller extends Admin_Controller
 				// STEP 4: SAVE MEDIA
 				ORM::factory('Media')->where('incident_id',$incident->id)->where('media_type <> 1')->delete_all();		// Delete Previous Entries
 				// a. News
+				/*
 				foreach($post->incident_news as $item)
 				{
 					if(!empty($item))
@@ -753,6 +757,7 @@ class Reports_Controller extends Admin_Controller
 						$video->save();
 					}
 				}
+				*/
 
 				// c. Photos
 				$filenames = upload::save('incident_photo');
@@ -888,18 +893,18 @@ class Reports_Controller extends Admin_Controller
 					}
 
 					// Retrieve Media
-					$incident_news = array();
-					$incident_video = array();
+					//$incident_news = array();
+					//$incident_video = array();
 					$incident_photo = array();
 					foreach($incident->media as $media)
 					{
 						if ($media->media_type == 4)
 						{
-							$incident_news[] = $media->media_link;
+							//$incident_news[] = $media->media_link;
 						}
 						elseif ($media->media_type == 2)
 						{
-							$incident_video[] = $media->media_link;
+							//$incident_video[] = $media->media_link;
 						}
 						elseif ($media->media_type == 1)
 						{
@@ -924,8 +929,8 @@ class Reports_Controller extends Admin_Controller
 						'location_name' => $incident->location->location_name,
 						'country_id' => $incident->location->country_id,
 						'incident_category' => $incident_category,
-						'incident_news' => $incident_news,
-						'incident_video' => $incident_video,
+						//'incident_news' => $incident_news,
+						//'incident_video' => $incident_video,
 						'incident_photo' => $incident_photo,
 						'person_first' => $incident->incident_person->person_first,
 						'person_last' => $incident->incident_person->person_last,
