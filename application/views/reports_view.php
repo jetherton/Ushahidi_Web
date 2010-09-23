@@ -207,8 +207,8 @@
 					<!-- end side block -->
 					
 					
-					<!-- start videos -->
-					<?php
+					<!-- start videos 
+					<?php /*
 						if( count($incident_videos) > 0 ) 
 						{
 					?>
@@ -224,8 +224,10 @@
 								?>
 							</div>
 						</div>
-						<?php } ?>
+						<?php } */ ?>
 					</div>
+					END VIDEO -->
+					
 					<!-- end incident block <> start other report -->
 					
 					<?php

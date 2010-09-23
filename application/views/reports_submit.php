@@ -242,9 +242,9 @@ $("#incident_ampm option[value='"+ampm+"']").attr("selected","true");
 								</div>
 			
 			
-								<!-- Video Fields -->
+								<!-- Video Fields 
 								<div id="divVideo" class="report_row">
-									<h4><?php echo Kohana::lang('ui_main.reports_video'); ?></h4>
+									<h4><?php /*echo Kohana::lang('ui_main.reports_video'); ?></h4>
 									<?php
 										$this_div = "divVideo";
 										$this_field = "incident_video";
@@ -276,8 +276,9 @@ $("#incident_ampm option[value='"+ampm+"']").attr("selected","true");
 											}
 										}
 										print "<input type=\"hidden\" name=\"$this_startid\" value=\"$i\" id=\"$this_startid\">";
-									?>
-								</div>
+									*/ ?>
+								</div> 
+								End video -->
 	
 								<!-- Photo Fields -->
 								<div id="divPhoto" class="report_row">
