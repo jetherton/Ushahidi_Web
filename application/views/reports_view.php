@@ -153,7 +153,7 @@
 							<?php
 							foreach ($incident_news as $news)
 							{					
-								echo("<li><a href='".$news."'>".$news."</a></li> ");
+								echo("<li><a href='".$news."' target=\"_blank\">".$news."</a></li> ");
 							}
 							?>
 						</ul>
