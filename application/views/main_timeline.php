@@ -1,5 +1,5 @@
 
-<div class="slider-holder" style="width:0px;height:0px;visibility:hidden; >
+<div class="slider-holder" style="width:1px;height:1px;visibility:hidden; >
 	<form action="">
 		<input type="hidden" value="0" name="currentCat" id="currentCat">
 		<fieldset>
