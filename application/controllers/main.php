@@ -210,8 +210,8 @@ class Main_Controller extends Template_Controller {
 			->limit('8')->count_all();
 		$this->template->content->incidents = ORM::factory('incident')
 			->where('incident_active', '1')
-			->limit('10')
-			->orderby('incident_date', 'desc')
+			->limit('60')
+			->orderby('incident_title', 'asc')
 			->find_all();
 
 		// Get Default Color
