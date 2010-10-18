@@ -638,6 +638,15 @@ class Reports_Controller extends Main_Controller {
 			{
 				url::redirect('reports/view/');
 			}
+			
+			
+			 $incident_persons = ORM::factory('Incident_Person')->where('incident_id',$incident->id)->find_all();
+			$incident_person = null;
+			foreach ($incident_persons as $person)
+			{
+			$incident_person = $person;
+			}
+			
 
 			// Comment Post?
 			// Setup and initialize form field names
@@ -806,6 +815,23 @@ class Reports_Controller extends Main_Controller {
 			$incident_description = nl2br($incident->incident_description);
 			Event::run('ushahidi_filter.report_title', $incident_title);
 			Event::run('ushahidi_filter.report_description', $incident_description);
+			
+			 if($incident_person)
+			{
+				$this->template->content->person_first = $incident_person->person_first ? $incident_person->person_first : "";
+				$this->template->content->person_last = $incident_person->person_last ? $incident_person->person_last : "";
+				$this->template->content->person_phone = $incident_person->person_phone ? $incident_person->person_phone : "";
+				$this->template->content->person_email = $incident_person->person_email ? $incident_person->person_email : "";
+				$this->template->content->person_title = $incident_person->person_title ? $incident_person->person_title : "";
+			}
+			else
+			{
+				$this->template->content->person_first = "";
+				$this->template->content->person_last = "";
+				$this->template->content->person_phone = "";
+				$this->template->content->person_email = "";
+				$this->template->content->person_title = "";
+			}
 
 			$this->template->content->incident_id = $incident->id;
 			$this->template->content->incident_title = $incident_title;
@@ -886,6 +912,7 @@ class Reports_Controller extends Main_Controller {
 		// Images
 
 		$this->template->content->incident_photos = $incident_photo;
+		$this->template->content->incident_news = $incident_news;
 
 		// Create object of the video embed class
 
@@ -1162,7 +1189,7 @@ class Reports_Controller extends Main_Controller {
 							 	 ->join('location', 'incident.location_id', 'location.id','INNER')
 								 ->select('incident.*')
 								 ->where($radius_query)
-								 ->limit('5')
+								 ->limit('0')
 								 ->find_all();
 
 		return $neighbors;
