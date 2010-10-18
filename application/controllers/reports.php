@@ -132,10 +132,10 @@ class Reports_Controller extends Main_Controller {
 				));
 
 		// Get Incidents - Only the approved reports should be fetched
-		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified ';
+		$query = 'SELECT id, incident_title, incident_description, incident_date, location_id, incident_verified, incident_active ';
 		$query .= 'FROM '.$this->table_prefix.'incident ';
 		$query .= 'WHERE 1=1'.$location_id_in.''.$incident_id_in.' AND incident_active = 1 ';
-		$query .= 'ORDER BY incident_date DESC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
+		$query .= 'ORDER BY incident_title ASC LIMIT '. (int) Kohana::config('settings.items_per_page').' OFFSET '.$pagination->sql_offset.';';
 
 		$incidents = $db->query($query);
 		$total_incidents = $incidents->count();
