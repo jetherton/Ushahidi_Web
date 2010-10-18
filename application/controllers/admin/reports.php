@@ -249,7 +249,7 @@ class Reports_Controller extends Admin_Controller
 		));
 
 		$incidents = ORM::factory('incident')
-			->where($filter)->orderby('incident_dateadd', 'desc')
+			->where($filter)->orderby('incident_title', 'asc')
 			->find_all((int) Kohana::config('settings.items_per_page_admin'), $pagination->sql_offset);
 
 		$location_ids = array();
@@ -345,6 +345,8 @@ class Reports_Controller extends Admin_Controller
 			'person_first' => '',
 			'person_last' => '',
 			'person_email' => '',
+			'person_phone' => '',
+			'person_title' => '',
 			'custom_field' => array(),
 			'incident_active' => '',
 			'incident_verified' => '',
@@ -587,6 +589,15 @@ class Reports_Controller extends Admin_Controller
 			{
 				$post->add_rules('person_email', 'email', 'length[3,100]');
 			}
+			 if (!empty($_POST['person_phone']))
+			{
+				$post->add_rules('person_phone', 'length[0,60]');
+			}
+
+			if (!empty($_POST['person_title']))
+			{
+				$post->add_rules('person_title', 'length[0,80]');
+			}
 
 			// Validate Custom Fields
 			if (isset($post->custom_field) && !$this->_validate_custom_form_fields($post->custom_field))
@@ -792,6 +803,8 @@ class Reports_Controller extends Admin_Controller
 				$person->person_first = $post->person_first;
 				$person->person_last = $post->person_last;
 				$person->person_email = $post->person_email;
+				$person->person_phone = $post->person_phone;
+				$person->person_title = $post->person_title;				
 				$person->person_date = date("Y-m-d H:i:s",time());
 				$person->save();
 
@@ -932,6 +945,8 @@ class Reports_Controller extends Admin_Controller
 						'person_first' => $incident->incident_person->person_first,
 						'person_last' => $incident->incident_person->person_last,
 						'person_email' => $incident->incident_person->person_email,
+						'person_phone' => $incident->incident_person->person_phone,
+						'person_title' => $incident->incident_person->person_title,
 						'custom_field' => $this->_get_custom_form_fields($id,$incident->form_id,true),
 						'incident_active' => $incident->incident_active,
 						'incident_verified' => $incident->incident_verified,
