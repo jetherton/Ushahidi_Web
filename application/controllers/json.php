@@ -475,7 +475,7 @@ class Json_Controller extends Template_Controller
 				$json_item .= "}";
 				$json_item .= "}";
 
-				array_push($json_array, $json_item);
+				//array_push($json_array, $json_item);
 			}
 
 			$json_item = "{";
