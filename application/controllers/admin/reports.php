@@ -750,21 +750,7 @@ class Reports_Controller extends Admin_Controller
 					}
 				}
 
-				// b. Video
-				foreach($post->incident_video as $item)
-				{
-					if(!empty($item))
-					{
-						$video = new Media_Model();
-						$video->location_id = $location->id;
-						$video->incident_id = $incident->id;
-						$video->media_type = 2;		// Video
-						$video->media_link = $item;
-						$video->media_date = date("Y-m-d H:i:s",time());
-						$video->save();
-					}
-				}
-
+			
 				// c. Photos
 				$filenames = upload::save('incident_photo');
 				$i = 1;
