@@ -571,7 +571,7 @@ class Reports_Controller extends Admin_Controller
 	        }
 
 			// Validate photo uploads
-			$post->add_rules('incident_photo', 'upload::valid', 'upload::type[gif,jpg,png]', 'upload::size[2M]');
+			$post->add_rules('incident_photo', 'upload::valid', 'upload::type[gif,jpg,png]', 'upload::size[7M]');
 
 
 			// Validate Personal Information
@@ -758,8 +758,7 @@ class Reports_Controller extends Admin_Controller
 					$new_filename = $incident->id . "_" . $i . "_" . time();
 
 					// Resize original file... make sure its max 408px wide
-					Image::factory($filename)->resize(408,248,Image::AUTO)
-						->save(Kohana::config('upload.directory', TRUE) . $new_filename . ".jpg");
+					Image::factory($filename)->save(Kohana::config('upload.directory', TRUE) . $new_filename . ".jpg");
 
 					// Create thumbnail
 					Image::factory($filename)->resize(70,41,Image::HEIGHT)
