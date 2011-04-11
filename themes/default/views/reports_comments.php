@@ -1,23 +1,33 @@
-<div class="orig-report">
-	<div id="comments" class="discussion">
-		<h5>ADDITIONAL REPORTS AND DISCUSSION&nbsp;&nbsp;&nbsp;(<a href="#comments">Add</a>)</h5>
-		<?php
-		foreach($incident_comments as $comment)
-		{
-			echo "<div class=\"discussion-box\">";
-			echo "<p><strong>" . $comment->comment_author . "</strong>&nbsp;(" . date('M j Y', strtotime($comment->comment_date)) . ")</p>";
-			echo "<p>" . $comment->comment_description . "</p>";
-			echo "<div class=\"report_rating\">";
-			echo "	<div>";
-			echo "	Credibility:&nbsp;";
-			echo "	<a href=\"javascript:rating('" . $comment->id . "','add','comment','cloader_" . $comment->id . "')\"><img id=\"cup_" . $comment->id . "\" src=\"" . url::base() . 'media/img/' . "up.png\" alt=\"UP\" title=\"UP\" border=\"0\" /></a>&nbsp;";
-			echo "	<a href=\"javascript:rating('" . $comment->id . "','subtract','comment','cloader_" . $comment->id . "')\"><img id=\"cdown_" . $comment->id . "\" src=\"" . url::base() . 'media/img/' . "down.png\" alt=\"DOWN\" title=\"DOWN\" border=\"0\" /></a>&nbsp;";
-			echo "	</div>";
-			echo "	<div class=\"rating_value\" id=\"crating_" . $comment->id . "\">" . $comment->comment_rating . "</div>";
-			echo "	<div id=\"cloader_" . $comment->id . "\" class=\"rating_loading\" ></div>";
-			echo "</div>";
-			echo "</div>";
-		}
-		?>
-	</div>
+<?php if(count($incident_comments) > 0) { ?>
+
+<div class="report-comments">
+					
+	<h5><?php echo Kohana::lang('ui_main.comments'); ?></h5>
+
+	<?php foreach($incident_comments as $comment) { ?>
+		<div class="report-comment-box">
+	
+			<div>
+				<strong><?php echo $comment->comment_author; ?></strong>&nbsp;(<?php echo date('M j Y', strtotime($comment->comment_date)); ?>)
+			</div>
+			
+			<div><?php echo $comment->comment_description; ?></div>
+	
+	  <div class="credibility">  
+	      <table class="rating-table" cellspacing="0" cellpadding="0" border="0">
+	        <tr>
+	          <td><?php echo Kohana::lang('ui_main.comment_rating');?>:</td>
+	          <td><a href="javascript:rating('<?php echo $comment->id; ?>','add','comment','cloader_<?php echo $comment->id; ?>')"><img id="cup_<?php echo $comment->id; ?>" src="<?php echo url::base(); ?>media/img/up.png" alt="UP" title="UP" border="0" /></a></td>
+	          <td><a href="javascript:rating('<?php echo $comment->id; ?>','subtract','comment','cloader_<?php echo $comment->id; ?>')"><img id="cdown_<?php echo $comment->id; ?>" src="<?php echo url::base(); ?>media/img/down.png" alt="DOWN" title="DOWN" border="0" /></a></td>
+	          <td><div class="rating_value" id="crating_<?php echo $comment->id; ?>"><?php echo $comment->comment_rating; ?></div></td>
+	          <td><div id="cloader_<?php echo $comment->id; ?>" class="rating_loading" ></div></td>
+	        </tr>
+	      </table>
+	  </div>
+	
+		</div>
+	<?php } ?>
+	
 </div>
+
+<?php } ?>

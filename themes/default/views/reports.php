@@ -38,17 +38,27 @@
 					}
 					
 					$comment_count = $incident->comment->count();
+					
+					$incident_thumb = url::base()."media/img/report-thumb-default.jpg";
+					$media = $incident->media;
+					if ($media->count())
+					{
+						foreach ($media as $photo)
+						{
+							if ($photo->media_thumb)
+							{ // Get the first thumb
+								$prefix = url::base().Kohana::config('upload.relative_directory');
+								$incident_thumb = $prefix."/".$photo->media_thumb;
+								break;
+							}
+						}
+					}
 					?>
 					<div class="rb_report">
 
 						<div class="r_media">
-							<p class="r_photo"> <a href="#">
-								<!-- should link directly to report -->
-								<!-- 
-								If no images, show the default image placeholder (report-thumb-default.jpg)
-								If there are images, show the thumbnail for the most recent one.
-								-->
-								<img src="<?php echo url::site(); ?>media/img/report-thumb-default.jpg" height="59" width="89" /> </a>
+							<p class="r_photo"> <a href="<?php echo url::site(); ?>reports/view/<?php echo $incident_id; ?>">
+								<img src="<?php echo $incident_thumb; ?>" height="59" width="89" /> </a>
 							</p>
 
 							<!-- Only show this if the report has a video -->
@@ -57,14 +67,13 @@
 							<!-- Category Selector -->
 							<div class="r_categories">
 								<h4><?php echo Kohana::lang('ui_main.categories'); ?></h4>
-								<!-- a default category -->
 								<?php
 								foreach ($incident->category AS $category)
 								{
 									if ($category->category_image_thumb)
 									{
 										?>
-										<a class="r_category" href="<?php echo url::site(); ?>reports/?c=<?php echo $category->id; ?>"><span class="r_cat-box"><img src="<?php echo url::base().Kohana::config('upload.relative_directory')."/".$category_image_thumb; ?>" height="16" width="16" /></span> <span class="r_cat-desc"><?php echo $localized_categories[(string)$category->category_title];?></span></a>
+										<a class="r_category" href="<?php echo url::site(); ?>reports/?c=<?php echo $category->id; ?>"><span class="r_cat-box"><img src="<?php echo url::base().Kohana::config('upload.relative_directory')."/".$category->category_image_thumb; ?>" height="16" width="16" /></span> <span class="r_cat-desc"><?php echo $localized_categories[(string)$category->category_title];?></span></a>
 										<?php
 									}
 									else

@@ -48,7 +48,7 @@ class Categories_Api_Object extends Api_Object_Core {
                 }
                 else
                 {
-                    $this->response_data = $this->_get_categories_by_id($this->request['id']);
+                    $this->response_data = $this->_get_categories_by_id($this->check_id_value($this->request['id']));
                 }
                 
             break;
@@ -72,6 +72,9 @@ class Categories_Api_Object extends Api_Object_Core {
         $this->query .= "WHERE category_visible = 1 AND id=$id ORDER BY id DESC";
 
         $items = $this->db->query($this->query);
+        
+        // Set the no. of records fetched
+        $this->record_count = $items->count();
         
         $i = 0;
         
@@ -111,7 +114,7 @@ class Categories_Api_Object extends Api_Object_Core {
 
         if ($this->response_type == 'json')
         {
-            $ret_json_or_xml = $this->array_as_json($this->data);
+            $ret_json_or_xml = $this->array_as_json($data);
         } 
         else
         {
@@ -142,6 +145,10 @@ class Categories_Api_Object extends Api_Object_Core {
                 category_visible = 1 ORDER BY id DESC";
         
         $items = $this->db->query($this->query);
+        
+        // Set the no. of records fetched
+        $this->record_count = $items->count();
+        
         $i = 0;
         
         $this->replar = array(); //assists in proper xml generation

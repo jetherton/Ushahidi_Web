@@ -91,9 +91,11 @@ class Imap_Core {
 		//   the number of messages we want to allow. If there are too many messages, it
 		//   can fail and that's no good.
 		$msg_to_pull = $no_of_msgs;
-		if($msg_to_pull > $max_imap_messages){
-			$msg_to_pull = $max_imap_messages;
-		}
+		
+		//** Disabled this config setting for now - causing issues **
+		//if($msg_to_pull > $max_imap_messages){
+		//	$msg_to_pull = $max_imap_messages;
+		//}
 
 		$messages = array();
 
@@ -294,15 +296,25 @@ class Imap_Core {
 			fwrite($fp, $file_content);
 			fclose($fp);
 			
-			// Resize original file... make sure its max 408px wide
-			Image::factory($file)->resize(408,248,Image::AUTO)
-				->save(Kohana::config('upload.directory', TRUE) . $file_name.$file_type);
+			// IMAGE SIZES: 800X600, 400X300, 89X59
+			
+			// Large size
+			Image::factory($file)->resize(800,600,Image::AUTO)
+				->save(Kohana::config('upload.directory', TRUE).$file_name.$file_type);
 
-			// Create thumbnail
-			Image::factory($file)->resize(70,41,Image::AUTO)
-				->save(Kohana::config('upload.directory', TRUE) . $file_name."_t".$file_type);
+			// Medium size
+			Image::factory($file)->resize(400,300,Image::HEIGHT)
+				->save(Kohana::config('upload.directory', TRUE).$file_name."_m".$file_type);
+			
+			// Thumbnail
+			Image::factory($file)->resize(89,59,Image::HEIGHT)
+				->save(Kohana::config('upload.directory', TRUE).$file_name."_t".$file_type);
 				
-			$attachments[$file_name.$file_type] = $file_name."_t".$file_type;
+			$attachments[] = array(
+					$file_name.$file_type,
+					$file_name."_m".$file_type,
+					$file_name."_t".$file_type
+				);
 			return $attachments;
 		}
 		else

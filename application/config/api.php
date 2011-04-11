@@ -15,11 +15,16 @@
      // MHI Enabled
      "mhienabled" => array("System", "get_mhi_enabled"),
      
+     // SSL Enabled
+     "httpsenabled" => array("System", "get_https_enabled"),
+     
      // Map center
      "mapcenter" => array("Private_Func", "map_center"),
      
      // Statistics
      "statistics" => array("Private_Func", "statistics"),
+
+     "sms" => array("Private_Func", "sms"),
  
      "country" => "Countries", 
      "location" => "Locations",
@@ -56,5 +61,8 @@
      "emailaction" => array( "Email", "email_action"),
      
      // SMS action
-     "smsaction" => array( "Sms", "sms_action")
+     "smsaction" => array( "Sms", "sms_action"),
+
+     // Swiftriver action
+     "swiftriver" => "Swiftriver_Report",
  );

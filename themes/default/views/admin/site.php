@@ -93,21 +93,26 @@
 							<?php print form::textarea('site_message', $form['site_message'], ' style="height:200px;width:400px;"'); ?>
 						</div>
 						<div class="row">
+							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_site_copyright_statement"); ?>"><?php echo Kohana::lang('settings.site.copyright_statement');?></a></h4>
+							<?php print form::textarea('site_copyright_statement', $form['site_copyright_statement'], ' style="height:40px;"'); ?>
+						</div>
+						<div class="row">
 							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_locale"); ?>"><?php echo Kohana::lang('settings.site.language');?></a> (Locale)</h4>
 							<span class="sel-holder">
 								<?php print form::dropdown('site_language', $locales_array, $form['site_language']); ?>
 							</span>
 						</div>
 						<div class="row">
+							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_site_timezone"); ?>"><?php echo Kohana::lang('settings.site.timezone');?></a></h4>
+							<span class="sel-holder">
+								<?php print form::dropdown('site_timezone',$site_timezone_array, $form['site_timezone']); ?>
+							</span>
+						</div>
+
+						<div class="row">
 							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_display_contact"); ?>"><?php echo Kohana::lang('settings.site.display_contact_page');?></a></h4>
 							<?php print form::dropdown('site_contact_page', $yesno_array, $form['site_contact_page']); ?>
 						</div>
-						<!--
-						<div class="row">
-							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_display_howtohelp"); ?>"><?php echo Kohana::lang('settings.site.display_howtohelp_page');?></a></h4>
-							<?php /* print form::dropdown('site_help_page', $yesno_array, $form['site_help_page']); */ ?>
-						</div>
-						-->
 						<div class="row">
 							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_display_items_per_page"); ?>"><?php echo Kohana::lang('settings.site.items_per_page');?></a></h4>
 							<span class="sel-holder">
@@ -183,7 +188,33 @@
 							<span class="sel-holder">
 								<?php print form::dropdown('cache_pages_lifetime', $cache_pages_lifetime_array, $form['cache_pages_lifetime']); ?>
 							</span>
-						</div>					
+						</div>
+						<div class="row">
+							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_private_deployment"); ?>"><?php echo Kohana::lang('settings.site.private_deployment');?></a></h4>
+							<span class="sel-holder">
+								<?php print form::dropdown('private_deployment', $yesno_array, $form['private_deployment']); ?>
+							</span>
+
+							<div class="experimental">
+								<img src="<?php echo url::base() ?>media/img/experimental.png" alt="<?php echo Kohana::lang('ui_admin.experimental');?>" width="9" height="20" /> * <?php echo Kohana::lang('ui_admin.experimental');?>
+							</div>
+
+							<div style="font-weight:bold;color:red;font-size:11px;">
+							&nbsp;&nbsp;&nbsp;Currently, this only locks down the interface and not the API. Only enabling this feature will not<br/>
+							&nbsp;&nbsp;&nbsp;protect your data and your approved reports will still be accessible via the API!</div><div style="clear:both;"></div>
+
+						</div>
+						<div class="row">
+							<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_checkins"); ?>"><?php echo Kohana::lang('settings.site.checkins');?></a></h4>
+							<span class="sel-holder">
+								<?php print form::dropdown('checkins', $yesno_array, $form['checkins']); ?>
+							</span>
+
+							<div class="experimental">
+								<img src="<?php echo url::base() ?>media/img/experimental.png" alt="<?php echo Kohana::lang('ui_admin.experimental');?>" width="9" height="20" /> * <?php echo Kohana::lang('ui_admin.experimental');?>
+							</div>
+
+						</div>
 						<div class="row">
 						<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_google_analytics"); ?>"><?php echo Kohana::lang('settings.site.google_analytics');?></a></h4>
 							<?php echo Kohana::lang('settings.site.google_analytics_example');?> &nbsp;&nbsp;

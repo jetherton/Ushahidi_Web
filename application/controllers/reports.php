@@ -51,9 +51,10 @@ class Reports_Controller extends Main_Controller {
 
 		// Get incident_ids if we are to filter by category
 		$allowed_ids = array();
-		if (isset($_GET['c']) AND !empty($_GET['c']) AND $_GET['c']!=0)
+		
+		if (isset($_GET['c']) AND (int) $_GET['c']!=0)
 		{
-			$category_id = $db->escape($_GET['c']);
+			$category_id = (int) $_GET['c'];
 			$query = 'SELECT ic.incident_id AS incident_id FROM '.$this->table_prefix.'incident_category AS ic INNER JOIN '.$this->table_prefix.'category AS c ON (ic.category_id = c.id)  WHERE c.id='.$category_id.' OR c.parent_id='.$category_id.';';
 			$query = $db->query($query);
 
@@ -318,9 +319,9 @@ class Reports_Controller extends Main_Controller {
 
 		// Initialize Default Values
 		$form['incident_date'] = date("m/d/Y",time());
-		$form['incident_hour'] = "12";
-		$form['incident_minute'] = "00";
-		$form['incident_ampm'] = "pm";
+		$form['incident_hour'] = date('g');
+		$form['incident_minute'] = date('i');
+		$form['incident_ampm'] = date('a');
 		// initialize custom field array
 		$form['custom_field'] = $this->_get_custom_form_fields($id,'',true);
 		//GET custom forms
@@ -498,12 +499,22 @@ class Reports_Controller extends Main_Controller {
 				{
 					$new_filename = $incident->id."_".$i."_".time();
 
-					// Resize original file... make sure its max 408px wide
-					Image::factory($filename)	->save(Kohana::config('upload.directory', TRUE).$new_filename.".jpg");
+					
+					$file_type = strrev(substr(strrev($filename),0,4));
+					
+					// IMAGE SIZES: 800X600, 400X300, 89X59
+					
+					// Full res, none of this 800x600 crap. What if I want glossy 8x10s of the crisis? How else are you going to fund
+					//raise with out glossy 8x10s?
+					Image::factory($filename)->save(Kohana::config('upload.directory', TRUE).$new_filename.$file_type);
 
-					// Create thumbnail
-					Image::factory($filename)->resize(70,41,Image::HEIGHT)
-						->save(Kohana::config('upload.directory', TRUE).$new_filename."_t.jpg");
+					// Medium size
+					Image::factory($filename)->resize(400,300,Image::HEIGHT)
+						->save(Kohana::config('upload.directory', TRUE).$new_filename."_m".$file_type);
+					
+					// Thumbnail
+					Image::factory($filename)->resize(89,59,Image::HEIGHT)
+						->save(Kohana::config('upload.directory', TRUE).$new_filename."_t".$file_type);	
 
 					// Remove the temporary file
 					unlink($filename);
@@ -513,8 +524,9 @@ class Reports_Controller extends Main_Controller {
 					$photo->location_id = $location->id;
 					$photo->incident_id = $incident->id;
 					$photo->media_type = 1; // Images
-					$photo->media_link = $new_filename.".jpg";
-					$photo->media_thumb = $new_filename."_t.jpg";
+					$photo->media_link = $new_filename.$file_type;
+					$photo->media_medium = $new_filename."_m".$file_type;
+					$photo->media_thumb = $new_filename."_t".$file_type;
 					$photo->media_date = date("Y-m-d H:i:s",time());
 					$photo->save();
 					$i++;
@@ -584,8 +596,11 @@ class Reports_Controller extends Main_Controller {
 		$this->template->content->errors = $errors;
 		$this->template->content->form_error = $form_error;
 
-		$categories = $this->_get_categories($form['incident_category']);
+		$categories = $this->get_categories($form['incident_category']);
 		$this->template->content->categories = $categories;
+		
+		// Pass timezone
+		$this->template->content->site_timezone = Kohana::config('settings.site_timezone');
 
 		// Retrieve Custom Form Fields Structure
 		$disp_custom_fields = $this->_get_custom_form_fields($id,$form['form_id'],false);
@@ -810,7 +825,11 @@ class Reports_Controller extends Main_Controller {
 			$incident_description = $incident->incident_description;
 			Event::run('ushahidi_filter.report_title', $incident_title);
 			Event::run('ushahidi_filter.report_description', $incident_description);
-
+			
+			// Add Features
+			$this->template->content->features_count = $incident->geometry->count();
+			$this->template->content->features = $incident->geometry;
+			
 			$this->template->content->incident_id = $incident->id;
 			$this->template->content->incident_title = $incident_title;
 			$this->template->content->incident_description = $incident_description;
@@ -875,13 +894,10 @@ class Reports_Controller extends Main_Controller {
 
 		$this->template->content->incident_neighbors = $this->_get_neighbors($incident->location->latitude,
 																									 $incident->location->longitude);
+		// News Source links
 
-		// Get RSS News Feeds
+		$this->template->content->incident_news = $incident_news;
 
-		$this->template->content->feeds = ORM::factory('feed_item')
-										->limit('5')
-										->orderby('item_date', 'desc')
-										->find_all();
 
 		// Video links
 
@@ -907,6 +923,7 @@ class Reports_Controller extends Main_Controller {
 		$this->themes->js->default_zoom = Kohana::config('settings.default_zoom');
 		$this->themes->js->latitude = $incident->location->latitude;
 		$this->themes->js->longitude = $incident->location->longitude;
+		$this->themes->js->incident_zoom = $incident->incident_zoom;
 		$this->themes->js->incident_photos = $incident_photo;
 
 		// Initialize custom field array
@@ -1076,20 +1093,6 @@ class Reports_Controller extends Main_Controller {
 	}
 
 	/**
-	 * Retrieves Categories
-	 */
-	private function _get_categories($selected_categories)
-	{
-		$categories = ORM::factory('category')
-			->where('category_visible', '1')
-			->where('parent_id', '0')
-			->orderby('category_title', 'ASC')
-			->find_all();
-
-		return $categories;
-	}
-
-	/**
 	 * Retrieves Total Rating For Specific Post
 	 * Also Updates The Incident & Comment Tables (Ratings Column)
 	 */
@@ -1152,22 +1155,14 @@ class Reports_Controller extends Main_Controller {
 	 * Retrieves Neighboring Incidents
 	 */
 	private function _get_neighbors($latitude = 0, $longitude = 0)
-	{
-		$proximity = new Proximity($latitude, $longitude, 100); // Within 100 Miles ( or Kms ;-) )
-
-		// Generate query from proximity calculator
-		$radius_query = "location.latitude >= '" . $proximity->minLat . "' ";
-		$radius_query .= "AND ".$this->table_prefix."location.latitude <= '" . $proximity->maxLat . "' ";
-		$radius_query .= "AND ".$this->table_prefix."location.longitude >= '" . $proximity->minLong . "' ";
-		$radius_query .= "AND ".$this->table_prefix."location.longitude <= '" . $proximity->maxLong . "' ";
-		$radius_query .= "AND incident_active = 1";
-
-		$neighbors = ORM::factory('incident')
-								 ->join('location', 'incident.location_id', 'location.id','INNER')
-								 ->select('incident.*')
-								 ->where($radius_query)
-								 ->limit('5')
-								 ->find_all();
+	{	
+		// Database
+        $db = new Database();
+		
+		$neighbors = $db->query("SELECT DISTINCT i.*, l.location_name,
+        ((ACOS(SIN($latitude * PI() / 180) * SIN(l.`latitude` * PI() / 180) + COS($latitude * PI() / 180) * COS(l.`latitude` * PI() / 180) * COS(($longitude - l.`longitude`) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS distance
+         FROM `".$this->table_prefix."incident` AS i INNER JOIN `".$this->table_prefix."location` AS l ON (l.`id` = i.`location_id`) INNER JOIN `".$this->table_prefix."incident_category` AS ic ON (i.`id` = ic.`incident_id`) INNER JOIN `".$this->table_prefix."category` AS c ON (ic.`category_id` = c.`id`) WHERE i.incident_active=1
+         ORDER BY distance ASC LIMIT 5 ");
 
 		return $neighbors;
 	}
@@ -1273,8 +1268,7 @@ class Reports_Controller extends Main_Controller {
 			return TRUE;
 		}
 	}
-
-
+	
 	/**
 	 * Ajax call to update Incident Reporting Form
 	 */

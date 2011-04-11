@@ -824,7 +824,7 @@ div.incident-notation ul li{
 }
 
 .category-title {
-    padding-left: 24px;
+    padding-left: 0;
 }
 
 
@@ -1413,7 +1413,7 @@ a.show-more {
 			
 			p.r_date { position:absolute; top:0px; right:0px; padding:3px 5px; background:#e3e3e3; color:#908b88; }
 			
-			div.r_description { margin-bottom:5px; }
+			div.r_description { margin-bottom:15px; }
 			
 			p.r_location a { color:#828784; font-size:11px; line-height:11px; padding:4px 0 6px 18px; background:transparent url(../img/icon_sprite.png) -6px -52px no-repeat; }
 
@@ -1852,3 +1852,11 @@ div.green-box ul, div.red-box ul{
 .right-cap	{ -webkit-border-top-right-radius: 0px; -webkit-border-bottom-right-radius: 0px; -moz-border-radius-topright: 0px; -moz-border-radius-bottomright: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; }
 .bottom-cap	{ -webkit-border-top-left-radius: 0px; -webkit-border-top-right-radius: 0px; -moz-border-radius-topright: 0px; -moz-border-radius-topleft: 0px; border-top-right-radius: 0px; border-top-left-radius: 0px; }
 .left-cap		{ -webkit-border-top-left-radius: 0px; -webkit-border-bottom-left-radius: 0px; -moz-border-radius-topleft: 0px; -moz-border-radius-bottomleft: 0px; border-top-left-radius: 0px; border-bottom-left-radius: 0px; }
+
+/* floaties */
+.right {
+	float:right;
+}
+.left {
+	float:left;
+}

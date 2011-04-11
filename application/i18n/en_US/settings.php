@@ -16,6 +16,11 @@
 		'between' => 'The stat sharing field does not appear to contain a valid value?',
 		'required' => 'The stat sharing field is required.',
 	),
+	'api' => array(
+		'default_record_limit' => 'Default no. of records to be fetched per API request',
+		'maximum_record_limit' => 'Maximum no. of records to be fetched per API request',
+		'maximum_requests_per_ip_address' => 'Maximum no. of API requests per IP address',
+	),
 	'api_akismet' => array(
 		'alpha_numeric' => 'The Akismet field does not appear to contain a valid value?',
 		'length' => 'The Akismet field does not appear to contain a valid value?',
@@ -79,6 +84,12 @@
 	'google_analytics' => array(
 		'length' => 'The Google Analytics field must contain a valid Web Property ID in the format UA-XXXXX-XX.',
 	),
+	'https' => array(
+	   'enable_https' => 'Enable HTTPS',
+	   'https_disabled' => 'This option makes Ushahidi be accessed in unsecure mode; <strong>without</strong> "https://" in the URL prefix',
+	   'https_enabled' => 'This option makes Ushahidi be accessed in secure mode; with <strong>https</strong> in the URL prefix',
+	   'title' => 'HTTPS'
+	),
 	'items_per_page' => array(
 		'between' => 'The items per page (Frontend) field does not appear to contain a valid value?',
 		'required' => 'The items per page (Frontend) field is required.',
@@ -110,6 +121,8 @@
 		'api_akismet' => 'Akismet Key',
 		'cache_pages' => 'Cache Pages',
 		'cache_pages_lifetime' => 'Cache Pages Lifetime',
+		'checkins' => 'Checkins',
+		'copyright_statement' => 'Site Copyright Statement',
 		'default_category_colors' => 'Default Color For All Categories',
 		'display_contact_page' => 'Display Contact Page',
 		'display_howtohelp_page' => 'Display "How to Help" Page',
@@ -126,8 +139,10 @@
 		'language' => 'Site Language',
 		'message' => 'Site Message',
 		'name' => 'Site Name',
+		'private_deployment' => 'Private Deployment',
 		'share_site_stats' => 'Enable Statistics (Stored on Ushahidi\'s server)',
 		'tagline' => 'Site Tagline',
+		'timezone' => 'Timezone',
 		'title' => 'Site Settings',
 		'twitter_configuration' => 'Twitter Search Terms',
 		'twitter_hashtags' => 'Hashtags - Separate with commas ',

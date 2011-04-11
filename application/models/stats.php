@@ -36,43 +36,63 @@ class Stats_Model extends ORM
 		// If stats isn't set, ignore this
 		if($stat_id == 0) return '';
 
-		// Grabbing the URL to update stats URL on the stats server
-		$additional_query = '';
-		if(isset($_SERVER["HTTP_HOST"]))
-		{
-			$site_domain = Kohana::config('config.site_domain');
-			$slashornoslash = '';
-			if($site_domain{0} != '/') $slashornoslash = '/';
-			$val = 'http://'.$_SERVER["HTTP_HOST"].$slashornoslash.$site_domain;
-			$additional_query = '&val='.base64_encode($val);
-		}
+		$cache = Cache::instance();
+		$tag = $cache->get(Kohana::config('settings.subdomain').'_piwiktag');
 
-		$url = 'http://tracker.ushahidi.com/dev.px.php?task=tc&siteid='.$stat_id.$additional_query;
+		if ( ! $tag)
+		{ // Cache is Empty so Re-Cache
 
-		$curl_handle = curl_init();
-		curl_setopt($curl_handle,CURLOPT_URL,$url);
-		curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,15); // Timeout set to 15 seconds. This is somewhat arbitrary and can be changed.
-		curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1); // Set cURL to store data in variable instead of print
-		$buffer = curl_exec($curl_handle);
-		curl_close($curl_handle);
+			// Grabbing the URL to update stats URL, Name, Reports, etc on the stats server
+			$additional_query = '';
+			if(isset($_SERVER["HTTP_HOST"]))
+			{
+				$site_domain = Kohana::config('config.site_domain');
+				$slashornoslash = '';
+				if($site_domain{0} != '/') $slashornoslash = '/';
+				
+				// URL
+				$val = 'http://'.$_SERVER["HTTP_HOST"].$slashornoslash.$site_domain;
+				$additional_query = '&val='.base64_encode($val);
+				
+				// Site Name
+				$site_name = utf8tohtml::convert(Kohana::config('settings.site_name'),TRUE);
+				$additional_query .= '&sitename='.base64_encode($site_name);
+				
+				// Version
+				$version = Kohana::config('settings.ushahidi_version');
+				$additional_query .= '&version='.base64_encode($version);
+				
+				// Report Count
+				$number_reports = ORM::factory("incident")->where("incident_active", 1)->count_all();
+				$additional_query .= '&reports='.base64_encode($number_reports);
+				
+				// Latitude
+				$latitude = Kohana::config('settings.default_lat');
+				$additional_query .= '&lat='.base64_encode($latitude);
+				
+				// Longitude
+				$longitude = Kohana::config('settings.default_lon');
+				$additional_query .= '&lon='.base64_encode($longitude);
+			}
 
-		try {
-			$tag = @simplexml_load_string($buffer); // This works because the tracking code is only wrapped in one tag
-		} catch (Exception $e) {
-			// In case the xml was malformed for whatever reason, we will just guess what the tag should be here
-			$tag = '<!-- Piwik -->
-					<script type="text/javascript">
-					var pkBaseURL = (("https:" == document.location.protocol) ? "https://tracker.ushahidi.com/piwik/" : "http://tracker.ushahidi.com/piwik/");
-					document.write(unescape("%3Cscript src=\'" + pkBaseURL + "piwik.js\' type=\'text/javascript\'%3E%3C/script%3E"));
-					</script><script type="text/javascript">
-					try {
-					  var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", '.$stat_id.');
-					  piwikTracker.trackPageView();
-					  piwikTracker.enableLinkTracking();
-					} catch( err ) {}
-					</script><noscript><p><img src="http://tracker.ushahidi.com/piwik/piwik.php?idsite='.$stat_id.'" style="border:0" alt=""/></p></noscript>
-					<!-- End Piwik Tag -->
-					';
+			$url = 'http://tracker.ushahidi.com/dev.px.php?task=tc&siteid='.$stat_id.$additional_query;
+
+			$curl_handle = curl_init();
+			curl_setopt($curl_handle,CURLOPT_URL,$url);
+			curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,15); // Timeout set to 15 seconds. This is somewhat arbitrary and can be changed.
+			curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1); // Set cURL to store data in variable instead of print
+			$buffer = curl_exec($curl_handle);
+			curl_close($curl_handle);
+
+			try {
+				$tag = (string) @simplexml_load_string($buffer); // This works because the tracking code is only wrapped in one tag
+			} catch (Exception $e) {
+				// In case the xml was malformed for whatever reason, we will just guess what the tag should be here
+				$tag = '<!-- Piwik --><script type="text/javascript">$(document).ready(function(){$(\'#piwik\').load(\'http://tracker.ushahidi.com/piwik/piwik.php?idsite='.$stat_id.'&rec=1\');});</script><div id="piwik"></div><!-- End Piwik Tag -->';
+			}
+
+			// Reset Cache Here
+			$cache->set(Kohana::config('settings.subdomain').'_piwiktag', $tag, array('piwiktag'), 60); // 1 Day
 		}
 
 		return $tag;

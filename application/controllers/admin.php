@@ -35,7 +35,7 @@ class Admin_Controller extends Template_Controller
 
 	public function __construct()
 	{
-		parent::__construct();	
+		parent::__construct();
 
 		// Load cache
 		$this->cache = new Cache;
@@ -71,6 +71,13 @@ class Admin_Controller extends Template_Controller
 
 		// Get Session Information
 		$this->user = new User_Model($_SESSION['auth_user']->id);
+		
+		// Check if user has the right to see the admin panel
+		if(admin::admin_access($this->user) == FALSE)
+		{
+			// This user isn't allowed in the admin panel
+			url::redirect('/');
+		}
 
 		$this->template->admin_name = $this->user->name;
 
@@ -96,7 +103,7 @@ class Admin_Controller extends Template_Controller
 		// Generate main tab navigation list.
 		$this->template->main_tabs = admin::main_tabs();
 		// Generate sub navigation list (in default layout, sits on right side).
-        $this->template->main_right_tabs = admin::main_right_tabs($this->auth);
+        $this->template->main_right_tabs = admin::main_right_tabs($this->user);
 
 		$this->template->this_page = "";
 
@@ -113,15 +120,7 @@ class Admin_Controller extends Template_Controller
 			url::redirect('admin/dashboard');
 		}
 	}
-
-	public function log_out()
-	{
-		$auth = new Auth;
-		$auth->logout(TRUE);
-
-		url::redirect('login');
-	}
-
+	
     /**
      * Fetches the latest ushahidi release version number
      *
@@ -133,7 +132,7 @@ class Admin_Controller extends Template_Controller
         $release_version = $this->release->version;
 		
         $version_ushahidi = Kohana::config('settings.ushahidi_version');
-	    	
+		
         if ($this->_new_or_not($release_version,$version_ushahidi))
         {
 			return $release_version;
@@ -153,40 +152,45 @@ class Admin_Controller extends Template_Controller
      *
      * @return boolean
      */
-    private function _new_or_not($release_version=NULL,
-            $version_ushahidi=NULL )
-    {
-        if ($release_version AND $version_ushahidi)
-	    {
-		    // Split version numbers xx.xx.xx
-		    $remote_version = explode($release_version, ".");
-		    $local_version = explode($version_ushahidi, ".");
+	private function _new_or_not($release_version=NULL,
+			$version_ushahidi=NULL )
+	{
+		if ($release_version AND $version_ushahidi)
+		{
+			// Split version numbers xx.xx.xx
+			$remote_version = explode(".", $release_version);
+			$local_version = explode(".", $version_ushahidi);
+		
+			// Check first part .. if its the same, move on to next part
+			if (isset($remote_version[0]) AND isset($local_version[0])
+				AND (int) $remote_version[0] > (int) $local_version[0])
+			{
+				return true;
+			}
 
-		    // Check first part .. if its the same, move on to next part
-		    if (isset($remote_version[0]) AND isset($local_version[0])
-			    AND (int) $remote_version[0] > (int) $local_version[0])
-		    {
-			    return true;
-		    }
-
-		    // Check second part .. if its the same, move on to next part
-		    if (isset($remote_version[1]) AND isset($local_version[1])
-			    AND (int) $remote_version[1] > (int) $local_version[1])
-		    {
-			    return true;
-		    }
-
-		    // Check third part
-		    if (isset($remote_version[2]) AND isset($local_version[2])
-			    AND (int) $remote_version[2] > (int) $local_version[2])
-		    {
-			    return true;
-		    }
-
+			// Check second part .. if its the same, move on to next part
+			if (isset($remote_version[1]) AND isset($local_version[1])
+				AND (int) $remote_version[1] > (int) $local_version[1])
+			{
+				return true;
+			}
+			
+			// Check third part
+			if (isset($remote_version[2]) AND (int) $remote_version[2] > 0)
+			{
+				if ( ! isset($local_version[2]))
+				{
+					return true;
+				}
+				elseif( (int) $remote_version[2] > (int) $local_version[2] )
+				{
+					return true;
+				}
+			}
 		}
 
-        return false;
-    }
+		return false;
+	}
 
 
 } // End Admin

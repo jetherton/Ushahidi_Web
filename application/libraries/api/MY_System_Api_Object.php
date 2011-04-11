@@ -19,9 +19,12 @@
  */
 
 class System_Api_Object extends Api_Object_Core {
+    
+    protected $replar;
 
     public function __construct($api_service)
     {
+        $this->replar = array();
         parent::__construct($api_service);
     }
 
@@ -65,7 +68,10 @@ class System_Api_Object extends Api_Object_Core {
         $data = array(
             "payload" => array(
                 "domain" => $this->domain,
-                "version" => $json_version
+                "version" => $json_version,
+                "checkins" => Kohana::config('settings.checkins'),
+                "email" => Kohana::config('settings.site_email'),
+                "sms" => Kohana::config('settings.sms_no1')
                 ),
             "error" => $this->api_service->get_error_msg(0)
         );
@@ -118,5 +124,44 @@ class System_Api_Object extends Api_Object_Core {
         }
 
         $this->response_data = $ret_json_or_xml;
+    }
+    
+    /**
+     * Get true or false depending on whether HTTPS has been enabled or not
+     *
+     * @param string response_type - JSON or XML
+     *
+     * @return string
+     */
+    public function get_https_enabled()
+    {
+        $enabled = 'FALSE';
+        $ret_json_or_xml = ''; // Will hold the JSON/XML string to return
+        
+        if (Kohana::config('core.site_protocol') == 'https')
+        {
+            $enabled = 'TRUE';
+        }
+
+        //create the json array
+        $data = array(
+            "payload" => array(
+                "domain" => $this->domain,
+                "httpsenabled" => $enabled
+                ),
+            "error" => $this->api_service->get_error_msg(0)
+        );
+
+        if ($this->response_type == 'json')
+        {
+            $ret_json_or_xml = $this->array_as_json($data);
+        }
+        else
+        {
+            $ret_json_or_xml = $this->array_as_xml($data, $this->replar);
+        }
+
+        $this->response_data = $ret_json_or_xml;
+        
     }
 }

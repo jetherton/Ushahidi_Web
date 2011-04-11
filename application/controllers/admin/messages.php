@@ -34,11 +34,23 @@ class Messages_Controller extends Admin_Controller
     */
     function index($service_id = 1)
     {
+	// If a table prefix is specified
+	$db_config = Kohana::config('database.default');
+	$table_prefix = $db_config['table_prefix'];
+	
         $this->template->content = new View('admin/messages');
 
         // Get Title
         $service = ORM::factory('service', $service_id);
         $this->template->content->title = $service->service_name;
+
+        // Display Reply to Option?
+        $this->template->content->reply_to = TRUE;
+        if ( ! Kohana::config("settings.sms_provider"))
+        {
+            // Hide Reply to option
+			$this->template->content->reply_to = FALSE;
+        }
 
         // Is this an Inbox or Outbox Filter?
         if (!empty($_GET['type']))
@@ -47,24 +59,24 @@ class Messages_Controller extends Admin_Controller
 
             if ($type == '2')
             { // OUTBOX
-                $filter = 'message_type = 2';
+                $filter = 'message.message_type = 2';
             }
             else
             { // INBOX
                 $type = "1";
-                $filter = 'message_type = 1';
+                $filter = 'message.message_type = 1';
             }
         }
         else
         {
             $type = "1";
-            $filter = 'message_type = 1';
+            $filter = 'message.message_type = 1';
         }
         
         // Do we have a reporter ID?
         if (isset($_GET['rid']) AND !empty($_GET['rid']))
         {
-            $filter .= ' AND reporter_id=\''.$_GET['rid'].'\'';
+            $filter .= ' AND message.reporter_id=\''.$_GET['rid'].'\'';
         }
         
         // ALL / Trusted / Spam
@@ -74,11 +86,11 @@ class Messages_Controller extends Admin_Controller
             $level = $_GET['level'];
             if ($level == 4)
             {
-                $filter .= " AND ( reporter.level_id = '4' OR reporter.level_id = '5' ) AND ( message.message_level != '99' ) ";
+                $filter .= " AND ( ".$table_prefix."reporter.level_id = '4' OR ".$table_prefix."reporter.level_id = '5' ) AND ( ".$table_prefix."message.message_level != '99' ) ";
             }
             elseif ($level == 2)
             {
-                $filter .= " AND ( message.message_level = '99' ) ";
+                $filter .= " AND ( ".$table_prefix."message.message_level = '99' ) ";
             }
         }
 
@@ -109,7 +121,8 @@ class Messages_Controller extends Admin_Controller
                     {
                         // Delete Message
                         $message = ORM::factory('message')->find($item);
-                        $message->delete( $item );
+                        $message->message_type = 3; // Tag As Deleted/Trash
+						$message->save();
                     }
                     
                     $form_saved = TRUE;
@@ -191,8 +204,8 @@ class Messages_Controller extends Admin_Controller
         $this->template->content->count_trusted = ORM::factory('message')
             ->join('reporter','message.reporter_id','reporter.id')
             ->where('service_id', $service_id)
-            ->where("( reporter.level_id = '4' OR reporter.level_id = '5' ) AND ( message.message_level != '99' )")
             ->where('message_type', 1)
+            ->where("message.message_level != '99' AND ( ".$table_prefix."reporter.level_id = '4' OR ".$table_prefix."reporter.level_id = '5' )")
             ->count_all();
         
         // Spam

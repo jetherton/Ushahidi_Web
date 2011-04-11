@@ -16,7 +16,7 @@
  */
 class Sms_Api_Object extends Api_Object_Core {
 
-    public function __construct($ai_service)
+    public function __construct($api_service)
     {
         parent::__construct($api_service);
     }
@@ -71,13 +71,16 @@ class Sms_Api_Object extends Api_Object_Core {
      */
     private function _list_sms_msgs()
     {
-        $tems = ORM::factory('message')
+        $items = ORM::factory('message')
             ->where('service_id', '1')
             ->where('message_type','1')
             ->orderby('message_date','desc')
             ->find_all($this->list_limit);
 
         $json_categories = array();
+        
+        // Set the no. of records fetched
+        $this->record_count = $items->count();
         
         $i = 0;
 
@@ -109,8 +112,8 @@ class Sms_Api_Object extends Api_Object_Core {
         $this->response_data = ($this->response_type == 'json') 
             ? $this->array_as_xml($data)
             : $this->array_as_xml($data, $this->replar);
-        }
     }
+   
 
     /**
      * Delete existing SMS message

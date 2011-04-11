@@ -15,6 +15,8 @@
 
 class Users_Controller extends Admin_Controller
 {
+    private $display_roles = false;
+    
     function __construct()
     {
         parent::__construct();
@@ -25,12 +27,50 @@ class Users_Controller extends Admin_Controller
         {
             url::redirect(url::site().'admin/dashboard');
         }
+        
+        $this->display_roles = admin::permissions($this->user, 'manage_roles');
     }
-    
+
     function index()
     {   
         $this->template->content = new View('admin/users');
+        $this->template->js = new View('admin/users_js');
         
+        // Check, has the form been submitted, if so, setup validation
+
+		if ($_POST)
+		{
+			$post = Validation::factory(array_merge($_POST,$_FILES));
+
+			// Add some filters
+
+			$post->pre_filter('trim', TRUE);
+
+			// As far as I know, the only time we submit a form here is to delete a user
+
+			if ($post->action == 'd')
+			{
+				// We don't want to delete the first user
+
+				if($post->user_id_action != 1)
+				{
+					// Delete the user
+
+					$user = ORM::factory('user',$post->user_id_action)
+								->delete();
+
+					// Remove the roles assigned to the now deleted user to clean up
+
+					$roles_user_model = new Roles_User_Model;
+					$roles_user_model->delete_role($post->user_id_action);
+
+				}
+
+				$form_saved = TRUE;
+				$form_action = strtoupper(Kohana::lang('ui_admin.deleted'));
+			}
+		}
+
         // Pagination
         $pagination = new Pagination(array(
                             'query_string' => 'page',
@@ -42,6 +82,9 @@ class Users_Controller extends Admin_Controller
                     ->orderby('name', 'asc')
                     ->find_all((int) Kohana::config('settings.items_per_page_admin'), 
                         $pagination->sql_offset);
+
+        // Set the flag for displaying the roles link
+        $this->template->content->display_roles = $this->display_roles;
 
         $this->template->content->pagination = $pagination;
         $this->template->content->total_items = $pagination->total_items;
@@ -218,7 +261,9 @@ class Users_Controller extends Admin_Controller
             $role_array[$role->name] = strtoupper($role->name);
         }
         
+
 	$this->template->content->id = $user_id;
+        $this->template->content->display_roles = $this->display_roles;
         $this->template->content->user = $user;
         $this->template->content->form = $form;
         $this->template->content->errors = $errors;
@@ -363,6 +408,7 @@ class Users_Controller extends Admin_Controller
             "users" => "Manage Users"
         );
         
+        $this->template->content->display_roles = $this->display_roles;
         $this->template->content->roles = $roles;
         $this->template->content->permissions = $permissions;
         $this->template->content->form = $form;

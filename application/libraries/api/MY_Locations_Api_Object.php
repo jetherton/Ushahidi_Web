@@ -47,7 +47,8 @@ class Locations_Api_Object extends Api_Object_Core {
                 }
                 else
                 {
-                    $this->response_data = $this->_get_location_by_id($this->request['id']); 
+                    $this->response_data = $this->_get_location_by_id(
+                        $this->check_id_value($this->request['id'])); 
                 }
             break;
             
@@ -63,7 +64,7 @@ class Locations_Api_Object extends Api_Object_Core {
                 }
                 else
                 {
-                    $this->response_data = $this->_get_locations_by_country_id($this->request['id']);
+                    $this->response_data = $this->_get_locations_by_country_id($this->check_id_value($this->request['id']));
                 }
             break;
             
@@ -89,6 +90,10 @@ class Locations_Api_Object extends Api_Object_Core {
                 $this->table_prefix."location` $where $limit ";
 
         $items = $this->db->query($this->query);
+        
+        // Set the no. of records fetched
+        $this->record_count = $items->count();
+        
         $i = 0;
 
         $json_locations = array();

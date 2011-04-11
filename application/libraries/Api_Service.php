@@ -33,16 +33,43 @@ final class Api_Service {
     private $response_type;
     private $api_object; // Handle for the API library to loaded
     private $task_name; // Name of the task to be routed
+    private $request_ip_address; // IP Address of the client making the API request
+    private $api_parameters; // API request parameters
+    private $api_logger; // API_Log Model
+    private $db; // Database object
     
     public function __construct()
     {
-        // Set the request data
+    	// Set the request data
         $this->request = ($_SERVER['REQUEST_METHOD'] == 'POST')
             ? $_POST
             : $_GET;
         
         // Load the API configuration file
         Kohana::config_load('api');
+        
+        // Get the IP Address of the client submitting the API request
+        
+        // Check if the IP is from a shared internet connection
+        if ( ! empty($_SERVER['HTTP_CLIENT_IP']))
+        {
+            $this->request_ip_address = $_SERVER['HTTP_CLIENT_IP'];
+        }
+        // Check if the IP address is passed from a proxy server such as Nginx
+        elseif ( ! empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+        {
+            $this->request_ip_address  = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        else
+        {
+            $this->request_ip_address = $_SERVER['REMOTE_ADDR'];
+        }
+        
+        // Unpack the URL parameters
+        $this->api_parameters = serialize(array_keys($this->request));
+        
+        // Instantiate the database
+        $this->db = new Database();
     }
 
     /**
@@ -50,8 +77,20 @@ final class Api_Service {
      */
     public function run_service()
     {
-        // Route the API task
-        $this->_route_api_task();        
+        // Check the request is allowed
+        if ($this->_is_api_request_allowed())
+        {
+            // Route the API task
+            $this->_route_api_task();
+        }
+        else
+        {
+            // Set the response to "ACCESS DENIED"
+            $this->set_response($this->get_error_msg(006));
+            
+            // Terminate execution
+            return;
+        }
     }
     
     public function get_request()
@@ -81,7 +120,9 @@ final class Api_Service {
      */
     public function set_response($response_data)
     {
-        $this->response = $response_data;
+        $this->response = (is_array($response_data))
+            ? json_encode($response_data)
+            : $response_data;
     }
     
     /**
@@ -143,9 +184,25 @@ final class Api_Service {
     private function _route_api_task()
     {
         // Make sure we have a task to work with
-        if (! $this->verify_array_index($this->request, 'task'))
+        if ( ! $this->verify_array_index($this->request, 'task'))
         {
-            $this->set_response($this->get_error_msg(002));
+            $this->set_response($this->get_error_msg(001, 'task'));
+            
+            // Log the failed attempt
+            $this->api_logger = new Api_Log_Model();
+            
+            // Set the log data
+            $this->api_logger->api_task = 'None';
+            $this->api_logger->api_parameters  = strlen($this->api_parameters > 0)
+                ? $this->api_parameters
+                : serialize('None Specified');
+            $this->api_logger->api_records = 0;
+            $this->api_logger->api_ipaddress = $this->request_ip_address;
+            $this->api_logger->api_date = date('Y-m-d H:i:s', time());
+            
+            // Save the log
+            $this->api_logger->save();
+            
             return;
         }
         else
@@ -158,6 +215,8 @@ final class Api_Service {
         
         // Get the task handler (from the api config file) for the requested task    
         $task_handler = $this->_get_task_handler(strtolower($this->task_name));
+        
+        $task_library_found = FALSE;
         
         // Check if handler has been set   
         if (isset($task_handler))
@@ -182,6 +241,8 @@ final class Api_Service {
                 
             // Set the response data
             $this->response = $this->api_object->get_response_data();
+            
+            $task_library_found = TRUE;
         }
         else // Task handler not found in routing table therefore look the implementing library
         {
@@ -198,7 +259,9 @@ final class Api_Service {
                 $this->api_object->perform_task();
             
                 // Set the response data
-                $this->response = $this->api_object->get_response_data(); 
+                $this->response = $this->api_object->get_response_data();
+                
+                $task_library_found = TRUE;
             }
             else
             {   // Library not found
@@ -206,9 +269,15 @@ final class Api_Service {
                     "error" => $this->get_error_msg(999)
                 ));
                 
+                // Log the unsuccessful API request
+                $this->_log_api_request($task_library_found);
+                
                 return;
             }
         }
+        
+        // Log successful API request
+        $this->_log_api_request($task_library_found);
         
         // Discard the API object from memory
         if (isset($this->api_object))
@@ -216,7 +285,7 @@ final class Api_Service {
             unset($this->api_object);
         }
     }
-
+    
     /**
      * Initializes the API library to be used to service the API task
      *
@@ -324,6 +393,9 @@ final class Api_Service {
             case 007:
                 return array("code" => "007",
                         "message" => Kohana::lang('ui_admin.no_data'));
+            case 010:
+                return array("code" => "010",
+                        "message" => Kohana::lang('ui_admin.disabled'));
             default:
                 return array("code" => "999",
                              "message" => Kohana::lang('ui_admin.not_found')
@@ -345,6 +417,100 @@ final class Api_Service {
         return (isset($task_handler))
             ? $task_handler
             : NULL;
+    }
+    
+    /**
+     * Logs API requests
+     * If @param task_library_found == FALSE the no. of records returned is 0
+     *
+     * @param task_library_found
+     */
+    private function _log_api_request($task_library_found)
+    {
+        // Log the API request
+        $this->api_logger = new Api_Log_Model();
+        
+        $this->api_logger->api_task = strtolower($this->task_name);
+        $this->api_logger->api_parameters = $this->api_parameters;
+        $this->api_logger->api_ipaddress = $this->request_ip_address;
+        
+        if ($task_library_found)
+        {
+            $this->api_logger->api_records = $this->api_object->get_record_count();
+        }
+        else
+        {
+            $this->api_logger->api_records = 0;
+        }
+        
+        $this->api_logger->api_date = date('Y-m-d H:i:s', time());        
+        $this->api_logger->save();        
+    }
+
+    /**
+     * Checks if the API request is allowed. The function first checks if the request IP
+     * address has been banned then proceeds to check if the IP has exceeded the quota
+     * for the day/month
+     *
+     * @return boolean
+     */
+    private function _is_api_request_allowed()
+    {
+        // STEP 1: Check if the IP has been banned
+        $banned_count = ORM::factory('api_banned')
+                        ->where('banned_ipaddress', $this->request_ip_address)
+                        ->count_all();
+        
+        if ($banned_count > 0)
+            return FALSE;
+        
+        // STEP 2: Check if the IP address has exceeded the request quota
+        
+        // Get the API settings
+        $api_settings = new Api_Settings_Model(1);
+        
+        // Check if an API request quota has been set
+        if ( ! isset ($api_settings->max_requests_per_ip_address))
+            return TRUE;
+        
+        // Get the API request quota
+        $request_quota = $api_settings->max_requests_per_ip_address;
+            
+        // Get the quota basis
+        $quota_basis = (isset($api_settings->max_requests_quota_basis))
+            ? $api_settings->max_requests_quota_basis
+            : NULL;
+        
+        $num_api_requests = -1; // Will hold the number of API requests for the specified IP
+        
+        // Database table prefix
+        $table_prefix = Kohana::config('database.default.table_prefix');
+        
+        // Template query
+        $template_query = "SELECT COUNT(*) AS record_count ";
+        $template_query .= "FROM ".$table_prefix."api_log ";
+        $template_query .= "WHERE DATE_FORMAT(api_date, '%s') = '%s' ";
+        $template_query .= "AND api_ipaddress = '".$this->request_ip_address."'";
+        
+        // Get the number of api requests logged depending on the quota basis
+        switch ($quota_basis)
+        {
+            // Per day quota
+            case 0:
+                $items = $this->db->query(sprintf($template_query, '%Y-%m-%d', date('Y-m-d', time())));
+                $num_api_requests = (int)$items[0]->record_count;
+            break;
+            
+            // Per month quota
+            case 1:
+                $items = $this->db->query(sprintf($template_query, '%Y-%m', date('Y-m', time())));
+                $num_api_requests = (int)$items[0]->record_count;
+            break;
+        }
+        
+        // Return value
+        return ($num_api_requests >= $request_quota)? FALSE : TRUE;
+            
     }
 }
 ?>

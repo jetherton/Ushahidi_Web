@@ -44,6 +44,7 @@
 	echo html::script('media/js/jquery.ui.min', true);
 	echo html::script('media/js/selectToUISlider.jQuery', true);
 	echo html::script('media/js/jquery.hovertip-1.0', true);
+	echo html::script('media/js/jquery.base64', true);
 	echo html::stylesheet('media/css/jquery.hovertip-1.0', '', true);
 	
 	echo "<script type=\"text/javascript\">
@@ -135,7 +136,7 @@
 		}
 		<?php
 		if ($form_error) {
-			echo "$(document).ready(function() { $(\"#addedit\").show(); });";
+			echo '$(document).ready(function() { $("#addedit").show(); });';
 		}
 		?>
 	</script>
@@ -155,27 +156,26 @@
 					<li class="none-separator"><a href="<?php echo url::site() ?>" title="View the home page">
 						<?php echo Kohana::lang('ui_admin.view_site');?></a>					
 					<li class="none-separator"><a href="<?php echo url::site()."admin/profile/" ?>"><?php echo Kohana::lang('ui_admin.my_profile');?></a></li>
-					<li><a href="<?php echo url::site()."admin/";?>log_out"><?php echo Kohana::lang('ui_admin.logout');?></a></li>
+					<li><a href="<?php echo url::site();?>logout"><?php echo Kohana::lang('ui_admin.logout');?></a></li>
 				</ul>
                         </div>
-                        <?php if ( ( !empty($version)) AND ( url::current() != "admin/upgrade" ) ) { ?>
-                        <div id="update-info">
+                        <?php if ((Kohana::config('config.enable_auto_upgrader') == TRUE)) {?>
+                            <?php if (( !empty($version)) AND (url::current() != "admin/upgrade")) { ?>
+                                <div id="update-info">
                             
-                        <?php echo Kohana::lang('ui_admin.ushahidi');?> <?php echo $version; ?> 
-                            <?php echo Kohana::lang('ui_admin.version_available');?>
-                            <?php if (isset($critical)) echo Kohana::lang('ui_admin.critical_upgrade');?>
-        <a href="<?php echo url::site() ?>admin/upgrade" title="upgrade ushahidi">
-                             <?php echo Kohana::lang('ui_admin.update_link');?>
-                            </a>.
-                        </div>
-                        <?php } ?>
+                                <?php echo Kohana::lang('ui_admin.ushahidi');?> <?php echo $version; ?> 
+                                    <?php echo Kohana::lang('ui_admin.version_available');?>
+							        <a href="<?php echo url::site() ?>admin/upgrade" title="upgrade ushahidi"><?php echo Kohana::lang('ui_admin.update_link');?></a>
+                                </div>
+                            <?php } ?>
+                        <?php }?>
 
 			<!-- info-nav -->
 			<div class="info-nav">
 				<h3><?php echo Kohana::lang('ui_admin.get_help');?></h3>
 				<ul>
 					<li ><a href="http://wiki.ushahididev.com/"><?php echo Kohana::lang('ui_admin.wiki');?></a></li>
-					<li><a href="http://wiki.ushahididev.com/doku.php?id=how_to_use_ushahidi_alpha"><?php echo Kohana::lang('ui_admin.faqs');?></a></li>
+					<li><a href="http://ushahidi.com/community_resources/"><?php echo Kohana::lang('ui_admin.faqs');?></a></li>
 					<li><a href="http://forums.ushahidi.com/"><?php echo Kohana::lang('ui_admin.forum');?></a></li>
 				</ul>
 				<div class="info-search"><form action="<?php echo url::site() ?>admin/reports" id="info-search"><input type="text" name="k" class="info-keyword" value=""> <a href="javascript:info_search();" class="btn"><?php echo Kohana::lang('ui_admin.search');?></a></form></div>

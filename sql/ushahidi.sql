@@ -1,5 +1,5 @@
 -- Ushahidi Engine
--- version 34
+-- version 48
 -- http://www.ushahidi.com
 
 
@@ -8,26 +8,23 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 -- --------------------------------------------------------
 
-
-
-
 /**
  * Table structure for table `category`
  * 
  */
 
-CREATE TABLE IF NOT EXISTS `category` (                                             -- table description
-    `id` int(11) unsigned NOT NULL auto_increment,                                  -- field description
-    `parent_id` INT NOT NULL DEFAULT '0',                                           -- field description
-    `locale` varchar(10) NOT NULL default 'en_US',                                  -- field description
-    `category_type` tinyint(4) default NULL,                                        -- field description
-    `category_title` varchar(255) default NULL,                                     -- field description
-    `category_description` text default NULL,                                       -- field description
-    `category_color` varchar(20) default NULL,                                      -- field description
-    `category_image` varchar(100) default NULL,                                     -- field description
-    `category_image_thumb` varchar(100) default NULL,                               -- field description
-    `category_image_shadow` varchar(100) default NULL,                              -- field description
-    `category_visible` tinyint(4) NOT NULL default '1',                             -- field description
+CREATE TABLE IF NOT EXISTS `category` (                                             
+    `id` int(11) unsigned NOT NULL auto_increment,                                  
+    `parent_id` INT NOT NULL DEFAULT '0',                                           
+    `locale` varchar(10) NOT NULL default 'en_US',                                  
+    `category_type` tinyint(4) default NULL,                                        
+    `category_title` varchar(255) default NULL,                                     
+    `category_description` text default NULL,                                       
+    `category_color` varchar(20) default NULL,                                      
+    `category_image` varchar(100) default NULL,                                     
+    `category_image_thumb` varchar(100) default NULL,                               
+    `category_image_shadow` varchar(100) default NULL,                              
+    `category_visible` tinyint(4) NOT NULL default '1',                             
     `category_trusted` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `category_visible` (`category_visible`)
@@ -50,13 +47,13 @@ INSERT INTO `category` (`id`, `category_type`, `category_title`, `category_descr
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `category_lang`                                          -- table description
+CREATE TABLE IF NOT EXISTS `category_lang`                                          
 (
-    `id` INT(11) unsigned  NOT NULL AUTO_INCREMENT,                                 -- field description
-    `category_id` int(11) NOT NULL,                                                 -- field description
-    `locale` VARCHAR(10) default NULL,                                              -- field description
-    `category_title` VARCHAR(255) default NULL,                                     -- field description
-    `category_description` TEXT default NULL,                                       -- field description
+    `id` INT(11) unsigned  NOT NULL AUTO_INCREMENT,                                 
+    `category_id` int(11) NOT NULL,                                                 
+    `locale` VARCHAR(10) default NULL,                                              
+    `category_title` VARCHAR(255) default NULL,                                     
+    `category_description` TEXT default NULL,                                       
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -71,12 +68,12 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `country` (                                              -- table description
-    `id` int(11) NOT NULL auto_increment,                                           -- field description
-    `iso` varchar(10) default NULL,                                                 -- field description
-    `country` varchar(100) default NULL,                                            -- field description
-    `capital` varchar(100) default NULL,                                            -- field description
-    `cities` tinyint(4) NOT NULL default '0',                                       -- field description
+CREATE TABLE IF NOT EXISTS `country` (                                              
+    `id` int(11) NOT NULL auto_increment,                                           
+    `iso` varchar(10) default NULL,                                                 
+    `country` varchar(100) default NULL,                                            
+    `capital` varchar(100) default NULL,                                            
+    `cities` tinyint(4) NOT NULL default '0',                                       
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -339,20 +336,20 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `idp` (                                                  -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `incident_id` bigint(20) NOT NULL,                                              -- field description
-    `verified_id` bigint(20) default NULL,                                          -- field description
-    `idp_idnumber` varchar(100) default NULL,                                       -- field description
-    `idp_orig_idnumber` varchar(100) default NULL,                                  -- field description
-    `idp_fname` varchar(50) default NULL,                                           -- field description
-    `idp_lname` varchar(50) default NULL,                                           -- field description
-    `idp_email` varchar(100) default NULL,                                          -- field description
-    `idp_phone` varchar(50) default NULL,                                           -- field description
-    `current_location_id` bigint(20) default NULL,                                  -- field description
-    `displacedfrom_location_id` bigint(20) default NULL,                            -- field description
-    `movedto_location_id` bigint(20) default NULL,                                  -- field description
-    `idp_move_date` datetime default NULL,                                          -- field description
+CREATE TABLE IF NOT EXISTS `idp` (                                                  
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `incident_id` bigint(20) NOT NULL,                                              
+    `verified_id` bigint(20) default NULL,                                          
+    `idp_idnumber` varchar(100) default NULL,                                       
+    `idp_orig_idnumber` varchar(100) default NULL,                                  
+    `idp_fname` varchar(50) default NULL,                                           
+    `idp_lname` varchar(50) default NULL,                                           
+    `idp_email` varchar(100) default NULL,                                          
+    `idp_phone` varchar(50) default NULL,                                           
+    `current_location_id` bigint(20) default NULL,                                  
+    `displacedfrom_location_id` bigint(20) default NULL,                            
+    `movedto_location_id` bigint(20) default NULL,                                  
+    `idp_move_date` datetime default NULL,                                          
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -367,25 +364,26 @@ CREATE TABLE IF NOT EXISTS `idp` (                                              
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `incident` (                                             -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `location_id` bigint(20) NOT NULL,                                              -- field description
-    `form_id` int(11) NOT NULL default '1',                                         -- field description
-    `locale` varchar(10) NOT NULL default 'en_US',                                  -- field description
-    `user_id` bigint(20) default NULL,                                              -- field description
-    `incident_title` varchar(255) default NULL,                                     -- field description
-    `incident_description` longtext,                                                -- field description
-    `incident_date` datetime default NULL,                                          -- field description
-    `incident_mode` tinyint(4) NOT NULL default '1' COMMENT '1 - WEB, 2 - SMS, 3 - EMAIL, 4 - TWITTER',    -- field description
-    `incident_active` tinyint(4) NOT NULL default '0',                              -- field description
-    `incident_verified` tinyint(4) NOT NULL default '0',                            -- field description
-    `incident_source` varchar(5) default NULL,                                      -- field description
-    `incident_information` varchar(5) default NULL,                                 -- field description
-    `incident_rating` VARCHAR(15) DEFAULT '0' NOT NULL,                             -- field description
-    `incident_dateadd` datetime default NULL,                                       -- field description
-    `incident_dateadd_gmt` datetime default NULL,                                   -- field description
-    `incident_datemodify` datetime default NULL,                                    -- field description
-    `incident_alert_status` TINYINT NOT NULL DEFAULT '0' COMMENT '0 - Not Tagged for Sending, 1 - Tagged for Sending, 2 - Alerts Have Been Sent',    -- field description
+CREATE TABLE IF NOT EXISTS `incident` (                                             
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `location_id` bigint(20) NOT NULL,                                              
+    `form_id` int(11) NOT NULL default '1',                                         
+    `locale` varchar(10) NOT NULL default 'en_US',                                  
+    `user_id` bigint(20) default NULL,                                              
+    `incident_title` varchar(255) default NULL,                                     
+    `incident_description` longtext,                                                
+    `incident_date` datetime default NULL,                                          
+    `incident_mode` tinyint(4) NOT NULL default '1' COMMENT '1 - WEB, 2 - SMS, 3 - EMAIL, 4 - TWITTER',    
+    `incident_active` tinyint(4) NOT NULL default '0',                              
+    `incident_verified` tinyint(4) NOT NULL default '0',                            
+    `incident_source` varchar(5) default NULL,                                      
+    `incident_information` varchar(5) default NULL,                                 
+    `incident_rating` VARCHAR(15) DEFAULT '0' NOT NULL,                             
+    `incident_dateadd` datetime default NULL,                                       
+    `incident_dateadd_gmt` datetime default NULL,                                   
+    `incident_datemodify` datetime default NULL,                                    
+    `incident_alert_status` TINYINT NOT NULL DEFAULT '0' COMMENT '0 - Not Tagged for Sending, 1 - Tagged for Sending, 2 - Alerts Have Been Sent',
+	`incident_zoom` tinyint NULL DEFAULT NULL,
   PRIMARY KEY  (`id`),
   KEY `location_id` (`location_id`),
   KEY `incident_active` (`incident_active`),
@@ -399,7 +397,7 @@ CREATE TABLE IF NOT EXISTS `incident` (                                         
 
 LOCK TABLES `incident` WRITE;
 /*!40000 ALTER TABLE `incident` DISABLE KEYS */;
-INSERT INTO `incident` VALUES (1,1,1,'en_US',1,'Hello Ushahidi!','Welcome to Ushahidi. Please replace this report with a valid incident','2010-01-01 12:00:00',1,1,1,'0','2010-01-01 12:00:00','0',NULL,NULL,NULL,'0');
+INSERT INTO `incident` VALUES (1,1,1,'en_US',1,'Hello Ushahidi!','Welcome to Ushahidi. Please replace this report with a valid incident','2010-01-01 12:00:00',1,1,1,'0','2010-01-01 12:00:00','0',NULL,NULL,NULL,'0',NULL);
 /*!40000 ALTER TABLE `incident` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -409,13 +407,13 @@ UNLOCK TABLES;
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `incident_lang`                                          -- table description
+CREATE TABLE IF NOT EXISTS `incident_lang`                                          
 (
-    `id` BIGINT(20) unsigned  NOT NULL AUTO_INCREMENT,                              -- field description
-    `incident_id` BIGINT(20) NOT NULL,                                              -- field description
-    `locale` VARCHAR(10) default NULL,                                              -- field description
-    `incident_title` VARCHAR(255) default NULL,                                     -- field description
-    `incident_description` LONGTEXT default NULL,                                   -- field description
+    `id` BIGINT(20) unsigned  NOT NULL AUTO_INCREMENT,                              
+    `incident_id` BIGINT(20) NOT NULL,                                              
+    `locale` VARCHAR(10) default NULL,                                              
+    `incident_title` VARCHAR(255) default NULL,                                     
+    `incident_description` LONGTEXT default NULL,                                   
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -430,10 +428,10 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `incident_category` (                                    -- table description
-    `id` int(11) NOT NULL auto_increment,                                           -- field description
-    `incident_id` bigint(20) NOT NULL default '0',                                  -- field description
-    `category_id` int(11) NOT NULL default '0',                                     -- field description
+CREATE TABLE IF NOT EXISTS `incident_category` (                                    
+    `id` int(11) NOT NULL auto_increment,                                           
+    `incident_id` bigint(20) NOT NULL default '0',                                  
+    `category_id` int(11) NOT NULL default '0',                                     
   PRIMARY KEY  (`id`),
   UNIQUE KEY `incident_category_ids` (`incident_id`,`category_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -454,16 +452,16 @@ UNLOCK TABLES;
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `incident_person` (                                      -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `incident_id` bigint(20) default NULL,                                          -- field description
-    `location_id` bigint(20) default NULL,                                          -- field description
-    `person_first` varchar(200) default NULL,                                       -- field description
-    `person_last` varchar(200) default NULL,                                        -- field description
-    `person_email` varchar(120) default NULL,                                       -- field description
-    `person_phone` varchar(60) default NULL,                                        -- field description
-    `person_ip` varchar(50) default NULL,                                           -- field description
-    `person_date` datetime default NULL,                                            -- field description
+CREATE TABLE IF NOT EXISTS `incident_person` (                                      
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `incident_id` bigint(20) default NULL,                                          
+    `location_id` bigint(20) default NULL,                                          
+    `person_first` varchar(200) default NULL,                                       
+    `person_last` varchar(200) default NULL,                                        
+    `person_email` varchar(120) default NULL,                                       
+    `person_phone` varchar(60) default NULL,                                        
+    `person_ip` varchar(50) default NULL,                                           
+    `person_date` datetime default NULL,                                            
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -478,20 +476,20 @@ CREATE TABLE IF NOT EXISTS `incident_person` (                                  
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `comment`                                                -- table description
+CREATE TABLE IF NOT EXISTS `comment`                                                
 (
-    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 -- field description
-    `incident_id` BIGINT NOT NULL,                                                  -- field description
-    `user_id` INT(11) DEFAULT 0,                                                    -- field description
-    `comment_author` VARCHAR(100) default NULL,                                     -- field description
-    `comment_email` VARCHAR(120) default NULL,                                      -- field description
-    `comment_description` TEXT default NULL,                                        -- field description
-    `comment_ip` VARCHAR(100) default NULL,                                         -- field description
-    `comment_rating` VARCHAR(15) DEFAULT '0' NOT NULL,                              -- field description
-    `comment_spam` TINYINT NOT NULL DEFAULT 0,                                      -- field description
-    `comment_active` TINYINT NOT NULL DEFAULT 0,                                    -- field description
-    `comment_date` DATETIME default NULL,                                           -- field description
-    `comment_date_gmt` DATETIME default NULL,                                       -- field description
+    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 
+    `incident_id` BIGINT NOT NULL,                                                  
+    `user_id` INT(11) DEFAULT 0,                                                    
+    `comment_author` VARCHAR(100) default NULL,                                     
+    `comment_email` VARCHAR(120) default NULL,                                      
+    `comment_description` TEXT default NULL,                                        
+    `comment_ip` VARCHAR(100) default NULL,                                         
+    `comment_rating` VARCHAR(15) DEFAULT '0' NOT NULL,                              
+    `comment_spam` TINYINT NOT NULL DEFAULT 0,                                      
+    `comment_active` TINYINT NOT NULL DEFAULT 0,                                    
+    `comment_date` DATETIME default NULL,                                           
+    `comment_date_gmt` DATETIME default NULL,                                       
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -506,14 +504,14 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `rating`                                                 -- table description
+CREATE TABLE IF NOT EXISTS `rating`                                                 
 (
-    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 -- field description
-    `incident_id` BIGINT default NULL,                                              -- field description
-    `comment_id` BIGINT default NULL,                                               -- field description
-    `rating` TINYINT DEFAULT 0,                                                     -- field description
-    `rating_ip` VARCHAR(100) default NULL,                                          -- field description
-    `rating_date` DATETIME default NULL,                                            -- field description
+    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 
+    `incident_id` BIGINT default NULL,                                              
+    `comment_id` BIGINT default NULL,                                               
+    `rating` TINYINT DEFAULT 0,                                                     
+    `rating_ip` VARCHAR(100) default NULL,                                          
+    `rating_date` DATETIME default NULL,                                            
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -528,14 +526,14 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `location` (                                             -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `location_name` varchar(255) default NULL,                                      -- field description
-    `country_id` int(11) default NULL,                                              -- field description
-    `latitude` DOUBLE NOT NULL default '0',                                         -- field description
-    `longitude` DOUBLE NOT NULL default '0',                                        -- field description
-    `location_visible` tinyint(4) NOT NULL default '1',                             -- field description
-    `location_date` datetime default NULL,                                          -- field description
+CREATE TABLE IF NOT EXISTS `location` (                                             
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `location_name` varchar(255) default NULL,                                      
+    `country_id` int(11) default NULL,                                              
+    `latitude` DOUBLE NOT NULL default '0',                                         
+    `longitude` DOUBLE NOT NULL default '0',                                        
+    `location_visible` tinyint(4) NOT NULL default '1',                             
+    `location_date` datetime default NULL,                                          
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -554,18 +552,20 @@ UNLOCK TABLES;
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `media` (                                                -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `location_id` bigint(20) default NULL,                                          -- field description
-    `incident_id` bigint(20) default NULL,                                          -- field description
+CREATE TABLE IF NOT EXISTS `media` (                                                
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `location_id` bigint(20) default NULL,                                          
+    `incident_id` bigint(20) default NULL,
+    `checkin_id` bigint(20) default NULL,
     `message_id` bigint(20) NULL DEFAULT NULL,
-    `media_type` tinyint(4) default NULL COMMENT '1 - IMAGES, 2 - VIDEO, 3 - AUDIO, 4 - NEWS, 5 - PODCAST',    -- field description
-    `media_title` varchar(255) default NULL,                                        -- field description
-    `media_description` longtext default NULL,                                      -- field description
-    `media_link` varchar(255) default NULL,                                         -- field description
-    `media_thumb` varchar(255) default NULL,                                        -- field description
-    `media_date` datetime default NULL,                                             -- field description
-    `media_active` tinyint(4) NOT NULL default '1',                                 -- field description
+    `media_type` tinyint(4) default NULL COMMENT '1 - IMAGES, 2 - VIDEO, 3 - AUDIO, 4 - NEWS, 5 - PODCAST',    
+    `media_title` varchar(255) default NULL,                                        
+    `media_description` longtext default NULL,                                      
+    `media_link` varchar(255) default NULL,                                         
+    `media_medium` varchar(255) default NULL,                                        
+    `media_thumb` varchar(255) default NULL,                                        
+    `media_date` datetime default NULL,                                             
+    `media_active` tinyint(4) NOT NULL default '1',                                 
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -580,17 +580,17 @@ CREATE TABLE IF NOT EXISTS `media` (                                            
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `organization` (                                         -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `organization_name` varchar(255) default NULL,                                  -- field description
-    `organization_description` longtext default NULL,                               -- field description
-    `organization_website` varchar(255) default NULL,                               -- field description
-    `organization_email` varchar(120) default NULL,                                 -- field description
-    `organization_phone1` varchar(50) default NULL,                                 -- field description
-    `organization_phone2` varchar(50) default NULL,                                 -- field description
-    `organization_address` varchar(255) default NULL,                               -- field description
-    `organization_country` varchar(100) default NULL,                               -- field description
-    `organization_active` tinyint(4) NOT NULL default '1',                          -- field description
+CREATE TABLE IF NOT EXISTS `organization` (                                         
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `organization_name` varchar(255) default NULL,                                  
+    `organization_description` longtext default NULL,                               
+    `organization_website` varchar(255) default NULL,                               
+    `organization_email` varchar(120) default NULL,                                 
+    `organization_phone1` varchar(50) default NULL,                                 
+    `organization_phone2` varchar(50) default NULL,                                 
+    `organization_address` varchar(255) default NULL,                               
+    `organization_country` varchar(100) default NULL,                               
+    `organization_active` tinyint(4) NOT NULL default '1',                          
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -605,9 +605,9 @@ CREATE TABLE IF NOT EXISTS `organization` (                                     
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `organization_incident` (                                -- table description
-    `organization_id` bigint(20) default NULL,                                      -- field description
-    `incident_id` bigint(20) default NULL                                           -- field description
+CREATE TABLE IF NOT EXISTS `organization_incident` (                                
+    `organization_id` bigint(20) default NULL,                                      
+    `incident_id` bigint(20) default NULL                                           
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -619,14 +619,14 @@ CREATE TABLE IF NOT EXISTS `organization_incident` (                            
 * Table structure for table `feed`
 * 
 */
-CREATE TABLE IF NOT EXISTS `feed`                                                   -- table description
+CREATE TABLE IF NOT EXISTS `feed`                                                   
 (
-    `id` int(11) unsigned  NOT NULL AUTO_INCREMENT ,                                -- field description
-    `feed_name` VARCHAR(255) default NULL,                                          -- field description
-    `feed_url` VARCHAR(255) default NULL,                                           -- field description
-    `feed_cache` TEXT default NULL,                                                 -- field description
-    `feed_active` TINYINT DEFAULT 1,                                                -- field description
-    `feed_update` INT DEFAULT 0 NOT NULL,                                           -- field description
+    `id` int(11) unsigned  NOT NULL AUTO_INCREMENT ,                                
+    `feed_name` VARCHAR(255) default NULL,                                          
+    `feed_url` VARCHAR(255) default NULL,                                           
+    `feed_cache` TEXT default NULL,                                                 
+    `feed_active` TINYINT DEFAULT 1,                                                
+    `feed_update` INT DEFAULT 0 NOT NULL,                                           
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -640,16 +640,16 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `feed_item`                                              -- table description
+CREATE TABLE IF NOT EXISTS `feed_item`                                              
 (
-    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 -- field description
-    `feed_id` INT(11) NOT NULL,                                                     -- field description
-    `location_id` BIGINT default '0',                                               -- field description
-    `incident_id` INT(11) NOT NULL DEFAULT '0',                                     -- field description
-    `item_title` VARCHAR(255) default NULL,                                         -- field description
-    `item_description` TEXT default NULL,                                           -- field description
-    `item_link` VARCHAR(255) default NULL,                                          -- field description
-    `item_date` DATETIME default NULL,                                              -- field description
+    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 
+    `feed_id` INT(11) NOT NULL,                                                     
+    `location_id` BIGINT default '0',                                               
+    `incident_id` INT(11) NOT NULL DEFAULT '0',                                     
+    `item_title` VARCHAR(255) default NULL,                                         
+    `item_description` TEXT default NULL,                                           
+    `item_link` VARCHAR(255) default NULL,                                          
+    `item_date` DATETIME default NULL,                                              
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -663,22 +663,22 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `message`                                                -- table description
+CREATE TABLE IF NOT EXISTS `message`                                                
 (
-    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 -- field description
+    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT ,                                 
 /*Outgoing Messages From Admin*/
-    `parent_id` BIGINT DEFAULT 0,                                                   -- field description
-    `incident_id` INTEGER DEFAULT 0,                                                -- field description
-    `user_id` INT DEFAULT 0,                                                        -- field description
-    `reporter_id` bigint(20) default NULL,                                          -- field description
-    `service_messageid` varchar(100) default NULL,                                  -- field description
-    `message_from` VARCHAR(100) DEFAULT NULL,                                       -- field description
-    `message_to` VARCHAR(100) DEFAULT NULL,                                         -- field description
-    `message` TEXT default NULL,                                                    -- field description
-    `message_detail` text default NULL,                                             -- field description
-    `message_type` TINYINT default 1 COMMENT '1 - INBOX, 2 - OUTBOX (From Admin)',  -- field description
-    `message_date` DATETIME default NULL,                                           -- field description
-    `message_level` TINYINT NULL DEFAULT 0 COMMENT '0 - UNREAD, 1 - READ, 99 - SPAM',                                         -- field description
+    `parent_id` BIGINT DEFAULT 0,                                                   
+    `incident_id` INTEGER DEFAULT 0,                                                
+    `user_id` INT DEFAULT 0,                                                        
+    `reporter_id` bigint(20) default NULL,                                          
+    `service_messageid` varchar(100) default NULL,                                  
+    `message_from` VARCHAR(100) DEFAULT NULL,                                       
+    `message_to` VARCHAR(100) DEFAULT NULL,                                         
+    `message` TEXT default NULL,                                                    
+    `message_detail` text default NULL,                                             
+    `message_type` TINYINT default 1 COMMENT '1 - INBOX, 2 - OUTBOX (From Admin), 3 - DELETED',
+    `message_date` DATETIME default NULL,                                           
+    `message_level` TINYINT NULL DEFAULT 0 COMMENT '0 - UNREAD, 1 - READ, 99 - SPAM',                                         
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -695,13 +695,13 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `pending_users` (                                        -- table description
-    `id` int(11) unsigned NOT NULL auto_increment,                                  -- field description
-    `key` varchar(32) NOT NULL,                                                     -- field description
-    `email` varchar(127) NOT NULL,                                                  -- field description
-    `username` varchar(31) NOT NULL default '',                                     -- field description
-    `password` char(50) default NULL,                                               -- field description
-    `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,    -- field description
+CREATE TABLE IF NOT EXISTS `pending_users` (                                        
+    `id` int(11) unsigned NOT NULL auto_increment,                                  
+    `key` varchar(32) NOT NULL,                                                     
+    `email` varchar(127) NOT NULL,                                                  
+    `username` varchar(31) NOT NULL default '',                                     
+    `password` char(50) default NULL,                                               
+    `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,    
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_username` (`username`),
   UNIQUE KEY `uniq_email` (`email`)
@@ -718,10 +718,10 @@ CREATE TABLE IF NOT EXISTS `pending_users` (                                    
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `roles` (                                                -- table description
-    `id` int(11) unsigned NOT NULL auto_increment,                                  -- field description
-    `name` varchar(32) NOT NULL,                                                    -- field description
-    `description` varchar(255) NOT NULL,                                         -- field description
+CREATE TABLE IF NOT EXISTS `roles` (                                                
+    `id` int(11) unsigned NOT NULL auto_increment,                                  
+    `name` varchar(32) NOT NULL,                                                    
+    `description` varchar(255) NOT NULL,                                         
 	`reports_view` tinyint(4) NOT NULL default '0',
 	`reports_edit` tinyint(4) NOT NULL default '0',
 	`reports_evaluation` tinyint(4) NOT NULL default '0',
@@ -734,18 +734,21 @@ CREATE TABLE IF NOT EXISTS `roles` (                                            
 	`settings` tinyint(4) NOT NULL default '0',
 	`manage` tinyint(4) NOT NULL default '0',
 	`users` tinyint(4) NOT NULL default '0',
+	`manage_roles` tinyint(4) NOT NULL default '0',
+	`checkin` tinyint(4) NOT NULL default '1',
+	`checkin_admin` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
 -- Dumping data for table `roles`
 
-INSERT INTO `roles` (`id`, `name`, `description`, `reports_view`, `reports_edit`, `reports_evaluation`, `reports_comments`, `reports_download`, `reports_upload`, `messages`, `messages_reporters`, `stats`, `settings`, `manage`, `users`) VALUES
-(1, 'login', 'Login privileges, granted after account confirmation', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(2, 'admin', 'Administrative user, has access to almost everything.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(3, 'superadmin','Super administrative user, has access to everything.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO `roles` (`id`, `name`, `description`, `reports_view`, `reports_edit`, `reports_evaluation`, `reports_comments`, `reports_download`, `reports_upload`, `messages`, `messages_reporters`, `stats`, `settings`, `manage`, `users`, `manage_roles`, `checkin`, `checkin_admin`) VALUES
+(1, 'login', 'Login privileges, granted after account confirmation', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+(2, 'admin', 'Administrative user, has access to almost everything.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1),
+(3, 'superadmin','Super administrative user, has access to everything.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 
 /**
@@ -753,12 +756,12 @@ INSERT INTO `roles` (`id`, `name`, `description`, `reports_view`, `reports_edit`
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `roles_users` (                                          -- table description
-    `user_id` int(11) unsigned NOT NULL,                                            -- field description
-    `role_id` int(11) unsigned NOT NULL,                                            -- field description
+CREATE TABLE IF NOT EXISTS `roles_users` (                                          
+    `user_id` int(11) unsigned NOT NULL,                                            
+    `role_id` int(11) unsigned NOT NULL,                                            
   PRIMARY KEY  (`user_id`,`role_id`),
   KEY `fk_role_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
@@ -775,10 +778,10 @@ INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `sessions` (                                             -- table description
-    `session_id` varchar(40) NOT NULL,                                              -- field description
-    `last_activity` int(10) unsigned NOT NULL,                                      -- field description
-    `data` text NOT NULL,                                                           -- field description
+CREATE TABLE IF NOT EXISTS `sessions` (                                             
+    `session_id` varchar(40) NOT NULL,                                              
+    `last_activity` int(10) unsigned NOT NULL,                                      
+    `data` text NOT NULL,                                                           
   PRIMARY KEY  (`session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -793,60 +796,62 @@ CREATE TABLE IF NOT EXISTS `sessions` (                                         
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `settings` (                                             -- table description
-    `id` int(10) unsigned NOT NULL auto_increment,                                  -- field description
-    `site_name` varchar(255) default NULL,                                          -- field description
-    `site_tagline` varchar(255) default NULL,                                       -- field description
-    `site_email` varchar(120) default NULL,                                         -- field description
-    `site_key` varchar(100) default NULL,                                           -- field description
-    `site_language` varchar(10) NOT NULL default 'en_US',                           -- field description
-    `site_style` varchar(50) NOT NULL default 'default',                            -- field description
-    `site_timezone` varchar(80) default NULL,                                       -- field description
-    `site_contact_page` TINYINT NOT NULL DEFAULT '1',                               -- field description
-    `site_help_page` TINYINT NOT NULL DEFAULT '1',                                  -- field description
-    `site_message` TEXT NOT NULL DEFAULT '',                                        -- field description
-    `allow_reports` tinyint(4) NOT NULL default '1',                                -- field description
-    `allow_comments` tinyint(4) NOT NULL default '1',                               -- field description
-    `allow_feed` tinyint(4) NOT NULL default '1',                                   -- field description
-    `allow_stat_sharing` tinyint(4) NOT NULL default '1',                           -- field description
-    `allow_clustering` tinyint(4) NOT NULL default '0',                             -- field description
-	`cache_pages` tinyint(4) NOT NULL DEFAULT '0',
-	`cache_pages_lifetime` int(4) NOT NULL DEFAULT '1800',
+CREATE TABLE IF NOT EXISTS `settings` (                                             
+    `id` int(10) unsigned NOT NULL auto_increment,                                  
+    `site_name` varchar(255) default NULL,                                          
+    `site_tagline` varchar(255) default NULL,                                       
+    `site_email` varchar(120) default NULL,                                         
+    `site_key` varchar(100) default NULL,                                           
+    `site_language` varchar(10) NOT NULL default 'en_US',                           
+    `site_style` varchar(50) NOT NULL default 'default',                            
+    `site_timezone` varchar(80) default NULL,                                       
+    `site_contact_page` TINYINT NOT NULL DEFAULT '1',                               
+    `site_help_page` TINYINT NOT NULL DEFAULT '1',                                  
+    `site_message` TEXT NOT NULL DEFAULT '',                                        
+    `site_copyright_statement` TEXT DEFAULT NULL,                           
+    `allow_reports` tinyint(4) NOT NULL default '1',                                
+    `allow_comments` tinyint(4) NOT NULL default '1',                               
+    `allow_feed` tinyint(4) NOT NULL default '1',                                   
+    `allow_stat_sharing` tinyint(4) NOT NULL default '1',                           
+    `allow_clustering` tinyint(4) NOT NULL default '0',                             
+    `cache_pages` tinyint(4) NOT NULL DEFAULT '0',
+    `cache_pages_lifetime` int(4) NOT NULL DEFAULT '1800',
+    `private_deployment` tinyint(4) NOT NULL DEFAULT '0',
     `default_map` varchar(100) NOT NULL DEFAULT 'google_normal',
-    `default_map_all` varchar(20) NOT NULL default 'CC0000',                        -- field description
-    `api_google` varchar(200) default NULL,                                         -- field description
-    `api_yahoo` varchar(200) default NULL,                                          -- field description
-    `api_live` varchar(200) default NULL,                                           -- field description
-    `api_akismet` VARCHAR( 200 ) default NULL,                                      -- field description
-    `default_country` int(11) default NULL,                                         -- field description
-    `multi_country` TINYINT NOT NULL DEFAULT '0',                                   -- field description
-    `default_city` varchar(150) default NULL,                                       -- field description
-    `default_lat` varchar(100) default NULL,                                        -- field description
-    `default_lon` varchar(100) default NULL,                                        -- field description
-    `default_zoom` tinyint(4) NOT NULL default '10',                                -- field description
-    `items_per_page` smallint(6) NOT NULL default '20',                             -- field description
-    `items_per_page_admin` smallint(6) NOT NULL default '20',                       -- field description
-	`sms_provider` varchar(100) NULL DEFAULT NULL,
-    `sms_no1` varchar(100) default NULL,                                            -- field description
-    `sms_no2` varchar(100) default NULL,                                            -- field description
-    `sms_no3` varchar(100) default NULL,                                            -- field description
-    `google_analytics` text,                                                        -- field description
-    `twitter_hashtags` text default NULL,                                           -- field description
-    `laconica_username` varchar(50) default NULL,                                   -- field description
-    `laconica_password` varchar(50) default NULL,                                   -- field description
-    `laconica_site` varchar(30) default NULL COMMENT 'a laconica site',             -- field description
-    `date_modify` datetime default NULL,                                            -- field description
-    `stat_id` BIGINT default NULL COMMENT 'comes from centralized stats',           -- field description
-    `stat_key` VARCHAR(30) NOT NULL ,                                               -- field description
-    `email_username` VARCHAR(100) NOT NULL ,                                        -- field description
-    `email_password` VARCHAR(100) NOT NULL ,                                        -- field description
-    `email_port` INT(11) NOT NULL ,                                                 -- field description
-    `email_host` VARCHAR(100) NOT NULL ,                                            -- field description
-    `email_servertype` VARCHAR(100) NOT NULL ,                                      -- field description
-    `email_ssl` INT(5) NOT NULL,                                                    -- field description
-    `alerts_email` VARCHAR(120) NOT NULL,                                           -- field description
-    `db_version` varchar(20) default NULL,                                          -- field description
-    `ushahidi_version` varchar(20) default NULL,                                    -- field description
+    `default_map_all` varchar(20) NOT NULL default 'CC0000',                        
+    `api_google` varchar(200) default NULL,                                         
+    `api_yahoo` varchar(200) default NULL,                                          
+    `api_live` varchar(200) default NULL,                                           
+    `api_akismet` VARCHAR( 200 ) default NULL,                                      
+    `default_country` int(11) default NULL,                                         
+    `multi_country` TINYINT NOT NULL DEFAULT '0',                                   
+    `default_city` varchar(150) default NULL,                                       
+    `default_lat` varchar(100) default NULL,                                        
+    `default_lon` varchar(100) default NULL,                                        
+    `default_zoom` tinyint(4) NOT NULL default '10',                                
+    `items_per_page` smallint(6) NOT NULL default '20',                             
+    `items_per_page_admin` smallint(6) NOT NULL default '20',                       
+    `sms_provider` varchar(100) NULL DEFAULT NULL,
+    `sms_no1` varchar(100) default NULL,                                            
+    `sms_no2` varchar(100) default NULL,                                            
+    `sms_no3` varchar(100) default NULL,                                            
+    `google_analytics` text,                                                        
+    `twitter_hashtags` text default NULL,                                           
+    `date_modify` datetime default NULL,                                            
+    `stat_id` BIGINT default NULL COMMENT 'comes from centralized stats',           
+    `stat_key` VARCHAR(30) NOT NULL ,                                               
+    `email_username` VARCHAR(100) NOT NULL ,                                        
+    `email_password` VARCHAR(100) NOT NULL ,                                        
+    `email_port` INT(11) NOT NULL ,                                                 
+    `email_host` VARCHAR(100) NOT NULL ,                                            
+    `email_servertype` VARCHAR(100) NOT NULL ,                                      
+    `email_ssl` INT(5) NOT NULL,                                                    
+	`ftp_server` varchar(100) NULL DEFAULT NULL,
+	`ftp_user_name` varchar(100) NULL DEFAULT NULL,
+    `alerts_email` VARCHAR(120) NOT NULL,
+    `checkins` tinyint(4) NOT NULL default '0', 
+    `db_version` varchar(20) default NULL,                                          
+    `ushahidi_version` varchar(20) default NULL,                                    
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ; 
 
@@ -862,20 +867,21 @@ INSERT INTO `settings` (`id`, `site_name`, `api_google`, `api_yahoo`, `api_live`
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `users` (                                                -- table description
-    `id` int(11) unsigned NOT NULL auto_increment,                                  -- field description
-    `name` varchar(200) default NULL,                                               -- field description
-    `email` varchar(127) NOT NULL,                                                  -- field description
-    `username` varchar(31) NOT NULL default '',                                     -- field description
-    `password` char(50) NOT NULL,                                                   -- field description
-    `logins` int(10) unsigned NOT NULL default '0',                                 -- field description
-    `last_login` int(10) unsigned default NULL,                                     -- field description
-    `notify` tinyint(1) NOT NULL default '0' COMMENT 'Flag incase admin opts in for email notifications',    -- field description
-    `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,    -- field description
+CREATE TABLE IF NOT EXISTS `users` (                                                
+    `id` int(11) unsigned NOT NULL auto_increment,                                  
+    `name` varchar(200) default NULL,                                               
+    `email` varchar(127) NOT NULL,                                                  
+    `username` varchar(31) NOT NULL default '',                                     
+    `password` char(50) NOT NULL,                                                   
+    `logins` int(10) unsigned NOT NULL default '0',                                 
+    `last_login` int(10) unsigned default NULL,                                     
+    `notify` tinyint(1) NOT NULL default '0' COMMENT 'Flag incase admin opts in for email notifications',    
+    `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+    `color` varchar(6) NOT NULL DEFAULT 'FF0000',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_username` (`username`),
   UNIQUE KEY `uniq_email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
@@ -890,17 +896,17 @@ INSERT INTO `users` (`id`, `name`, `email`, `username`, `password`, `logins`, `l
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `user_tokens` (                                          -- table description
-    `id` int(11) unsigned NOT NULL auto_increment,                                  -- field description
-    `user_id` int(11) unsigned NOT NULL,                                            -- field description
-    `user_agent` varchar(40) NOT NULL,                                              -- field description
-    `token` varchar(32) NOT NULL,                                                   -- field description
-    `created` int(10) unsigned NOT NULL,                                            -- field description
-    `expires` int(10) unsigned NOT NULL,                                            -- field description
+CREATE TABLE IF NOT EXISTS `user_tokens` (                                          
+    `id` int(11) unsigned NOT NULL auto_increment,                                  
+    `user_id` int(11) unsigned NOT NULL,                                            
+    `user_agent` varchar(40) NOT NULL,                                              
+    `token` varchar(32) NOT NULL,                                                   
+    `created` int(10) unsigned NOT NULL,                                            
+    `expires` int(10) unsigned NOT NULL,                                            
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_token` (`token`),
   KEY `fk_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
@@ -913,14 +919,14 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (                                      
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `verified` (                                             -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `incident_id` bigint(20) default NULL,                                          -- field description
-    `idp_id` bigint(20) default NULL,                                               -- field description
-    `user_id` int(11) default NULL,                                                 -- field description
-    `verified_comment` longtext default NULL,                                       -- field description
-    `verified_date` datetime default NULL,                                          -- field description
-    `verified_status` tinyint(4) NOT NULL default '0',                              -- field description
+CREATE TABLE IF NOT EXISTS `verified` (                                             
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `incident_id` bigint(20) default NULL,                                          
+    `idp_id` bigint(20) default NULL,                                               
+    `user_id` int(11) default NULL,                                                 
+    `verified_comment` longtext default NULL,                                       
+    `verified_date` datetime default NULL,                                          
+    `verified_status` tinyint(4) NOT NULL default '0',                              
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -935,16 +941,16 @@ CREATE TABLE IF NOT EXISTS `verified` (                                         
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `alert` (                                                -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `alert_type` tinyint(4) NOT NULL COMMENT '1 - MOBILE, 2 - EMAIL',               -- field description
-    `alert_recipient` varchar(200) default NULL,                                    -- field description
-    `alert_code` varchar(30) default NULL,                                          -- field description
-    `alert_confirmed` tinyint(4) NOT NULL default '0',                              -- field description
-    `alert_lat` varchar(150) default NULL,                                          -- field description
-    `alert_lon` varchar(150) default NULL,                                          -- field description
-    `alert_radius` TINYINT NOT NULL DEFAULT '20',                                   -- field description
-    `alert_ip` varchar(100) default NULL,                                           -- field description
+CREATE TABLE IF NOT EXISTS `alert` (                                                
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `alert_type` tinyint(4) NOT NULL COMMENT '1 - MOBILE, 2 - EMAIL',               
+    `alert_recipient` varchar(200) default NULL,                                    
+    `alert_code` varchar(30) default NULL,                                          
+    `alert_confirmed` tinyint(4) NOT NULL default '0',                              
+    `alert_lat` varchar(150) default NULL,                                          
+    `alert_lon` varchar(150) default NULL,                                          
+    `alert_radius` TINYINT NOT NULL DEFAULT '20',                                   
+    `alert_ip` varchar(100) default NULL,                                           
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_alert_code` (`alert_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -960,12 +966,12 @@ CREATE TABLE IF NOT EXISTS `alert` (                                            
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `alert_sent`                                             -- table description
+CREATE TABLE IF NOT EXISTS `alert_sent`                                             
 (
-    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT,                                  -- field description
-    `incident_id` BIGINT NOT NULL,                                                  -- field description
-    `alert_id` BIGINT NOT NULL,                                                     -- field description
-    `alert_date` DATETIME NULL,                                                     -- field description
+    `id` BIGINT unsigned  NOT NULL AUTO_INCREMENT,                                  
+    `incident_id` BIGINT NOT NULL,                                                  
+    `alert_id` BIGINT NOT NULL,                                                     
+    `alert_date` DATETIME NULL,                                                     
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -980,12 +986,12 @@ PRIMARY KEY (`id`)
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `city` (                                                 -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `country_id` int(11) default NULL,                                              -- field description
-    `city` varchar(200) default NULL,                                               -- field description
-    `city_lat` varchar(150) default NULL,                                           -- field description
-    `city_lon` varchar(200) default NULL,                                           -- field description
+CREATE TABLE IF NOT EXISTS `city` (                                                 
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `country_id` int(11) default NULL,                                              
+    `city` varchar(200) default NULL,                                               
+    `city_lat` varchar(150) default NULL,                                           
+    `city_lon` varchar(200) default NULL,                                           
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1000,16 +1006,16 @@ CREATE TABLE IF NOT EXISTS `city` (                                             
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `scheduler` (                                            -- table description
-    `id` int(10) unsigned NOT NULL auto_increment,                                  -- field description
-    `scheduler_name` varchar(100) NOT NULL,                                         -- field description
-    `scheduler_last` int(10) unsigned NOT NULL default '0',                         -- field description
-    `scheduler_weekday` smallint(6) NOT NULL default '-1',                          -- field description
-    `scheduler_day` smallint(6) NOT NULL default '-1',                              -- field description
-    `scheduler_hour` smallint(6) NOT NULL default '-1',                             -- field description
-    `scheduler_minute` smallint(6) NOT NULL,                                        -- field description
-    `scheduler_controller` varchar(100) NOT NULL,                                   -- field description
-    `scheduler_active` tinyint(4) NOT NULL default '1',                             -- field description
+CREATE TABLE IF NOT EXISTS `scheduler` (                                            
+    `id` int(10) unsigned NOT NULL auto_increment,                                  
+    `scheduler_name` varchar(100) NOT NULL,                                         
+    `scheduler_last` int(10) unsigned NOT NULL default '0',                         
+    `scheduler_weekday` smallint(6) NOT NULL default '-1',                          
+    `scheduler_day` smallint(6) NOT NULL default '-1',                              
+    `scheduler_hour` smallint(6) NOT NULL default '-1',                             
+    `scheduler_minute` smallint(6) NOT NULL,                                        
+    `scheduler_controller` varchar(100) NOT NULL,                                   
+    `scheduler_active` tinyint(4) NOT NULL default '1',                             
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
 
@@ -1030,12 +1036,12 @@ INSERT INTO `scheduler` (`id`, `scheduler_name`, `scheduler_last`, `scheduler_we
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `scheduler_log` (                                        -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `scheduler_id` int(11) NOT NULL,                                                -- field description
-    `scheduler_name` varchar(100) NOT NULL,                                         -- field description
-    `scheduler_status` varchar(20) default NULL,                                    -- field description
-    `scheduler_date` int(10) unsigned NOT NULL,                                     -- field description
+CREATE TABLE IF NOT EXISTS `scheduler_log` (                                        
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `scheduler_id` int(11) NOT NULL,                                                
+    `scheduler_name` varchar(100) NOT NULL,                                         
+    `scheduler_status` varchar(20) default NULL,                                    
+    `scheduler_date` int(10) unsigned NOT NULL,                                     
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1050,25 +1056,25 @@ CREATE TABLE IF NOT EXISTS `scheduler_log` (                                    
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `cluster` (                                              -- table description
-    `id` int(11) NOT NULL,                                                          -- field description
-    `location_id` bigint(20) NOT NULL default '0',                                  -- field description
-    `latitude` double NOT NULL,                                                     -- field description
-    `longitude` double NOT NULL,                                                    -- field description
-    `latitude_min` double NOT NULL,                                                 -- field description
-    `longitude_min` double NOT NULL,                                                -- field description
-    `latitude_max` double NOT NULL,                                                 -- field description
-    `longitude_max` double NOT NULL,                                                -- field description
-    `child_count` int(11) NOT NULL,                                                 -- field description
-    `parent_id` int(11) NOT NULL,                                                   -- field description
-    `left_side` int(11) NOT NULL,                                                   -- field description
-    `right_side` int(11) NOT NULL,                                                  -- field description
-    `level` int(11) NOT NULL,                                                       -- field description
-    `incident_id` bigint(20) NOT NULL default '0',                                  -- field description
-    `incident_title` varchar(255) default NULL,                                     -- field description
-    `incident_date` int(10) NOT NULL default 0,                                     -- field description
-    `category_id` int(11) UNSIGNED NOT NULL default '0',                            -- field description
-    `category_color` varchar(20) NOT NULL default '990000',                         -- field description
+CREATE TABLE IF NOT EXISTS `cluster` (                                              
+    `id` int(11) NOT NULL,                                                          
+    `location_id` bigint(20) NOT NULL default '0',                                  
+    `latitude` double NOT NULL,                                                     
+    `longitude` double NOT NULL,                                                    
+    `latitude_min` double NOT NULL,                                                 
+    `longitude_min` double NOT NULL,                                                
+    `latitude_max` double NOT NULL,                                                 
+    `longitude_max` double NOT NULL,                                                
+    `child_count` int(11) NOT NULL,                                                 
+    `parent_id` int(11) NOT NULL,                                                   
+    `left_side` int(11) NOT NULL,                                                   
+    `right_side` int(11) NOT NULL,                                                  
+    `level` int(11) NOT NULL,                                                       
+    `incident_id` bigint(20) NOT NULL default '0',                                  
+    `incident_title` varchar(255) default NULL,                                     
+    `incident_date` int(10) NOT NULL default 0,                                     
+    `category_id` int(11) UNSIGNED NOT NULL default '0',                            
+    `category_color` varchar(20) NOT NULL default '990000',                         
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1083,11 +1089,11 @@ CREATE TABLE IF NOT EXISTS `cluster` (                                          
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `form` (                                                 -- table description
-    `id` int(11) NOT NULL auto_increment,                                           -- field description
-    `form_title` varchar(200) NOT NULL,                                             -- field description
-    `form_description` text,                                                        -- field description
-    `form_active` tinyint(4) default '1',                                           -- field description
+CREATE TABLE IF NOT EXISTS `form` (                                                 
+    `id` int(11) NOT NULL auto_increment,                                           
+    `form_title` varchar(200) NOT NULL,                                             
+    `form_description` text,                                                        
+    `form_active` tinyint(4) default '1',                                           
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1105,19 +1111,19 @@ INSERT INTO `form` (`id`, `form_title`, `form_description`, `form_active`) VALUE
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `form_field` (                                           -- table description
-    `id` int(11) NOT NULL auto_increment,                                           -- field description
-    `form_id` int(11) NOT NULL default '0',                                         -- field description
-    `field_name` varchar(200) default NULL,                                         -- field description
-    `field_type` tinyint(4) NOT NULL default '1' COMMENT '1 - TEXTFIELD, 2 - TEXTAREA (FREETEXT), 3 - DATE, 4 - PASSWORD, 5 - RADIO, 6 - CHECKBOX',    -- field description
-    `field_required` tinyint(4) default '0',                                        -- field description
-    `field_options` text,                                                           -- field description
-    `field_position` tinyint(4) NOT NULL default '0',                               -- field description
-    `field_default` varchar(200) default NULL,                                      -- field description
-    `field_maxlength` int(11) NOT NULL default '0',                                 -- field description
-    `field_width` smallint(6) NOT NULL default '0',                                 -- field description
-    `field_height` tinyint(4) default '5',                                          -- field description
-    `field_isdate` tinyint(4) NOT NULL default '0',                                 -- field description
+CREATE TABLE IF NOT EXISTS `form_field` (                                           
+    `id` int(11) NOT NULL auto_increment,                                           
+    `form_id` int(11) NOT NULL default '0',                                         
+    `field_name` varchar(200) default NULL,                                         
+    `field_type` tinyint(4) NOT NULL default '1' COMMENT '1 - TEXTFIELD, 2 - TEXTAREA (FREETEXT), 3 - DATE, 4 - PASSWORD, 5 - RADIO, 6 - CHECKBOX',    
+    `field_required` tinyint(4) default '0',                                        
+    `field_options` text,                                                           
+    `field_position` tinyint(4) NOT NULL default '0',                               
+    `field_default` varchar(200) default NULL,                                      
+    `field_maxlength` int(11) NOT NULL default '0',                                 
+    `field_width` smallint(6) NOT NULL default '0',                                 
+    `field_height` tinyint(4) default '5',                                          
+    `field_isdate` tinyint(4) NOT NULL default '0',                                 
   PRIMARY KEY  (`id`),
   KEY `fk_form_id` (`form_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1133,11 +1139,11 @@ CREATE TABLE IF NOT EXISTS `form_field` (                                       
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `form_response` (                                        -- table description
-    `id` bigint(20) NOT NULL auto_increment,                                        -- field description
-    `form_field_id` int(11) NOT NULL,                                               -- field description
-    `incident_id` bigint(20) NOT NULL,                                              -- field description
-    `form_response` text NOT NULL,                                                  -- field description
+CREATE TABLE IF NOT EXISTS `form_response` (                                        
+    `id` bigint(20) NOT NULL auto_increment,                                        
+    `form_field_id` int(11) NOT NULL,                                               
+    `incident_id` bigint(20) NOT NULL,                                              
+    `form_response` text NOT NULL,                                                  
   PRIMARY KEY  (`id`),
   KEY `fk_form_field_id` (`form_field_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1153,11 +1159,11 @@ CREATE TABLE IF NOT EXISTS `form_response` (                                    
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `level` (                                                -- table description
-    `id` INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT,                                -- field description
-    `level_title` varchar(200) default NULL,                                        -- field description
-    `level_description` varchar(200) default NULL,                                  -- field description
-    `level_weight` tinyint(4) NOT NULL,                                             -- field description
+CREATE TABLE IF NOT EXISTS `level` (                                                
+    `id` INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT,                                
+    `level_title` varchar(200) default NULL,                                        
+    `level_description` varchar(200) default NULL,                                  
+    `level_weight` tinyint(4) NOT NULL,                                             
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1179,21 +1185,21 @@ INSERT INTO `level` (`id`, `level_title`, `level_description`, `level_weight`) V
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `reporter` (                                             -- table description
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               -- field description
-    `incident_id` bigint(20) default NULL,                                          -- field description
-    `location_id` bigint(20) default NULL,                                          -- field description
-    `user_id` int(11) default NULL,                                                 -- field description
-    `service_id` int(11) default NULL,                                              -- field description
-    `level_id` INT( 11 ) NULL,                                                      -- field description
-    `service_userid` varchar(255) default NULL,                                     -- field description
-    `service_account` varchar(255) default NULL,                                    -- field description
-    `reporter_first` varchar(200) default NULL,                                     -- field description
-    `reporter_last` varchar(200) default NULL,                                      -- field description
-    `reporter_email` varchar(120) default NULL,                                     -- field description
-    `reporter_phone` varchar(60) default NULL,                                      -- field description
-    `reporter_ip` varchar(50) default NULL,                                         -- field description
-    `reporter_date` datetime default NULL,                                          -- field description
+CREATE TABLE IF NOT EXISTS `reporter` (                                             
+    `id` bigint(20) unsigned NOT NULL auto_increment,                               
+    `incident_id` bigint(20) default NULL,                                          
+    `location_id` bigint(20) default NULL,                                          
+    `user_id` int(11) default NULL,                                                 
+    `service_id` int(11) default NULL,                                              
+    `level_id` INT( 11 ) NULL,                                                      
+    `service_userid` varchar(255) default NULL,                                     
+    `service_account` varchar(255) default NULL,                                    
+    `reporter_first` varchar(200) default NULL,                                     
+    `reporter_last` varchar(200) default NULL,                                      
+    `reporter_email` varchar(120) default NULL,                                     
+    `reporter_phone` varchar(60) default NULL,                                      
+    `reporter_ip` varchar(50) default NULL,                                         
+    `reporter_date` datetime default NULL,                                          
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1205,12 +1211,12 @@ CREATE TABLE IF NOT EXISTS `reporter` (                                         
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `service` (                                              -- table description
-    `id` int(10) unsigned NOT NULL auto_increment,                                  -- field description
-    `service_name` varchar(100) default NULL,                                       -- field description
-    `service_description` varchar(255) default NULL,                                -- field description
-    `service_url` varchar(255) default NULL,                                        -- field description
-    `service_api` varchar(255) default NULL,                                        -- field description
+CREATE TABLE IF NOT EXISTS `service` (                                              
+    `id` int(10) unsigned NOT NULL auto_increment,                                  
+    `service_name` varchar(100) default NULL,                                       
+    `service_description` varchar(255) default NULL,                                
+    `service_url` varchar(255) default NULL,                                        
+    `service_api` varchar(255) default NULL,                                        
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1220,18 +1226,21 @@ CREATE TABLE IF NOT EXISTS `service` (                                          
 
 INSERT INTO `service` (`id`, `service_name`, `service_description`, `service_url`, `service_api`) VALUES
 (1, 'SMS', 'Text messages from phones', NULL, NULL),
-(2, 'Email', 'Text messages from phones', NULL, NULL);
+(2, 'Email', 'Text messages from phones', NULL, NULL),
+(3, 'Twitter', 'Tweets tweets tweets', 'http://twitter.com', NULL);
+
+
 /**
 * Table structure for table `feedback`
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `feedback` (                                             -- table description
-    `id` tinyint(11) NOT NULL auto_increment,                                       -- field description
-    `feedback_mesg` text NOT NULL,                                                  -- field description
-    `feedback_status` tinyint(3) NOT NULL,                                          -- field description
-    `feedback_dateadd` datetime default NULL,                                       -- field description
-    `feedback_datemodify` datetime default NULL,                                    -- field description
+CREATE TABLE IF NOT EXISTS `feedback` (                                             
+    `id` tinyint(11) NOT NULL auto_increment,                                       
+    `feedback_mesg` text NOT NULL,                                                  
+    `feedback_status` tinyint(3) NOT NULL,                                          
+    `feedback_dateadd` datetime default NULL,                                       
+    `feedback_datemodify` datetime default NULL,                                    
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1244,12 +1253,12 @@ CREATE TABLE IF NOT EXISTS `feedback` (                                         
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `feedback_person` (                                      -- table description
-    `id` tinyint(11) NOT NULL auto_increment,                                       -- field description
-    `feedback_id` tinyint(11) NOT NULL,                                             -- field description
-    `person_email` varchar(30) NOT NULL,                                            -- field description
-    `person_date` datetime default NULL,                                            -- field description
-    `person_ip` varchar(50) default NULL,                                           -- field description
+CREATE TABLE IF NOT EXISTS `feedback_person` (                                      
+    `id` tinyint(11) NOT NULL auto_increment,                                       
+    `feedback_id` tinyint(11) NOT NULL,                                             
+    `person_email` varchar(30) NOT NULL,                                            
+    `person_date` datetime default NULL,                                            
+    `person_ip` varchar(50) default NULL,                                           
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1261,7 +1270,7 @@ CREATE TABLE IF NOT EXISTS `feedback_person` (                                  
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `sharing` (                                              -- table description
+CREATE TABLE IF NOT EXISTS `sharing` (                                              
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`sharing_name` VARCHAR(150) NOT NULL,				-- name of the sharing website
 	`sharing_url` VARCHAR(255) NOT NULL,				-- main url of the sharing website
@@ -1277,7 +1286,7 @@ CREATE TABLE IF NOT EXISTS `sharing` (                                          
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `sharing_incident` (                                          -- table description
+CREATE TABLE IF NOT EXISTS `sharing_incident` (                                          
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`sharing_id` INT UNSIGNED NOT NULL,
 	`incident_id` INT NOT NULL,							-- remote website incident ID
@@ -1296,21 +1305,14 @@ CREATE TABLE IF NOT EXISTS `sharing_incident` (                                 
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `page` (                                                 -- table description
-    `id` int(11) NOT NULL auto_increment,                                           -- field description
-    `page_title` varchar(255) NOT NULL,                                             -- field description
-    `page_description` longtext,                                                    -- field description
-    `page_tab` varchar(100) NOT NULL,                                               -- field description
-    `page_active` tinyint(4) NOT NULL default '0',                                  -- field description
+CREATE TABLE IF NOT EXISTS `page` (                                                 
+    `id` int(11) NOT NULL auto_increment,                                           
+    `page_title` varchar(255) NOT NULL,                                             
+    `page_description` longtext,                                                    
+    `page_tab` varchar(100) NOT NULL,                                               
+    `page_active` tinyint(4) NOT NULL default '0',                                  
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-
-
--- Dumping data for table `page`
-
-INSERT INTO `page` (`id`, `page_title`, `page_description`, `page_tab`, `page_active`) VALUES
-(1, 'About Us', '<p>This is the default about us page.</p>', 'About Us', 1);
 
 
 /**
@@ -1318,29 +1320,55 @@ INSERT INTO `page` (`id`, `page_title`, `page_description`, `page_tab`, `page_ac
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `layer` (                                                -- table description
-    `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,                            -- field description
-    `layer_name` VARCHAR( 255 ) NULL ,                                              -- field description
-    `layer_url` VARCHAR( 255 ) NULL ,                                               -- field description
-    `layer_file` VARCHAR( 100 ) NULL ,                                              -- field description
-    `layer_color` VARCHAR( 20 ) NULL ,                                              -- field description
-    `layer_visible` TINYINT NOT NULL DEFAULT '1'                                    -- field description
+CREATE TABLE IF NOT EXISTS `layer` (                                                
+    `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,                            
+    `layer_name` VARCHAR( 255 ) NULL ,                                              
+    `layer_url` VARCHAR( 255 ) NULL ,                                               
+    `layer_file` VARCHAR( 100 ) NULL ,                                              
+    `layer_color` VARCHAR( 20 ) NULL ,                                              
+    `layer_visible` TINYINT NOT NULL DEFAULT '1'                                    
 ) ENGINE = MYISAM  DEFAULT CHARSET=utf8;
 
 
+--
+-- Definition of table `api_settings`
+--
+
+CREATE TABLE IF NOT EXISTS `api_settings` (                                         
+  `id` int(11) NOT NULL AUTO_INCREMENT,	                                            
+  `default_record_limit` int(11) NOT NULL DEFAULT '20',                             
+  `max_record_limit` int(11) DEFAULT NULL,                                          
+  `max_requests_per_ip_address` int(11) DEFAULT NULL,                               
+  `max_requests_quota_basis` int(11) DEFAULT NULL,                                  
+  `modification_date` datetime NOT NULL,                                            
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='For storing API logging settings';
 
 /**
 * Table structure for table `api_banned`
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `api_banned` (                                           -- table description
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  -- field description
-    `banned_ipaddress` varchar(50) NOT NULL,                                        -- field description
-    `banned_date` datetime NOT NULL,                                                -- field description
+CREATE TABLE IF NOT EXISTS `api_banned` (                                           
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  
+    `banned_ipaddress` varchar(50) NOT NULL,                                        
+    `banned_date` datetime NOT NULL,                                                
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='For logging banned API IP addresses' AUTO_INCREMENT=8 ;
 
+
+/**
+* Table structure for table 'alert_category'
+*
+*/
+CREATE TABLE IF NOT EXISTS `alert_category` (
+  `id` int(11) NOT NULL auto_increment,
+  `alert_id` int(11),
+  `category_id` int(11),
+  PRIMARY KEY (`id`),
+  KEY `alert_id` (`alert_id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 
 /**
@@ -1348,17 +1376,15 @@ CREATE TABLE IF NOT EXISTS `api_banned` (                                       
 * 
 */
 
-CREATE TABLE IF NOT EXISTS `api_log` (                                              -- table description
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  -- field description
-    `api_task` varchar(10) NOT NULL,                                                -- field description
-    `api_parameters` varchar(50) NOT NULL,                                          -- field description
-    `api_records` tinyint(11) NOT NULL,                                             -- field description
-    `api_ipaddress` varchar(50) NOT NULL,                                           -- field description
-    `api_date` datetime NOT NULL,                                                   -- field description
+CREATE TABLE IF NOT EXISTS `api_log` (                                              
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  
+    `api_task` varchar(10) NOT NULL,                                                
+    `api_parameters` varchar(100) NOT NULL,                                          
+    `api_records` tinyint(11) NOT NULL,                                             
+    `api_ipaddress` varchar(50) NOT NULL,                                           
+    `api_date` datetime NOT NULL,                                                   
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='For logging API activities' AUTO_INCREMENT=19 ;
-
-
 
 /**
 * Table structure for table `plugin`
@@ -1370,6 +1396,7 @@ CREATE TABLE IF NOT EXISTS `plugin` (
   `plugin_name` varchar(100) NOT NULL,
   `plugin_url` varchar(250) NULL,
   `plugin_description` text NULL,
+  `plugin_priority` tinyint(4) DEFAULT '0',
   `plugin_active` tinyint(4) DEFAULT '0',
   `plugin_installed` tinyint(4) DEFAULT '0',
   PRIMARY KEY  (`id`),
@@ -1377,129 +1404,43 @@ CREATE TABLE IF NOT EXISTS `plugin` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
-
 /**
-* Table structure for table `mhi_category`
-* 
+* Table structure for table `geometry`
 */
-
-CREATE TABLE `mhi_category` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  -- field description
-    `parent_id` int(11) unsigned DEFAULT NULL,                                      -- field description
-    `category_title` varchar(100) CHARACTER SET utf8 NOT NULL,                      -- field description
-    `category_active` tinyint(4) DEFAULT '1',                                       -- field description
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
-
-
-/**
-* Table structure for table `mhi_site`
-* 
-*/
-
-CREATE TABLE `mhi_site` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  -- field description
-    `user_id` int(11) NOT NULL,                                                     -- field description
-    `site_domain` varchar(32) NOT NULL,                                            -- field description
-    `site_privacy` tinyint(4) NOT NULL DEFAULT '0',                                 -- field description
-    `site_active` tinyint(4) DEFAULT '1',                                           -- field description
-    `site_dateadd` datetime NOT NULL,                                               -- field description
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
-
-
-/**
-* Table structure for table `mhi_site_category`
-* 
-*/
-
-CREATE TABLE `mhi_site_category` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,                                  -- field description
-    `site_id` int(11) unsigned NOT NULL,                                            -- field description
-    `category_id` int(11) unsigned NOT NULL,                                        -- field description
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
-
-
-/**
-* Table structure for table `mhi_site_database`
-* 
-*/
-
-CREATE TABLE `mhi_site_database` (
-    `mhi_id` int(11) NOT NULL AUTO_INCREMENT,                                       -- field description
-    `user` varchar(50) CHARACTER SET utf8 NOT NULL,                                 -- field description
-    `pass` varchar(50) CHARACTER SET utf8 NOT NULL,                                 -- field description
-    `host` varchar(100) CHARACTER SET utf8 NOT NULL,                                -- field description
-    `port` smallint(6) NOT NULL,                                                    -- field description
-    `database` varchar(100) CHARACTER SET utf8 NOT NULL,                             -- field description
-  PRIMARY KEY (`mhi_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='This table holds DB credentials for MHI instances';
-
-
-
-
-/**
-* Table structure for table `mhi_users`
-* 
-*/
-
-CREATE TABLE `mhi_users` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,                                           -- field description
-    `email` varchar(50) CHARACTER SET utf8 NOT NULL,                                -- field description
-    `firstname` varchar(30) CHARACTER SET utf8 NOT NULL,                            -- field description
-    `lastname` varchar(30) CHARACTER SET utf8 NOT NULL,                             -- field description
-    `password` varchar(40) CHARACTER SET utf8 NOT NULL,                             -- field description
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
-
-
-/**
-* Table structure for table `mhi_log`
-* 
-*/
-
-CREATE TABLE `mhi_log` (
-  `id` bigint(20) NOT NULL auto_increment,
-  `user_id` int(11) NOT NULL,
-  `action_id` int(11) NOT NULL,
-  `notes` varchar(255) NOT NULL,
-  `ip` int(10) NOT NULL,
-  `time` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
-
-
-/**
-* Table structure for table `mhi_log_actions`
-* 
-*/
-
-CREATE TABLE `mhi_log_actions` (
-  `id` int(11) NOT NULL,
-  `description` text NOT NULL,
-  PRIMARY KEY  (`id`)
+CREATE TABLE IF NOT EXISTS `geometry` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `incident_id` bigint(20) NOT NULL,
+  `geometry` geometry NOT NULL,
+  `geometry_label` varchar(150) DEFAULT NULL,
+  `geometry_comment` varchar(255) DEFAULT NULL,
+  `geometry_color` varchar(20) DEFAULT NULL,
+  `geometry_strokewidth` varchar(5) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  SPATIAL KEY `geometry` (`geometry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `mhi_log_actions` (`id`, `description`) VALUES
-(1, 'Logged in'),
-(2, 'Logged out'),
-(3, 'Created a deployment'),
-(4, 'Disabled a deployment'),
-(5, 'Password reset'),
-(6, 'New user created'),
-(7, 'Updated account information');
+/**
+* Table structure for table `checkin`
+*/
+CREATE TABLE IF NOT EXISTS `checkin`
+(
+`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+`user_id` INT UNSIGNED NOT NULL,
+`location_id` BIGINT UNSIGNED NOT NULL,
+`checkin_description` VARCHAR(255),
+`checkin_date` DATETIME NOT NULL,
+`checkin_auto` ENUM('0','1') DEFAULT '0',
+PRIMARY KEY (`id`)
+);
 
+/**
+* Table structure for table `user_devices`
+*/
+CREATE TABLE `user_devices` (
+  `id` varchar(255) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 /**
@@ -1508,38 +1449,20 @@ INSERT INTO `mhi_log_actions` (`id`, `description`) VALUES
 */
 
 /**
-* Constraints for table `roles_users`
-* 
-*/
-ALTER TABLE `roles_users`
-  ADD CONSTRAINT `roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
-
-/**
 * Constraints for table `form_field`
-* 
 */
 ALTER TABLE `form_field`
   ADD CONSTRAINT `form_field_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `form` (`id`) ON DELETE CASCADE;
 
 /**
 * Constraints for table `form_response`
-* 
 */
 ALTER TABLE `form_response`
   ADD CONSTRAINT `form_response_ibfk_1` FOREIGN KEY (`form_field_id`) REFERENCES `form_field` (`id`) ON DELETE CASCADE;
-
-/**
-* Constraints for table `user_tokens`
-* 
-*/
-ALTER TABLE `user_tokens`
-  ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
   
 /**
 * Version information for table `settings`
 * 
 */
-UPDATE `settings` SET `ushahidi_version` = '2.0b11' WHERE `id`=1 LIMIT 1;
-UPDATE `settings` SET `db_version` = '34' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `ushahidi_version` = '2.0.2' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `db_version` = '51' WHERE `id`=1 LIMIT 1;
