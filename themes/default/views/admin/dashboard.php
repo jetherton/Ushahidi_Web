@@ -37,7 +37,7 @@
 							<?php } ?>
 						</div>
 					</div>
-					
+					<?php Event::run('ushahidi_action.dashboard_content');  ?>
 					<!-- info-container -->
 					<div class="info-container">
 						<div class="i-c-head">

@@ -24,8 +24,9 @@
 		?></h1>
 	
 		<p class="report-when-where">
-			<span class="r_date"><?php echo $incident_time.' '.$incident_date; ?> </span>
 			<span class="r_location"><?php echo $incident_location; ?></span>
+			<span class="r_date"><?php echo $incident_time.' '.$incident_date; ?> </span>			
+			<?php Event::run('ushahidi_action.report_meta_after_time', $incident_id); ?>
 		</p>
 	
 		<div class="report-category-list">

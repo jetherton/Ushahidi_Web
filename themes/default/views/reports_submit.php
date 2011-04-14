@@ -171,6 +171,7 @@
 				?>
 				<div class="report_row">
 					<div id="divMap" class="report_map"></div>
+					<?php Event::run('ushahidi_action.report_form_admin_location', $id); ?>
 					<div class="report-find-location">
 						<?php print form::input('location_find', '', ' title="'.Kohana::lang('ui_main.location_example').'" class="findtext"'); ?>
 						<div style="float:left;margin:9px 0 0 5px;"><input type="button" name="button" id="button" value="<?php echo Kohana::lang('ui_main.find_location'); ?>" class="btn_find" /></div>
