@@ -79,6 +79,7 @@ div.olLayerDiv {
 .olLayerGooglePoweredBy {
     left: 2px;
     bottom: -45px;   
+	display: none;
 }
 .olLayerGoogleV3.olLayerGooglePoweredBy {
     bottom: 0px !important;
