@@ -108,11 +108,11 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (24, 'BH', 'Bahrain', 'Manama', 0),
 (25, 'BI', 'Burundi', 'Bujumbura', 0),
 (26, 'BJ', 'Benin', 'Porto-Novo', 0),
-(27, 'BL', 'Saint BarthÃ©lemy', 'Gustavia', 0),
+(27, 'BL', 'Saint Barthélemy', 'Gustavia', 0),
 (28, 'BM', 'Bermuda', 'Hamilton', 0),
 (29, 'BN', 'Brunei', 'Bandar Seri Begawan', 0),
 (30, 'BO', 'Bolivia', 'La Paz', 0),
-(31, 'BR', 'Brazil', 'BrasÃ­lia', 0),
+(31, 'BR', 'Brazil', 'Brasília', 0),
 (32, 'BS', 'Bahamas', 'Nassau', 0),
 (33, 'BT', 'Bhutan', 'Thimphu', 0),
 (34, 'BV', 'Bouvet Island', '', 0),
@@ -128,10 +128,10 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (44, 'CI', 'Ivory Coast', 'Yamoussoukro', 0),
 (45, 'CK', 'Cook Islands', 'Avarua', 0),
 (46, 'CL', 'Chile', 'Santiago', 0),
-(47, 'CM', 'Cameroon', 'YaoundÃ©', 0),
+(47, 'CM', 'Cameroon', 'Yaoundé', 0),
 (48, 'CN', 'China', 'Beijing', 0),
-(49, 'CO', 'Colombia', 'BogotÃ¡', 0),
-(50, 'CR', 'Costa Rica', 'San JosÃ©', 0),
+(49, 'CO', 'Colombia', 'Bogotá', 0),
+(50, 'CR', 'Costa Rica', 'San José', 0),
 (51, 'CS', 'Serbia and Montenegro', 'Belgrade', 0),
 (52, 'CU', 'Cuba', 'Havana', 0),
 (53, 'CV', 'Cape Verde', 'Praia', 0),
@@ -155,7 +155,7 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (71, 'FJ', 'Fiji', 'Suva', 0),
 (72, 'FK', 'Falkland Islands', 'Stanley', 0),
 (73, 'FM', 'Micronesia', 'Palikir', 0),
-(74, 'FO', 'Faroe Islands', 'TÃ³rshavn', 0),
+(74, 'FO', 'Faroe Islands', 'Tórshavn', 0),
 (75, 'FR', 'France', 'Paris', 0),
 (76, 'GA', 'Gabon', 'Libreville', 0),
 (77, 'GB', 'United Kingdom', 'London', 0),
@@ -173,7 +173,7 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (89, 'GR', 'Greece', 'Athens', 0),
 (90, 'GS', 'South Georgia and the South Sandwich Islands', 'Grytviken', 0),
 (91, 'GT', 'Guatemala', 'Guatemala City', 0),
-(92, 'GU', 'Guam', 'HagÃ¥tÃ±a', 0),
+(92, 'GU', 'Guam', 'Hagåtña', 0),
 (93, 'GW', 'Guinea-Bissau', 'Bissau', 0),
 (94, 'GY', 'Guyana', 'Georgetown', 0),
 (95, 'HK', 'Hong Kong', 'Hong Kong', 0),
@@ -190,7 +190,7 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (106, 'IO', 'British Indian Ocean Territory', 'Diego Garcia', 0),
 (107, 'IQ', 'Iraq', 'Baghdad', 0),
 (108, 'IR', 'Iran', 'Tehran', 0),
-(109, 'IS', 'Iceland', 'ReykjavÃ­k', 0),
+(109, 'IS', 'Iceland', 'Reykjavík', 0),
 (110, 'IT', 'Italy', 'Rome', 0),
 (111, 'JE', 'Jersey', 'Saint Helier', 0),
 (112, 'JM', 'Jamaica', 'Kingston', 0),
@@ -236,13 +236,13 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (152, 'MS', 'Montserrat', 'Plymouth', 0),
 (153, 'MT', 'Malta', 'Valletta', 0),
 (154, 'MU', 'Mauritius', 'Port Louis', 0),
-(155, 'MV', 'Maldives', 'MalÃ©', 0),
+(155, 'MV', 'Maldives', 'Malé', 0),
 (156, 'MW', 'Malawi', 'Lilongwe', 0),
 (157, 'MX', 'Mexico', 'Mexico City', 0),
 (158, 'MY', 'Malaysia', 'Kuala Lumpur', 0),
 (159, 'MZ', 'Mozambique', 'Maputo', 0),
 (160, 'NA', 'Namibia', 'Windhoek', 0),
-(161, 'NC', 'New Caledonia', 'NoumÃ©a', 0),
+(161, 'NC', 'New Caledonia', 'Nouméa', 0),
 (162, 'NE', 'Niger', 'Niamey', 0),
 (163, 'NF', 'Norfolk Island', 'Kingston', 0),
 (164, 'NG', 'Nigeria', 'Abuja', 0),
@@ -267,7 +267,7 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (183, 'PS', 'Palestinian Territory', 'East Jerusalem', 0),
 (184, 'PT', 'Portugal', 'Lisbon', 0),
 (185, 'PW', 'Palau', 'Koror', 0),
-(186, 'PY', 'Paraguay', 'AsunciÃ³n', 0),
+(186, 'PY', 'Paraguay', 'Asunción', 0),
 (187, 'QA', 'Qatar', 'Doha', 0),
 (188, 'RE', 'Reunion', 'Saint-Denis', 0),
 (189, 'RO', 'Romania', 'Bucharest', 0),
@@ -289,14 +289,14 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (205, 'SN', 'Senegal', 'Dakar', 0),
 (206, 'SO', 'Somalia', 'Mogadishu', 0),
 (207, 'SR', 'Suriname', 'Paramaribo', 0),
-(208, 'ST', 'Sao Tome and Principe', 'SÃ£o TomÃ©', 0),
+(208, 'ST', 'Sao Tome and Principe', 'São Tomé', 0),
 (209, 'SV', 'El Salvador', 'San Salvador', 0),
 (210, 'SY', 'Syria', 'Damascus', 0),
 (211, 'SZ', 'Swaziland', 'Mbabane', 0),
 (212, 'TC', 'Turks and Caicos Islands', 'Cockburn Town', 0),
 (213, 'TD', 'Chad', 'N''Djamena', 0),
-(214, 'TF', 'French Southern Territories', 'Martin-de-ViviÃ¨s', 0),
-(215, 'TG', 'Togo', 'LomÃ©', 0),
+(214, 'TF', 'French Southern Territories', 'Martin-de-Viviès', 0),
+(215, 'TG', 'Togo', 'Lomé', 0),
 (216, 'TH', 'Thailand', 'Bangkok', 0),
 (217, 'TJ', 'Tajikistan', 'Dushanbe', 0),
 (218, 'TK', 'Tokelau', '', 0),
@@ -322,41 +322,13 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (238, 'VI', 'U.S. Virgin Islands', 'Charlotte Amalie', 0),
 (239, 'VN', 'Vietnam', 'Hanoi', 0),
 (240, 'VU', 'Vanuatu', 'Port Vila', 0),
-(241, 'WF', 'Wallis and Futuna', 'MatÃ¢''Utu', 0),
+(241, 'WF', 'Wallis and Futuna', 'Matâ''Utu', 0),
 (242, 'WS', 'Samoa', 'Apia', 0),
-(243, 'YE', 'Yemen', 'Sanâ€˜aâ€™', 0),
+(243, 'YE', 'Yemen', 'San'a'', 0),
 (244, 'YT', 'Mayotte', 'Mamoudzou', 0),
 (245, 'ZA', 'South Africa', 'Pretoria', 0),
 (246, 'ZM', 'Zambia', 'Lusaka', 0),
 (247, 'ZW', 'Zimbabwe', 'Harare', 0);
-
-
-/**
-* Table structure for table `idp`
-* 
-*/
-
-CREATE TABLE IF NOT EXISTS `idp` (                                                  
-    `id` bigint(20) unsigned NOT NULL auto_increment,                               
-    `incident_id` bigint(20) NOT NULL,                                              
-    `verified_id` bigint(20) default NULL,                                          
-    `idp_idnumber` varchar(100) default NULL,                                       
-    `idp_orig_idnumber` varchar(100) default NULL,                                  
-    `idp_fname` varchar(50) default NULL,                                           
-    `idp_lname` varchar(50) default NULL,                                           
-    `idp_email` varchar(100) default NULL,                                          
-    `idp_phone` varchar(50) default NULL,                                           
-    `current_location_id` bigint(20) default NULL,                                  
-    `displacedfrom_location_id` bigint(20) default NULL,                            
-    `movedto_location_id` bigint(20) default NULL,                                  
-    `idp_move_date` datetime default NULL,                                          
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
--- Dumping data for table `idp`
-
 
 
 /**
@@ -689,30 +661,6 @@ PRIMARY KEY (`id`)
 
 
 
-
-/**
-* Table structure for table `pending_users`
-* 
-*/
-
-CREATE TABLE IF NOT EXISTS `pending_users` (                                        
-    `id` int(11) unsigned NOT NULL auto_increment,                                  
-    `key` varchar(32) NOT NULL,                                                     
-    `email` varchar(127) NOT NULL,                                                  
-    `username` varchar(31) NOT NULL default '',                                     
-    `password` char(50) default NULL,                                               
-    `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,    
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `uniq_username` (`username`),
-  UNIQUE KEY `uniq_email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
--- Dumping data for table `pending_users`
-
-
-
 /**
 * Table structure for table `roles`
 * 
@@ -922,7 +870,6 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
 CREATE TABLE IF NOT EXISTS `verified` (                                             
     `id` bigint(20) unsigned NOT NULL auto_increment,                               
     `incident_id` bigint(20) default NULL,                                          
-    `idp_id` bigint(20) default NULL,                                               
     `user_id` int(11) default NULL,                                                 
     `verified_comment` longtext default NULL,                                       
     `verified_date` datetime default NULL,                                          
@@ -1230,40 +1177,6 @@ INSERT INTO `service` (`id`, `service_name`, `service_description`, `service_url
 (3, 'Twitter', 'Tweets tweets tweets', 'http://twitter.com', NULL);
 
 
-/**
-* Table structure for table `feedback`
-* 
-*/
-
-CREATE TABLE IF NOT EXISTS `feedback` (                                             
-    `id` tinyint(11) NOT NULL auto_increment,                                       
-    `feedback_mesg` text NOT NULL,                                                  
-    `feedback_status` tinyint(3) NOT NULL,                                          
-    `feedback_dateadd` datetime default NULL,                                       
-    `feedback_datemodify` datetime default NULL,                                    
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-
-
-/**
-* Table structure for table `feedback_person`
-* 
-*/
-
-CREATE TABLE IF NOT EXISTS `feedback_person` (                                      
-    `id` tinyint(11) NOT NULL auto_increment,                                       
-    `feedback_id` tinyint(11) NOT NULL,                                             
-    `person_email` varchar(30) NOT NULL,                                            
-    `person_date` datetime default NULL,                                            
-    `person_ip` varchar(50) default NULL,                                           
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 
 /**
 * Table structure for table `sharing`
@@ -1465,4 +1378,4 @@ ALTER TABLE `form_response`
 * 
 */
 UPDATE `settings` SET `ushahidi_version` = '2.0.2' WHERE `id`=1 LIMIT 1;
-UPDATE `settings` SET `db_version` = '51' WHERE `id`=1 LIMIT 1;
+UPDATE `settings` SET `db_version` = '52' WHERE `id`=1 LIMIT 1;
