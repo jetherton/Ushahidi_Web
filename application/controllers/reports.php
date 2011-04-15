@@ -140,6 +140,10 @@ class Reports_Controller extends Main_Controller {
 		{
 			foreach ($incident->category AS $category)
 			{
+				if($category->category_visible == 0)
+				{
+					continue;
+				}
 				$ct = (string)$category->category_title;
 				if( ! isset($localized_categories[$ct]))
 				{

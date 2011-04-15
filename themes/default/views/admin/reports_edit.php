@@ -100,7 +100,7 @@
 							</div>
 							<div class="row">
 								<h4><?php echo Kohana::lang('ui_main.description');?> <span><?php echo Kohana::lang('ui_main.include_detail');?>.</span></h4>
-								<?php print form::textarea('incident_description', $form['incident_description'], ' rows="12" cols="40"') ?>
+								<?php print form::textarea('incident_description', $form['incident_description'], ' rows="20" cols="40"') ?>
 							</div>
 
 							<?php

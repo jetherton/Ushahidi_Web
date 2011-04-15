@@ -220,7 +220,7 @@
 				var action = $(this).attr("class");
 				$('ul.map-toggles li').hide();
 				switch(action)
-				{
+				{				
 					case "wider-map":
 						$('.report-map').insertBefore($('.left-col'));
 						$('.map-holder').css({"height":"350px", "width": "900px"});
@@ -248,9 +248,8 @@
 						$('.report-map').show();
 						break;
 				};
-				
-				map.setCenter(myPoint, map.getZoom());
-				
+				map.updateSize();
+				map.pan(0,1);
 				return false;
 			});
 		});

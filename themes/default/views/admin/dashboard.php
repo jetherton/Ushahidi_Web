@@ -132,18 +132,6 @@
 								</ul>
 							</li>
 							<li>
-								<a href="<?php echo url::site() . 'admin/manage' ?>" class="categories"><?php echo Kohana::lang('ui_main.categories');?></a>
-								<strong><?php echo number_format($categories); ?></strong>
-							</li>
-							<li>
-								<span class="locations"><?php echo Kohana::lang('ui_main.locations');?></span>
-								<strong><?php echo $locations; ?></strong>
-							</li>
-							<li>
-								<a href="<?php echo url::site() . 'admin/manage/feeds' ?>" class="media"><?php echo Kohana::lang('ui_main.news_feeds');?></a>
-								<strong><?php echo number_format($incoming_media); ?></strong>
-							</li>
-							<li>
 								<a href="<?php echo url::site() . 'admin/messages' ?>" class="messages"><?php echo Kohana::lang('ui_main.messages');?></a>
 								<strong><?php echo number_format($message_count); ?></strong>
 								<ul>
@@ -154,6 +142,48 @@
 									?>
 								</ul>
 							</li>
+							<?php
+							        // If we failed to get hit data, fail.
+								$data = Stats_Model::get_hit_stats(30, null, null);
+								if ($data)
+								{
+							?>
+									<li>
+										<a href="<?php echo url::site() . 'admin/stats' ?>" class="categories">Stats</a>
+										<strong>Over last 30 days</strong>
+										<ul>
+											<?php //calculate the stats for the site over the last 30 days
+											        $counts = array();
+												foreach ($data as $label => $data_array)
+												{
+												    if ( ! isset($counts[$label]))
+												    {
+													$counts[$label] = 0;
+												    }
+												    
+												    foreach ($data_array as $timestamp => $count)
+												    {
+													$counts[$label] += $count;
+												    }
+												}
+												echo "<li>Total Visits: ".$counts["visits"]."</li>";
+												echo "<li>Unique Visitors: ".$counts["uniques"]."</li>";
+												echo "<li>Pages viewed by visitors: ".$counts["pageviews"]."</li>";
+											?>
+										</ul>
+									</li>
+							<?php
+								}
+							?>
+							<li>
+								<a href="<?php echo url::site() . 'admin/manage' ?>" class="categories"><?php echo Kohana::lang('ui_main.categories');?></a>
+								<strong><?php echo number_format($categories); ?></strong>
+							</li>
+
+							<li>
+								<a href="<?php echo url::site() . 'admin/manage/feeds' ?>" class="media"><?php echo Kohana::lang('ui_main.news_feeds');?></a>
+								<strong><?php echo number_format($incoming_media); ?></strong>
+							</li>							
 						</ul>
 					</div>
 					<!-- info-container -->

@@ -34,6 +34,11 @@
 			<?php
 				foreach($incident_category as $category) 
 				{ 
+					// don't show hidden categoies
+					if($category->category->category_visible == 0)
+					{
+						continue;
+					}
 				  if ($category->category->category_image_thumb)
 					{
 					?>
@@ -177,16 +182,18 @@
 			<!-- end videos -->
 		
 		</div>
+		<!--- We find that this just confuses users and is unessary in Liberia
 		<div class="report-additional-reports">
-			<h4><?php echo Kohana::lang('ui_main.additional_reports');?></h4>
-			<?php foreach($incident_neighbors as $neighbor) { ?>
-			  <div class="rb_report">
-  			  <h5><a href="<?php echo url::site(); ?>reports/view/<?php echo $neighbor->id; ?>"><?php echo $neighbor->incident_title; ?></a></h5>
-  			  <p class="r_date r-3 bottom-cap"><?php echo date('H:i M d, Y', strtotime($neighbor->incident_date)); ?></p>
-  			  <p class="r_location"><?php echo $neighbor->location_name.", ".round($neighbor->distance, 2); ?> Kms</p>
-  			</div>
-      <?php } ?>
+			<h4><?php //echo Kohana::lang('ui_main.additional_reports');?></h4>
+			<?php //foreach($incident_neighbors as $neighbor) { ?>
+				  <div class="rb_report">
+				  <h5><a href="<?php //echo url::site(); ?>reports/view/<?php //echo $neighbor->id; ?>"><?php //echo $neighbor->incident_title; ?></a></h5>
+				  <p class="r_date r-3 bottom-cap"><?php //echo date('H:i M d, Y', strtotime($neighbor->incident_date)); ?></p>
+				  <p class="r_location"><?php //echo $neighbor->location_name.", ".round($neighbor->distance, 2); ?> Kms</p>
+				</div>
+			<?php // } ?>
 		</div>
+		-->
 
 	</div>
 	

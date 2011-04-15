@@ -9,13 +9,16 @@
 
 				<div class="thanks_msg"><a href="<?php echo
 					url::site().'reports' ?>"><?php echo Kohana::lang('ui_main.reports_return');?></a><br /><br /><br />
-					<?php echo Kohana::lang('ui_main.feedback_reports');?><br /><br />
-					<?php 
+					<!--- Seriously? We're going to make our users fill out surveys like we're some annoying corporation that wants
+					to suck more money out of our consumers?-->
+					<?php //echo Kohana::lang('ui_main.feedback_reports');?><br /><br />
+					<?php /*
 					print form::open('http://feedback.ushahidi.com/fillsurvey.php?sid=2', array('target'=>'_blank'));
 					print form::hidden('alert_code', $_SERVER['SERVER_NAME']);
 					print "&nbsp;&nbsp;";
 					print form::submit('button', Kohana::lang('ui_main.feedback'), ' class=btn_gray ');
 					print form::close();
+					*/
 					?>
 				</div>
 			</div>

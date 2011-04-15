@@ -264,7 +264,7 @@ class Reports_Controller extends Admin_Controller
 		$incidents = ORM::factory('incident')
 			->join('location', 'incident.location_id', 'location.id','INNER')
 			->where($filter)
-			->orderby('incident_dateadd', 'desc')
+			->orderby('incident_date', 'desc')
 			->find_all((int) Kohana::config('settings.items_per_page_admin'), $pagination->sql_offset);
 
 /****************************************************************************************************/
