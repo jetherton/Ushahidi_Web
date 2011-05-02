@@ -324,7 +324,7 @@ INSERT INTO `country` (`id`, `iso`, `country`, `capital`, `cities`) VALUES
 (240, 'VU', 'Vanuatu', 'Port Vila', 0),
 (241, 'WF', 'Wallis and Futuna', 'Matâ''Utu', 0),
 (242, 'WS', 'Samoa', 'Apia', 0),
-(243, 'YE', 'Yemen', 'San'a'', 0),
+(243, 'YE', 'Yemen', 'San\'a', 0),
 (244, 'YT', 'Mayotte', 'Mamoudzou', 0),
 (245, 'ZA', 'South Africa', 'Pretoria', 0),
 (246, 'ZM', 'Zambia', 'Lusaka', 0),
