@@ -15,6 +15,48 @@
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
 ?>
+
+
+
+		/***************************************
+		*Put things on the map based on a geolocation
+		****************************************/
+		function placeLocation(lat, lon, name)
+		{
+			// Clear the map first
+			vlayer.removeFeatures(vlayer.features);
+			$('input[name="geometry[]"]').remove();
+			
+			point = new OpenLayers.Geometry.Point(lon, lat);
+			OpenLayers.Projection.transform(point, proj_4326,proj_900913);
+			
+			
+			f = new OpenLayers.Feature.Vector(point);
+			vlayer.addFeatures(f);
+			
+			// create a new lat/lon object
+			myPoint = new OpenLayers.LonLat(lon, lat);
+			myPoint.transform(proj_4326, map.getProjectionObject());
+
+			// display the map centered on a latitude and longitude
+			map.setCenter(myPoint, <?php echo $default_zoom; ?>);
+			
+			// Update form values
+			$("#latitude").attr("value", lat);
+			$("#longitude").attr("value", lon);
+			$("#location_name").attr("value", name);
+
+			return false;
+		}
+
+
+
+
+
+
+
+
+
 		var map;
 		var thisLayer;
 		var proj_4326 = new OpenLayers.Projection('EPSG:4326');
@@ -607,41 +649,19 @@
 		}
 		
 		/**
-		 * Google GeoCoder
+		 * Specialized geo coder for Liberia
 		 */
 		function geoCode()
 		{
 			$('#find_loading').html('<img src="<?php echo url::base() . "media/img/loading_g.gif"; ?>">');
 			address = $("#location_find").val();
-			$.post("<?php echo url::site() . 'reports/geocode/' ?>", { address: address },
+			$.get("<?php echo url::site() . 'findlocation/geocode/' ?>", { address: address },
 				function(data){
-					if (data.status == 'success'){
-						// Clear the map first
-						vlayer.removeFeatures(vlayer.features);
-						$('input[name="geometry[]"]').remove();
-						
-						point = new OpenLayers.Geometry.Point(data.message[1], data.message[0]);
-						OpenLayers.Projection.transform(point, proj_4326,proj_900913);
-						
-						f = new OpenLayers.Feature.Vector(point);
-						vlayer.addFeatures(f);
-						
-						// create a new lat/lon object
-						myPoint = new OpenLayers.LonLat(data.message[1], data.message[0]);
-						myPoint.transform(proj_4326, map.getProjectionObject());
-
-						// display the map centered on a latitude and longitude
-						map.setCenter(myPoint, <?php echo $default_zoom; ?>);
-						
-						// Update form values
-						$("#latitude").attr("value", data.message[0]);
-						$("#longitude").attr("value", data.message[1]);
-						$("#location_name").attr("value", $("#location_find").val());
-					} else {
-						alert(address + " not found!\n\n***************************\nEnter more details like city, town, country\nor find a city or town close by and zoom in\nto find your precise location");
-					}
+				
+					$('#find_location_results').html(data);
 					$('#find_loading').html('');
-				}, "json");
+					
+				}); 
 			return false;
 		}
 		
