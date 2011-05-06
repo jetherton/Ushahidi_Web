@@ -14,7 +14,46 @@
  * @copyright  Ushahidi - http://www.ushahidi.com
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
-?>		
+?>	
+
+
+
+		/***************************************
+		*Put things on the map based on a geolocation
+		****************************************/
+		function placeLocation(lat, lon, name)
+		{
+			var lonlat = new OpenLayers.LonLat(lon, lat);
+			lonlat.transform(proj_4326,proj_900913);
+			
+			m = new OpenLayers.Marker(lonlat);
+			markers.clearMarkers();
+			    markers.addMarker(m);
+			map.setCenter(lonlat, <?php echo $default_zoom; ?>);
+			
+			// Update form values
+			$("#latitude").attr("value", lat);
+			$("#longitude").attr("value", lon);
+			$("#location_name").attr("value", name);
+			return false;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 		// jQuery Textbox Hints Plugin
 		// Will move to separate file later or attach to forms plugin
 		jQuery.fn.hint = function (blurClass) {
@@ -189,35 +228,21 @@
 		}
 		
 		/**
-		 * Google GeoCoder
+		 * Specialized geo coder for Liberia
 		 */
 		function geoCode()
 		{
 			$('#find_loading').html('<img src="<?php echo url::base() . "media/img/loading_g.gif"; ?>">');
 			address = $("#location_find").val();
-			$.post("<?php echo url::site() . 'reports/geocode/' ?>", { address: address },
+			$.get("<?php echo url::site() . 'findlocation/geocode/' ?>", { address: address },
 				function(data){
-					if (data.status == 'success'){
-						var lonlat = new OpenLayers.LonLat(data.message[1], data.message[0]);
-						lonlat.transform(proj_4326,proj_900913);
-					
-						m = new OpenLayers.Marker(lonlat);
-						markers.clearMarkers();
-				    	markers.addMarker(m);
-						map.setCenter(lonlat, <?php echo $default_zoom; ?>);
-						
-						// Update form values
-						$("#latitude").attr("value", data.message[0]);
-						$("#longitude").attr("value", data.message[1]);
-						$("#location_name").attr("value", $("#location_find").val());
-					} else {
-						alert(address + " not found!\n\n***************************\nEnter more details like city, town, country\nor find a city or town close by and zoom in\nto find your precise location");
-					}
+				
+					$('#find_location_results').html(data);
 					$('#find_loading').html('');
-				}, "json");
+					
+				}); 
 			return false;
-		}
-		
+		}		
 		
 		var map;
 		var thisLayer;

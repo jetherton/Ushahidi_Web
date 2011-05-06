@@ -166,8 +166,7 @@
 					 }
 				?>
 				<div class="report_row">
-					<div id="divMap" class="report_map"></div>
-					<?php Event::run('ushahidi_action.report_form_admin_location', $id); ?>
+					<div id="divMap" class="report_map"></div>					
 					<div class="report-find-location">
 						<?php print form::input('location_find', '', ' title="'.Kohana::lang('ui_main.location_example').'" class="findtext"'); ?>
 						<div style="float:left;margin:9px 0 0 5px;"><input type="button" name="button" id="button" value="<?php echo Kohana::lang('ui_main.find_location'); ?>" class="btn_find" /></div>
@@ -175,6 +174,9 @@
 						<div style="clear:both;" id="find_text"><?php echo Kohana::lang('ui_main.pinpoint_location'); ?>.</div>
 					</div>
 				</div>
+				
+				<div id="find_location_results"></div>
+				<?php Event::run('ushahidi_action.report_form_admin_location', $id); ?>
 				
 				<div class="report_row">
 					<h4><?php echo Kohana::lang('ui_main.reports_location_name'); ?><br /><span class="example"><?php echo Kohana::lang('ui_main.detailed_location_example'); ?></span></h4>
