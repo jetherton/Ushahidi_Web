@@ -1,5 +1,8 @@
 .*swp
 .htaccess
+.buildpath
+.project
+.settings/*
 *~
 application/logs/*
 application/cache/*
