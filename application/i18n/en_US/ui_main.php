@@ -475,7 +475,7 @@
 	'weight' => 'Weight',
 	'yes' => 'Yes',
 	'yesterday' => 'Yesterday',
-	'Show_Message' => 'Show Message',
+	'show_message' => 'Show Message',
 	
 	);
 ?>
