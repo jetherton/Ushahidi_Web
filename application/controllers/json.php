@@ -681,6 +681,10 @@ class Json_Controller extends Template_Controller
 		{
 			$incident_id_in = ' AND id IN ('.implode(',',$allowed_ids).')';
 		}
+		elseif($category_id != 0) //if the no IDs are allowed and the user didn't pick category 0, then don't show anything
+		{
+			$incident_id_in = ' AND 1 = 2';
+		}
 
 		$query = 'SELECT UNIX_TIMESTAMP('.$select_date_text.') AS time, COUNT(id) AS number FROM '.$this->table_prefix.'incident WHERE incident_active = 1 '.$incident_id_in.' GROUP BY '.$groupby_date_text;
 		$query = $db->query($query);
