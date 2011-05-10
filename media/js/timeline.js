@@ -380,7 +380,7 @@
 			params = [];
 			if (typeof(this.categoryId) != 'undefined' && this.categoryId.length > 0)
 			{
-				params.push('c=' + this.categoryId);
+				params.push('c=' +  this.categoryId);
 			}
 			if (typeof(startDate) != 'undefined')
 			{
@@ -405,7 +405,7 @@
 		{
 			// Set Feature Styles
 			style = new OpenLayers.Style({
-				'externalGraphic': "${icon}",
+				//'externalGraphic': "${icon}", //we don't like markers, we just like dots
 				'graphicTitle': "${cluster_count}",
 				pointRadius: "${radius}",
 				fillColor: "${color}",
@@ -573,6 +573,7 @@
 						if ( typeof(feature.attributes.strokecolor) != 'undefined' && 
 							feature.attributes.strokecolor != '')
 						{
+							//changes the color of the extra marker's stroke
 							return "#"+feature.attributes.strokecolor;
 						}
 						else

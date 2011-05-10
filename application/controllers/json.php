@@ -199,7 +199,7 @@ class Json_Controller extends Template_Controller
 			$cat_array = array();
 
 			// Get Incident Geometries
-			$geometry = $this->_get_geometry($marker->id, $marker->incident_title, $marker->incident_date);
+			$geometry = $this->_get_geometry($marker->id, $marker->incident_title, $marker->incident_date, $color);
 			if (count($geometry))
 			{
 				$json_item = implode(",", $geometry);
@@ -321,7 +321,7 @@ class Json_Controller extends Template_Controller
 				$allowed_ids[$incident['id']] = 1;
 
 				// Get Incident Geometries
-				$geometry = $this->_get_geometry($incident['id'], $incident['incident_title'], $incident['incident_date']);
+				$geometry = $this->_get_geometry($incident['id'], $incident['incident_title'], $incident['incident_date'], $color);
 				if (count($geometry))
 				{
 					$json_item = implode(",", $geometry);
@@ -550,38 +550,6 @@ class Json_Controller extends Template_Controller
 			// Database
 			$db = new Database();
 
-			// Get Neighboring Markers Within 50 Kms (31 Miles)
-			$query = $db->query("SELECT DISTINCT i.*, l.`latitude`, l.`longitude`,
-			((ACOS(SIN($latitude * PI() / 180) * SIN(l.`latitude` * PI() / 180) + COS($latitude * PI() / 180) * COS(l.`latitude` * PI() / 180) * COS(($longitude - l.`longitude`) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS distance
-			 FROM `".$this->table_prefix."incident` AS i INNER JOIN `".$this->table_prefix."location` AS l ON (l.`id` = i.`location_id`) INNER JOIN `".$this->table_prefix."incident_category` AS ic ON (i.`id` = ic.`incident_id`) INNER JOIN `".$this->table_prefix."category` AS c ON (ic.`category_id` = c.`id`) WHERE i.incident_active=1 $filter
-			HAVING distance<='20'
-			 ORDER BY i.`incident_date` DESC LIMIT 100 ");
-
-			foreach ($query as $row)
-			{
-				$json_item = "{";
-				$json_item .= "\"type\":\"Feature\",";
-				$json_item .= "\"properties\": {";
-				$json_item .= "\"id\": \"".$row->id."\", ";
-
-				$encoded_title = utf8tohtml::convert($row->incident_title,TRUE);
-				$encoded_title = str_ireplace('"','&#34;',$encoded_title);
-				$encoded_title = json_encode($encoded_title);
-				$encoded_title = str_ireplace('"','',$encoded_title);
-
-				$json_item .= "\"name\":\"" . str_replace(chr(10), ' ', str_replace(chr(13), ' ', "<a href='" . url::base() . "reports/view/" . $row->id . "'>".$encoded_title."</a>")) . "\",";
-				$json_item .= "\"link\": \"".url::base()."reports/view/".$row->id."\", ";
-				$json_item .= "\"category\":[0], ";
-				$json_item .= "\"timestamp\": \"" . strtotime($row->incident_date) . "\"";
-				$json_item .= "},";
-				$json_item .= "\"geometry\": {";
-				$json_item .= "\"type\":\"Point\", ";
-				$json_item .= "\"coordinates\":[" . $row->longitude . ", " . $row->latitude . "]";
-				$json_item .= "}";
-				$json_item .= "}";
-
-				array_push($json_array, $json_item);
-			}
 			
 			// Single Main Incident
 			$json_single = "{";
@@ -597,7 +565,7 @@ class Json_Controller extends Template_Controller
 			$json_single .= "\"timestamp\": \"" . strtotime($marker->incident_date) . "\"";
 			
 			// Get Incident Geometries
-			$geometry = $this->_get_geometry($marker->id, $marker->incident_title, $marker->incident_date);
+			$geometry = $this->_get_geometry($marker->id, $marker->incident_title, $marker->incident_date, "#".Kohana::config('settings.default_map_all'));
 			
 			// If there are no geometries, use Single Incident Marker
 			if ( ! count($geometry))
@@ -985,7 +953,7 @@ class Json_Controller extends Template_Controller
 	 * @param int $incident_date
 	 * @return array $geometry
 	 */
-	private function _get_geometry($incident_id, $incident_title, $incident_date)
+	private function _get_geometry($incident_id, $incident_title, $incident_date, $color)
 	{
 		$geometry = array();
 		if ($incident_id)
@@ -1014,10 +982,10 @@ class Json_Controller extends Template_Controller
 					utf8tohtml::convert($incident_title,TRUE);
 					
 				$fillcolor = ($item->geometry_color) ? 
-					utf8tohtml::convert($item->geometry_color,TRUE) : "ffcc66";
+					utf8tohtml::convert($item->geometry_color,TRUE) : $color;
 					
 				$strokecolor = ($item->geometry_color) ? 
-					utf8tohtml::convert($item->geometry_color,TRUE) : "CC0000";
+					utf8tohtml::convert($item->geometry_color,TRUE) : $color;
 					
 				$strokewidth = ($item->geometry_strokewidth) ? $item->geometry_strokewidth : "3";
 
