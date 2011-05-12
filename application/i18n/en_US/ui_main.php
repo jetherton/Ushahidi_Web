@@ -510,6 +510,6 @@
 	'yesterday' => 'Yesterday',
 	'zoom_in' => 'Zoom In',
 	'zoom_out' => 'Zoom Out',
-	'show_messages' => 'Show Message',
+	'show_messages' => 'Last Five Messages',
 	);
 ?>
