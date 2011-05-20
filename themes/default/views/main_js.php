@@ -34,6 +34,13 @@
 		// Current json_url, if map is switched dynamically between json and json_cluster
 		var json_url = default_json_url;
 		
+		/* 
+		 - Part of #2168 fix
+		 - Added by E.Kala <emmanuel(at)ushahidi.com>
+		*/
+		// Global list for current KML overlays in display
+		var kmlOverlays = [];
+		
 		var baseUrl = "<?php echo url::base(); ?>";
 		var longitude = <?php echo $longitude; ?>;
 		var latitude = <?php echo $latitude; ?>;
@@ -48,11 +55,13 @@
 		
 		var activeZoom = null;
 
-		var gMarkerOptions = {baseUrl: baseUrl, longitude: longitude,
-		                     latitude: latitude, defaultZoom: defaultZoom,
-							 markerRadius: markerRadius,
-							 markerOpacity: markerOpacity,
-							 protocolFormat: OpenLayers.Format.GeoJSON};
+		var gMarkerOptions = {
+			baseUrl: baseUrl, longitude: longitude,
+			latitude: latitude, defaultZoom: defaultZoom,
+			markerRadius: markerRadius,
+			markerOpacity: markerOpacity,
+			protocolFormat: OpenLayers.Format.GeoJSON
+		};
 							
 		/*
 		Create the Markers Layer
@@ -89,9 +98,9 @@
 			}, timeout);
 		}
 
-		/*
-		Display loader as Map Loads
-		*/
+		/**
+		 * Display loader as Map Loads
+		 */
 		function onMapStartLoad(event)
 		{
 			if ($("#loader"))
@@ -105,9 +114,9 @@
 			}
 		}
 
-		/*
-		Hide Loader
-		*/
+		/**
+		 * Hide Loader
+		 */
 		function onMapEndLoad(event)
 		{
 			if ($("#loader"))
@@ -121,59 +130,83 @@
 			}
 		}
 
-		/*
-		Close Popup
-		*/
+		/**
+		 * Close Popup
+		 */
 		function onPopupClose(event)
 		{
-            selectControl.unselect(selectedFeature);
+			selectControl.unselect(selectedFeature);
 			selectedFeature = null;
-        }
+		}
 
-		/*
-		Display popup when feature selected
-		*/
-        function onFeatureSelect(event)
+		/**
+		 * Display popup when feature selected
+		 */
+		function onFeatureSelect(event)
 		{
-            selectedFeature = event.feature;
+			selectedFeature = event.feature;
 			zoom_point = event.feature.geometry.getBounds().getCenterLonLat();
 			lon = zoom_point.lon;
 			lat = zoom_point.lat;
 			
-			
 			var thumb = "";
 			if ( typeof(event.feature.attributes.thumb) != 'undefined' && 
-				event.feature.attributes.thumb != ''){
-				thumb = "<div class=\"infowindow_image\"><a href='"+event.feature.attributes.link+"'><img src=\""+event.feature.attributes.thumb+"\" height=\"59\" width=\"89\" /></a></div>";
+				event.feature.attributes.thumb != '')
+			{
+				thumb = "<div class=\"infowindow_image\"><a href='"+event.feature.attributes.link+"'>";
+				thumb += "<img src=\""+event.feature.attributes.thumb+"\" height=\"59\" width=\"89\" /></a></div>";
 			}
 
 			var content = "<div class=\"infowindow\">" + thumb;
-			content = content + "<div class=\"infowindow_content\"><div class=\"infowindow_list\">"+event.feature.attributes.name+"</div>";
-		    content = content + "\n<div class=\"infowindow_meta\"><a href='"+event.feature.attributes.link+"'><?php echo Kohana::lang('ui_main.more_information');?></a><br/><a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",1)'><?php echo Kohana::lang('ui_main.zoom_in');?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",-1)'><?php echo Kohana::lang('ui_main.zoom_out');?></a></div>";
-			content = content + "</div><div style=\"clear:both;\"></div></div>";		
+			content += "<div class=\"infowindow_content\"><div class=\"infowindow_list\">"+event.feature.attributes.name+"</div>";
+			content += "\n<div class=\"infowindow_meta\">";
+			if ( typeof(event.feature.attributes.link) != 'undefined' &&
+				event.feature.attributes.link != '')
+			{
+				content += "<a href='"+event.feature.attributes.link+"'><?php echo Kohana::lang('ui_main.more_information');?></a><br/>";
+			}
+			
+			content += "<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",1)'>";
+			content += "<?php echo Kohana::lang('ui_main.zoom_in');?></a>";
+			content += "&nbsp;&nbsp;|&nbsp;&nbsp;";
+			content += "<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",-1)'>";
+			content += "<?php echo Kohana::lang('ui_main.zoom_out');?></a></div>";
+			content += "</div><div style=\"clear:both;\"></div></div>";		
 
 			if (content.search("<?php echo '<'; ?>script") != -1)
 			{
-                content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/<?php echo '<'; ?>/g, "&lt;");
-            }
-            popup = new OpenLayers.Popup.FramedCloud("chicken", 
+				content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/<?php echo '<'; ?>/g, "&lt;");
+			}
+            
+			// Destroy existing popups before opening a new one
+			if (event.feature.popup != null)
+			{
+				map.removePopup(event.feature.popup);
+			}
+			
+			popup = new OpenLayers.Popup.FramedCloud("chicken", 
 				event.feature.geometry.getBounds().getCenterLonLat(),
 				new OpenLayers.Size(100,100),
 				content,
 				null, true, onPopupClose);
-            event.feature.popup = popup;
-            map.addPopup(popup);
-        }
 
-		/*
-		Destroy Popup Layer
-		*/
-        function onFeatureUnselect(event)
+			event.feature.popup = popup;
+			map.addPopup(popup);
+		}
+
+		/**
+		 * Destroy Popup Layer
+		 */
+		function onFeatureUnselect(event)
 		{
-            map.removePopup(event.feature.popup);
-            event.feature.popup.destroy();
-            event.feature.popup = null;
-        }
+			// Safety check
+			if (event.feature.popup != null)
+			{
+				map.removePopup(event.feature.popup);
+				event.feature.popup.destroy();
+				event.feature.popup = null;
+			}
+		}
 
 		// Refactor Clusters On Zoom
 		// *** Causes the map to load json twice on the first go
@@ -222,50 +255,102 @@
 
 				// Get Current Center
 				currCenter = map.getCenter();
-
+				
+				// Part of #2168 fix
+				// Remove the KML overlays
+				if (kmlOverlays.length > 0)
+				{
+					for (var i = 0; i < kmlOverlays.length; i++)
+					{
+						map.removeLayer(kmlOverlays[i]);
+					}
+				}
+				
 				// Refresh Map
 				addMarkers(currCat, currStartDate, currEndDate, currZoom, currCenter, gMediaType);
+				
+				// Part of #2168 fix
+				// E.Kala <emmanuel(at)ushahidi.com>
+				// Add back the KML overlays
+				
+				/* 
+				  - The timout is so that the cluster markers are given time to load before
+				  - the overlays can be rendered
+				*/
+				setTimeout(
+					function()
+					{
+						if (kmlOverlays.length > 0)
+						{
+							for (var i = 0; i < kmlOverlays.length; i++)
+							{
+								kmlItem = kmlOverlays[i];
+								map.addLayer(kmlItem);
+								
+								// Add feature selection events to the last item
+								if (i == kmlOverlays.length -1)
+								{
+									selectControl = new OpenLayers.Control.SelectFeature(kmlItem);
+									map.addControl(selectControl);
+									selectControl.activate();
+									kmlItem.events.on({
+										"featureselected": onFeatureSelect,
+										"featureunselected": onFeatureUnselect
+									});
+								}
+								
+							}
+						}
+					},
+					timeout
+				);
 			}
 		}
 		
-		/*
-		Display info window for checkin data
-		*/
+		/**
+		 * Display info window for checkin data
+		 */
 		function showCheckinData(event)
 		{
-
-            selectedFeature = event.feature;
+			selectedFeature = event.feature;
 			zoom_point = event.feature.geometry.getBounds().getCenterLonLat();
 			lon = zoom_point.lon;
 			lat = zoom_point.lat;
 			
 			var content = "<div class=\"infowindow\" style=\"color:#000000\"><div class=\"infowindow_list\">";
 			
-			if(event.feature.attributes.ci_media_medium !== ""){
-				content = content + "<a href=\""+event.feature.attributes.ci_media_link+"\" rel=\"lightbox-group1\" title=\""+event.feature.attributes.ci_msg+"\"><img src=\""+event.feature.attributes.ci_media_medium+"\" /><br/>";
+			if(event.feature.attributes.ci_media_medium !== "")
+			{
+				content += "<a href=\""+event.feature.attributes.ci_media_link+"\" rel=\"lightbox-group1\" title=\""+event.feature.attributes.ci_msg+"\">";
+				content += "<img src=\""+event.feature.attributes.ci_media_medium+"\" /><br/>";
 			}
 
-			content = content + event.feature.attributes.ci_msg+"</div><div style=\"clear:both;\"></div>";
-		    content = content + "\n<div class=\"infowindow_meta\"><a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",1)'><?php echo Kohana::lang('ui_main.zoom_in');?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",-1)'><?php echo Kohana::lang('ui_main.zoom_out');?></a></div>";
-			content = content + "</div>";			
+			content += event.feature.attributes.ci_msg+"</div><div style=\"clear:both;\"></div>";
+			content += "\n<div class=\"infowindow_meta\">";
+			content += "<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",1)'><?php echo Kohana::lang('ui_main.zoom_in');?></a>";
+			content += "&nbsp;&nbsp;|&nbsp;&nbsp;";
+			content += "<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +",-1)'><?php echo Kohana::lang('ui_main.zoom_out');?></a></div>";
+			content += "</div>";
 
 			if (content.search("<?php echo '<'; ?>script") != -1)
 			{
-                content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/<?php echo '<'; ?>/g, "&lt;");
-            }
-            popup = new OpenLayers.Popup.FramedCloud("chicken", 
-				event.feature.geometry.getBounds().getCenterLonLat(),
-				new OpenLayers.Size(100,100),
-				content,
-				null, true, onPopupClose);
-            event.feature.popup = popup;
-            map.addPopup(popup);
+				content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/<?php echo '<'; ?>/g, "&lt;");
+			}
+			
+			popup = new OpenLayers.Popup.FramedCloud("chicken", 
+					event.feature.geometry.getBounds().getCenterLonLat(),
+					new OpenLayers.Size(100,100),
+					content,
+					null, true, onPopupClose);
+					
+			event.feature.popup = popup;
+			map.addPopup(popup);
 		}
 
-		/*
-		Display Checkin Points
-		Note: This function totally ignores the timeline
-		*/
+		/**
+		 * Display Checkin Points
+		 * Note: This function totally ignores the timeline
+		 */
 		function showCheckins()
 		{
 			$(document).ready(function(){
@@ -318,9 +403,12 @@
 						var media_medium = '';
 						var media_thumb = '';
 
-						if(ci.media === undefined){
+						if(ci.media === undefined)
+						{
 							// No image
-						}else{
+						}
+						else
+						{
 							// Image!
 							media_link = ci.media[0].link;
 							media_medium = ci.media[0].medium;
@@ -328,27 +416,25 @@
 						}
 
 						var checkinPoint = new OpenLayers.Feature.Vector(cipoint, {
-	                        	fillcolor: "#"+user_colors[ci.user],
-	                        	strokecolor: "#FFFFFF",
-	                        	fillopacity: ci.opacity,
-	                        	ci_id: ci.id,
-	                        	ci_msg: ci.msg,
-	                        	ci_media_link: media_link,
-	                        	ci_media_medium: media_medium,
-	                        	ci_media_thumb: media_thumb
-		                    }
-		                );
+							fillcolor: "#"+user_colors[ci.user],
+							strokecolor: "#FFFFFF",
+							fillopacity: ci.opacity,
+							ci_id: ci.id,
+							ci_msg: ci.msg,
+							ci_media_link: media_link,
+							ci_media_medium: media_medium,
+							ci_media_thumb: media_thumb
+						});
 
 						checkinLayer.addFeatures([checkinPoint]);
-
 					});
 				});
 			});			
 		}
 
-		/*
-		Refresh Graph on Slider Change
-		*/
+		/**
+		 * Refresh Graph on Slider Change
+		 */
 		function refreshGraph(startDate, endDate)
 		{
 			var currentCat = gCategoryId;
@@ -420,12 +506,11 @@
 			$.getJSON("<?php echo url::site()."json/timeline/"?>"+currentCat, function(data) {
 				allGraphData = data[0];
 			});
-
 		}
 
-		/*
-		Zoom to Selected Feature from within Popup
-		*/
+		/**
+		 * Zoom to Selected Feature from within Popup
+		 */
 		function zoomToSelectedFeature(lon, lat, zoomfactor)
 		{
 			var lonlat = new OpenLayers.LonLat(lon,lat);
@@ -454,9 +539,12 @@
 			// Center and Zoom
 			map.setCenter(point, newZoom);
 			
-			if(cipopup === undefined){
+			if (cipopup === undefined) 
+			{
 				// A checkin id was not passed so we won't bother showing the info window
-			}else{
+			}
+			else
+			{
 				// An id was passed, so lets show an info window
 				// TODO: Do this.
 			}
@@ -475,6 +563,33 @@
 					for (var i = 0; i <?php echo '<'; ?> new_layer.length; i++)
 					{
 						map.removeLayer(new_layer[i]);
+					}
+					
+					// Part of #2168 fix
+					// Added by E.Kala <emmanuel(at)ushahidi.com>
+					// Remove the layer from the list of KML overlays - kmlOverlays
+					if (kmlOverlays.length == 1)
+					{
+						kmlOverlays.pop();
+					}
+					else if (kmlOverlays.length > 1)
+					{
+						// Temporarily store the current list of overlays
+						tempKmlOverlays = kmlOverlays;
+						
+						// Re-initialize the list of overlays
+						kmlOverlays = [];
+						
+						// Search for the overlay that has just been removed from display
+						for (var i = 0; i < tempKmlOverlays.length; i ++)
+						{
+							if (tempKmlOverlays[i].name != "Layer_"+layerID)
+							{
+								kmlOverlays.push(tempKmlOverlays[i]);
+							}
+						}
+						// Unset the working list
+						tempKmlOverlays = null;
 					}
 				}
 				$("#layer_" + layerID).removeClass("active");
@@ -495,10 +610,11 @@
 			}
 		}
 
-		/*
-		Toggle Layer Switchers
-		*/
-		function toggleLayer(link, layer){
+		/**
+		 * Toggle Layer Switchers
+		 */
+		function toggleLayer(link, layer)
+		{
 			if ($("#"+link).text() == "<?php echo Kohana::lang('ui_main.show'); ?>")
 			{
 				$("#"+link).text("<?php echo Kohana::lang('ui_main.hide'); ?>");
@@ -528,10 +644,11 @@
 				projection: proj_900913,
 				'displayProjection': proj_4326,
 				eventListeners: {
-						"zoomend": mapMove
-				    },
+					"zoomend": mapMove
+				},
 				'theme': null
-				};
+			};
+			
 			map = new OpenLayers.Map('map', options);
 			map.addControl( new OpenLayers.Control.LoadingPanel({minSize: new OpenLayers.Size(573, 366)}) );
 			
@@ -549,7 +666,7 @@
 					numdigits: 5
 				}));    
 			map.addControl(new OpenLayers.Control.Scale('mapScale'));
-            map.addControl(new OpenLayers.Control.ScaleLine());
+			map.addControl(new OpenLayers.Control.ScaleLine());
 			map.addControl(new OpenLayers.Control.LayerSwitcher());
 			
 			// display the map projection
@@ -785,15 +902,3 @@
 				gTimeline.playOrPause('raindrops');
 			});
 		});
-		
-		/*		
-		d = $('#startDate > optgroup > option').map(function()
-		{
-			return $(this).val();
-		});
-
-		$.grep(d, function(n,i)
-		{
-			return n > '1183240800';
-		})[0];
-*/

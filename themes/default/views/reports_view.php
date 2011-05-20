@@ -33,13 +33,17 @@
 		<p>
 			<?php
 				foreach($incident_category as $category) 
-				{ 
+
+				{
+
+
 					// don't show hidden categoies
 					if($category->category->category_visible == 0)
 					{
 						continue;
 					}
-				  if ($category->category->category_image_thumb)
+
+					if ($category->category->category_image_thumb)
 					{
 					?>
 					<a href="<?php echo url::site()."reports/?c=".$category->category->id; ?>"><span class="r_cat-box" style="background:transparent url(<?php echo url::base().Kohana::config('upload.relative_directory')."/".$category->category->category_image_thumb; ?>) 0 0 no-repeat;">&nbsp;</span> <?php echo $category->category->category_title; ?></a>

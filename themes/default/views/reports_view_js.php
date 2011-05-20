@@ -250,6 +250,7 @@
 				};
 				map.updateSize();
 				map.pan(0,1);
+
 				return false;
 			});
 		});

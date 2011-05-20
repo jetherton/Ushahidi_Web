@@ -75,7 +75,7 @@
 									{
 										continue;
 									}
-								
+
 									if ($category->category_image_thumb)
 									{
 										?>
