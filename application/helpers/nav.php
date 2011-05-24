@@ -53,7 +53,7 @@ class nav_Core {
 		}
 		
 		// Alerts
-		if( ! in_array('alerts',$dontshow))
+		if(false)// ! in_array('alerts',$dontshow))
 		{
 			$menu .= "<li><a href=\"".url::site()."alerts\" ";
 			$menu .= ($this_page == 'alerts') ? " class=\"active\"" : "";

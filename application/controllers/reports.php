@@ -138,7 +138,7 @@ class Reports_Controller extends Main_Controller {
 			->where("incident_active", 1)
 			->where($location_id_in)
 			->where($incident_id_in)
-			->orderby("incident_date", "desc")
+			->orderby("incident_title", "asc")
 			->find_all((int) Kohana::config('settings.items_per_page'), $pagination->sql_offset);
 
 
