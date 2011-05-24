@@ -35,8 +35,24 @@ class Category_Model extends ORM_Tree
 			$cats[$category->id]['category_id'] = $category->id;
 			$cats[$category->id]['category_title'] = $category->category_title;
 			$cats[$category->id]['category_color'] = $category->category_color;
+			$cats[$category->id]['category_image'] = $category->category_image;
+			$cats[$category->id]['category_image_thumb'] = $category->category_image_thumb;
 		}
 		
 		return $cats;
 	}
+
+	/**
+	 * Checks if the specified category ID is of type INT and exists in the database
+	 *
+	 * @param	int	$category_id 
+	 * @return	boolean
+	 */
+	public static function is_valid_category($category_id)
+	{
+		return (preg_match('/^[1-9](\d*)$/', $category_id) > 0)
+				? self::factory('category', $category_id)->loaded
+				: FALSE;
+	}
+
 }

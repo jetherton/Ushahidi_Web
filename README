@@ -1,5 +1,6 @@
-WELCOME
+WELCOME 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Liberia version of Ushahidi. 
 Thanks for using Ushahidi. We hope that you find the setup and installation process as smooth as possible. We have an active community so if you get stuck along the way, head over to the forums (http://forums.ushahidi.com/) and get some help. In addition to the forums, we have a wiki (http://wiki.ushahidi.com/doku.php) with more detailed information about the platform.
 
 
@@ -20,6 +21,7 @@ The follwing is a list of PHP extensions that must be installed on your server i
 - SPL (http://php.net/spl) is required for several core libraries
 - mbstring (http://php.net/mbstring) which speeds up Kohana's UTF-8 functions.
 - cURL (http://php.net/curl) which is used to access remote sites.
+- MySQL (http://php.net/mysql) is required for database access.
 
 * Need to figure out what extensions you already have installed on your server? Here are instructions to do just that: http://jontangerine.com/silo/php/phpinfo/
 

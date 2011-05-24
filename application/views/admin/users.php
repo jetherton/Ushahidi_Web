@@ -15,13 +15,14 @@
 ?>
 			<div class="bg">
 				<h2>
-					<?php admin::user_subtabs("users"); ?>
+					<?php admin::user_subtabs("users", $display_roles); ?>
 				</h2>
 				<!-- report-table -->
 				<div class="report-form">
 					<!-- report-table -->
-					<?php print form::open(); ?>
+					<?php print form::open(NULL,array('id' => 'userMain', 'name' => 'userMain')); ?>
 						<input type="hidden" name="action" id="action" value="">
+						<input type="hidden" name="user_id_action" id="user_id_action" value="">
 						<div class="table-holder">
 							<table class="table">
 								<thead>

@@ -6,11 +6,11 @@
  * LICENSE: This source file is subject to LGPL license
  * that is available through the world-wide-web at the following URI:
  * http://www.gnu.org/copyleft/lesser.html
- * @author     Ushahidi Team <team@ushahidi.com>
- * @package    Ushahidi - http://source.ushahididev.com
- * @module     Pages Controller
+ * @author	   Ushahidi Team <team@ushahidi.com>
+ * @package	   Ushahidi - http://source.ushahididev.com
+ * @module	   Pages Controller
  * @copyright  Ushahidi - http://www.ushahidi.com
- * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL)
+ * @license	   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL)
  */
 
 class Page_Controller extends Main_Controller {
@@ -33,8 +33,16 @@ class Page_Controller extends Main_Controller {
 		$page = ORM::factory('page',$page_id)->find($page_id);
 		if ($page->loaded)
 		{
-			$this->template->content->page_title = $page->page_title;
-			$this->template->content->page_description = $page->page_description;
+			
+			$page_title = $page->page_title;
+			$page_description = $page->page_description;
+			// Filter::page_title - Modify Page Title
+			Event::run('ushahidi_filter.page_title', $page_title);
+			// Filter::page_description - Modify Page Description
+			Event::run('ushahidi_filter.page_description', $page_description);
+			
+			$this->template->content->page_title = $page_title;
+			$this->template->content->page_description = $page_description;
 			$this->template->content->page_id = $page->id;
 		}
 		else
@@ -44,5 +52,4 @@ class Page_Controller extends Main_Controller {
 		
 		$this->template->header->header_block = $this->themes->header_block();
 	}
-
 }

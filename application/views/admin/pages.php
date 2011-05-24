@@ -83,8 +83,8 @@
 										$page_id = $page->id;
 										$page_title = $page->page_title;
 										$page_tab = $page->page_tab;
-										$page_description = $page->page_description;
-										$page_description_short = strip_tags(text::limit_chars($page_description, "100", "..."));
+										$page_description = htmlspecialchars_decode($page->page_description);
+										$page_description_short = text::limit_chars(strip_tags($page_description), "100", "...");
 										$page_active = $page->page_active;
 										?>
 										<tr>
@@ -100,10 +100,10 @@
 												<ul>
 													<li class="none-separator"><a href="#add" onClick="fillFields(
 	'<?php echo(rawurlencode($page_id)); ?>',
-	'<?php echo(rawurlencode($page_title)); ?>',
-	'<?php echo(rawurlencode($page_tab)); ?>',
-	'<?php echo(rawurlencode($page_description)); ?>')"><?php echo Kohana::lang('ui_main.edit');?></a></li>
-	<li class="none-separator"><a href="javascript:pageAction('v','SHOW/HIDE','<?php echo(rawurlencode($page_id)); ?>')"<?php if ($page_active) echo " class=\"status_yes\"" ?>><?php echo Kohana::lang('ui_main.visible');?></a></li>
+	'<?php echo(base64_encode($page_title)); ?>',
+	'<?php echo(base64_encode($page_tab)); ?>',
+	'<?php echo(base64_encode($page_description)); ?>')"><?php echo Kohana::lang('ui_main.edit');?></a></li>
+	<li class="none-separator"><a href="javascript:pageAction('v','SHOW/HIDE','<?php echo(rawurlencode($page_id)); ?>')"<?php if ($page_active) echo " class=\"status_yes\"" ?>><?php if ($page_active) { echo Kohana::lang('ui_main.visible'); }else{ echo Kohana::lang('ui_main.hidden'); }?></a></li>
 													<li><a href="javascript:pageAction('d','DELETE','<?php echo(rawurlencode($page_id)); ?>')" class="del"><?php echo Kohana::lang('ui_main.delete');?></a></li>
 												</ul>
 											</td>

@@ -15,8 +15,10 @@
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
 ?>
-		var map;
-		jQuery(function() {
+		var map, markers;
+		var myPoint;
+		var selectedFeature;
+		jQuery(window).load(function() {
 			var moved=false;
 
 			/*
@@ -27,7 +29,7 @@
 			var proj_900913 = new OpenLayers.Projection('EPSG:900913');
 			var options = {
 				units: "dd",
-				numZoomLevels: 16,
+				numZoomLevels: 21,
 				controls:[],
 				projection: proj_900913,
 				'displayProjection': proj_4326
@@ -49,88 +51,118 @@
 			
 			
 			// Set Feature Styles
-			style = new OpenLayers.Style({
+			style1 = new OpenLayers.Style({
 				pointRadius: "8",
-				fillColor: "${color}",
-				fillOpacity: "1",
-				strokeColor: "#000000",
-				strokeWidth: 1,
-				strokeOpacity: 0.8
+				fillColor: "${fillcolor}",
+				fillOpacity: "0.7",
+				strokeColor: "${strokecolor}",
+				strokeOpacity: "0.7",
+				strokeWidth: "${strokewidth}",
+				graphicZIndex: 1,
+				externalGraphic: "${graphic}",
+				graphicOpacity: 1,
+				graphicWidth: 21,
+				graphicHeight: 25,
+				graphicXOffset: -14,
+				graphicYOffset: -27
 			},
 			{
 				context: 
 				{
-					color: function(feature)
+					graphic: function(feature)
 					{
 						if ( typeof(feature) != 'undefined' && 
 							feature.data.id == <?php echo $incident_id; ?>)
 						{
-							return "#CC0000";
+							return "<?php echo url::base().'media/img/openlayers/marker.png' ;?>";
 						}
 						else
 						{
-							return "#FF9933";
+							return "<?php echo url::base().'media/img/openlayers/marker-gold.png' ;?>";
+						}
+					},
+					fillcolor: function(feature)
+					{
+						if ( typeof(feature.attributes.color) != 'undefined' && 
+							feature.attributes.color != '' )
+						{
+							return "#"+feature.attributes.color;
+						}
+						else
+						{
+							return "#ffcc66";
+						}
+					},
+					strokecolor: function(feature)
+					{
+						if ( typeof(feature.attributes.strokecolor) != 'undefined' && 
+							feature.attributes.strokecolor != '')
+						{
+							return "#"+feature.attributes.strokecolor;
+						}
+						else
+						{
+							return "#CC0000";
+						}
+					},					
+					strokewidth: function(feature)
+					{
+						if ( typeof(feature.attributes.strokewidth) != 'undefined' && 
+							feature.attributes.strokewidth != '')
+						{
+							return feature.attributes.strokewidth;
+						}
+						else
+						{
+							return "3";
 						}
 					}
 				}
 			});
+			style2 = new OpenLayers.Style({
+				pointRadius: "8",
+				fillColor: "#30E900",
+				fillOpacity: "0.7",
+				strokeColor: "#197700",
+				strokeWidth: 3,
+				graphicZIndex: 1
+			});
 			
 			// Create the single marker layer
-			var markers = new OpenLayers.Layer.GML("single report", "<?php echo url::site() . 'json/single/' . $incident_id; ?>", 
+			markers = new OpenLayers.Layer.GML("single report", "<?php echo url::site() . 'json/single/' . $incident_id; ?>", 
 			{
 				format: OpenLayers.Format.GeoJSON,
 				projection: map.displayProjection,
-				styleMap: new OpenLayers.StyleMap({"default":style, "select": style})
+				styleMap: new OpenLayers.StyleMap({"default":style1, "select": style1, "temporary": style2})
 			});
 			
 			map.addLayer(markers);
 			
-			selectControl = new OpenLayers.Control.SelectFeature(markers,
-															{onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});			
+			selectCtrl = new OpenLayers.Control.SelectFeature(markers, {
+				onSelect: onFeatureSelect, 
+				onUnselect: onFeatureUnselect
+			});
+			highlightCtrl = new OpenLayers.Control.SelectFeature(markers, {
+			    hover: true,
+			    highlightOnly: true,
+			    renderIntent: "temporary"
+			});		
 
-			map.addControl(selectControl);
-			selectControl.activate();
+			map.addControl(selectCtrl);
+			map.addControl(highlightCtrl);
+			selectCtrl.activate();
+			//highlightCtrl.activate();
 
 			// create a lat/lon object
-			var myPoint = new OpenLayers.LonLat(<?php echo $longitude; ?>, <?php echo $latitude; ?>);
+			myPoint = new OpenLayers.LonLat(<?php echo $longitude; ?>, <?php echo $latitude; ?>);
 			myPoint.transform(proj_4326, map.getProjectionObject());
 			
 			// display the map centered on a latitude and longitude (Google zoom levels)
 
-			map.setCenter(myPoint, 10);			
-			
-			function onPopupClose(evt) {
-	            selectControl.unselect(selectedFeature);
-	        }
-	        function onFeatureSelect(feature) {
-	            selectedFeature = feature;
-				// Lon/Lat Spherical Mercator
-				zoom_point = feature.geometry.getBounds().getCenterLonLat();
-				lon = zoom_point.lon;
-				lat = zoom_point.lat;
-	            var content = "<div class=\"infowindow\"><div class=\"infowindow_list\"><ul><li>"+feature.attributes.name + "</li></ul></div>";
-				content = content + "\n<div class=\"infowindow_meta\"><a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +", 1)'>Zoom&nbsp;In</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +", -1)'>Zoom&nbsp;Out</a></div>";
-				content = content + "</div>";
-				// Since KML is user-generated, do naive protection against
-	            // Javascript.
-	            if (content.search("<script") != -1) {
-	                content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");
-	            }
-	            popup = new OpenLayers.Popup.FramedCloud("chicken", 
-	                                     feature.geometry.getBounds().getCenterLonLat(),
-	                                     new OpenLayers.Size(100,100),
-	                                     content,
-	                                     null, true, onPopupClose);
-	            feature.popup = popup;
-	            map.addPopup(popup);
-	        }
-	        function onFeatureUnselect(feature) {
-	            map.removePopup(feature.popup);
-	            feature.popup.destroy();
-	            feature.popup = null;
-	        }
-			
-			
+			map.setCenter(myPoint, <?php echo ($incident_zoom) ? $incident_zoom : 10; ?>);
+		});
+		
+		$(document).ready(function(){
 			/*
 			Add Comments JS
 			*/			
@@ -171,7 +203,91 @@
 					}
 				}
 			});
+			
+			// Handles the tab functionality for the map, images, and video content
+			$('a.tab-item').click(function(){
+				$('a.tab-item').parent().removeClass("report-tab-selected");  // first remove the "selected" class from everything
+				$(this).parent().addClass("report-tab-selected");             // now add it back to the parent of the element which was clicked
+				$('.report-media-box-content > div').hide();                  // then hide all tab content boxes
+				$($(this).attr("href")).show();                               // finally, show the appropriate tab content boxes
+				return false;                                                 // stop the browser from jumping back to the top of the page
+			});
+
+			// Handles the functionality for changing the size of the map
+			// TODO: make the CSS widths dynamic... instead of hardcoding, grab the width's
+			// from the appropriate parent divs
+			$('.map-toggles a').click(function() {
+				var action = $(this).attr("class");
+				$('ul.map-toggles li').hide();
+				switch(action)
+				{				
+					case "wider-map":
+						$('.report-map').insertBefore($('.left-col'));
+						$('.map-holder').css({"height":"350px", "width": "900px"});
+						$('a[href=#report-map]').parent().hide();
+						$('a.taller-map').parent().show();
+						$('a.smaller-map').parent().show();
+						break;
+					case "taller-map":
+						$('.map-holder').css("height","600px");
+						$('a.shorter-map').parent().show();
+						$('a.smaller-map').parent().show();
+						break;
+					case "shorter-map":
+						$('.map-holder').css("height","350px");
+						$('a.taller-map').parent().show();
+						$('a.smaller-map').parent().show();
+						break;
+					case "smaller-map":
+						$('.report-map').hide().prependTo($('.report-media-box-content'));
+						$('.map-holder').css({"height":"350px", "width": "348px"});
+						$('a.wider-map').parent().show();
+						$('a.tab-item').parent().removeClass("report-tab-selected");
+						$('.report-media-box-content > div').hide(); // hide everything incase video/images were showing
+						$('a[href=#report-map]').parent().addClass('report-tab-selected').show();
+						$('.report-map').show();
+						break;
+				};
+				map.updateSize();
+				map.pan(0,1);
+
+				return false;
+			});
 		});
+		
+		function onPopupClose(evt) {
+            selectCtrl.unselect(selectedFeature);
+			selectedFeature = '';
+        }
+
+        function onFeatureSelect(feature) {
+            selectedFeature = feature;
+			// Lon/Lat Spherical Mercator
+			zoom_point = feature.geometry.getBounds().getCenterLonLat();
+			lon = zoom_point.lon;
+			lat = zoom_point.lat;
+            var content = "<div class=\"infowindow\"><div class=\"infowindow_list\">"+feature.attributes.name + "</div>";
+			content = content + "\n<div class=\"infowindow_meta\"><a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +", 1)'>Zoom&nbsp;In</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='javascript:zoomToSelectedFeature("+ lon + ","+ lat +", -1)'>Zoom&nbsp;Out</a></div>";
+			content = content + "</div>";
+			// Since KML is user-generated, do naive protection against
+            // Javascript.
+            if (content.search("<script") != -1) {
+                content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");
+            }
+            popup = new OpenLayers.Popup.FramedCloud("chicken", 
+                                     feature.geometry.getBounds().getCenterLonLat(),
+                                     new OpenLayers.Size(100,100),
+                                     content,
+                                     null, true, onPopupClose);
+            feature.popup = popup;
+            map.addPopup(popup);
+        }
+
+        function onFeatureUnselect(feature) {
+            map.removePopup(feature.popup);
+            feature.popup.destroy();
+            feature.popup = null;
+        }
 		
 		function zoomToSelectedFeature(lon, lat, zoomfactor){
 			var lonlat = new OpenLayers.LonLat(lon,lat);
@@ -211,4 +327,19 @@
 					}
 					$('#' + loader).html('');
 			  	}, "json");
+		}
+		
+		function getFeature(feature_id) {
+			var features = markers.features;
+			for(var i=0; i<features.length; i++) {
+				var feature = features[i];
+				if(typeof(feature.attributes.feature_id) != 'undefined' && 
+					feature.attributes.feature_id == feature_id)
+				{
+					if (typeof(selectedFeature) != 'undefined' && selectedFeature !='' ) {
+						selectCtrl.unselect(selectedFeature);
+					}
+					selectCtrl.select(feature);
+				}
+			}
 		}

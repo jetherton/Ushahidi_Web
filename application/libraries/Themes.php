@@ -38,8 +38,11 @@ class Themes_Core {
 		// Load Session
 		$this->session = Session::instance();
 		
-		$this->css_url = url::base();
-		$this->js_url = url::base();
+		// Load Local or CDN?
+		$this->css_url = (Kohana::config("cache.cdn_css")) ? 
+			Kohana::config("cache.cdn_css") : url::base();
+		$this->js_url = (Kohana::config("cache.cdn_js")) ? 
+			Kohana::config("cache.cdn_js") : url::base();
 	}
 	
 	/**
@@ -80,6 +83,11 @@ class Themes_Core {
 		
 		if ($this->photoslider_enabled)
 		{
+			$core_css .= html::stylesheet($this->css_url."media/css/picbox/picbox","",true);
+		}
+		
+		if ($this->videoslider_enabled)
+		{
 			$core_css .= html::stylesheet($this->css_url."media/css/videoslider","",true);
 		}
 		
@@ -103,11 +111,11 @@ class Themes_Core {
 		if ($this->map_enabled)
 		{
 			$core_js .= html::script($this->js_url."media/js/OpenLayers", true);
-			$core_js .= "<script type=\"text/javascript\">OpenLayers.ImgPath = '".url::site()."media/img/openlayers/"."';</script>";
+			$core_js .= "<script type=\"text/javascript\">OpenLayers.ImgPath = '".$this->js_url."media/img/openlayers/"."';</script>";
 		}
 		
 		$core_js .= html::script($this->js_url."media/js/jquery", true);
-		$core_js .= html::script("media/js/jquery.ui.min", true);
+		$core_js .= html::script($this->js_url."media/js/jquery.ui.min", true);
 		$core_js .= html::script($this->js_url."media/js/jquery.pngFix.pack", true);
 		
 		if ($this->map_enabled)
@@ -150,7 +158,7 @@ class Themes_Core {
 		// Load TinyMCE
 		if ($this->editor_enabled)
 		{
-			echo html::script('media/js/tinymce/tiny_mce', true);
+			$core_js .= html::script('media/js/tinymce/tiny_mce', true);
 		}
 		
 		// Javascript files from plugins
@@ -158,7 +166,11 @@ class Themes_Core {
 		
 		// Inline Javascript
 		$inline_js = "<script type=\"text/javascript\">
-			".'$(document).ready(function(){$(document).pngFix();});'.$this->js."</script>";
+                        <!--//
+function runScheduler(img){img.onload = null;img.src = '".url::site().'scheduler'."';}
+			".'$(document).ready(function(){$(document).pngFix();});'.$this->js.
+                        "//-->
+                        </script>";
 		
 		return $core_js.$plugin_js.$inline_js;
 	}
@@ -205,9 +217,29 @@ class Themes_Core {
 		
 		$languages = "";
 		$languages .= "<div class=\"language-box\">";
-		$languages .= "<form>";
+		$languages .= "<form action=\"\">";
+		
+		/**
+		 * E.Kala - 05/01/2011
+		 *
+		 * Fix to ensure to ensure that a change in language loads the page with the same data
+		 * 
+		 * Only fetch the $_GET data to prevent double submission of data already submitted via $_POST
+		 * and create hidden form fields for each variable so that these are submitted along with the selected language
+		 *
+		 * The assumption is that previously submitted data had already been sanitized!
+		 */
+		foreach ($_GET as $name => $value)
+		{
+		    $languages .= form::hidden($name, $value);
+		}
+		
+		// Do a case insensitive sort of locales so it comes up in a rough alphabetical order
+
+		natcasesort($locales);
+
 		$languages .= form::dropdown('l', $locales, Kohana::config('locale.language'),
-			' onChange="this.form.submit()" ');
+			' onchange="this.form.submit()" ');
 		$languages .= "</form>";
 		$languages .= "</div>";
 		

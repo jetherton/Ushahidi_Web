@@ -157,8 +157,8 @@
 					{
 						gTimelineData = data;
 						//plotPeriod = $.timelinePeriod(gTimelineData[0].data);
-						gStartTime = gStartTime // || new Date(plotPeriod[0]);
-						gEndTime   = gEndTime // || new Date(plotPeriod[1]);
+						gStartTime = gStartTime; // || new Date(plotPeriod[0]);
+						gEndTime   = gEndTime; // || new Date(plotPeriod[1]);
 						if (!gTimelineData[gCategoryId])
 						{
 							gTimelineData[gCategoryId] = {};
@@ -254,7 +254,7 @@
 			{
 				return this;
 			}
-
+			
 			playTimeline = $.timeline({
 				graphData: {
 					color: plotData.color,
@@ -289,8 +289,10 @@
 		this.playRainDrops = function()
 		{
 			this.graphData = this.graphData || gTimelineData;
+
 			var plotData = this.graphData;
 			gPlayEndDate = gStartTime.getTime()/1000 + (this.playCount * 60*60*24);
+			gPlayStartDate = gPlayEndDate - (60*60*24);
 			var playEndDateTime = new Date(gPlayEndDate * 1000);
 			var data = this.filteredData(new Date(gPlayEndDate * 1000));
 
@@ -314,13 +316,13 @@
 				categoryId: this.categoryId,
 				startTime: gStartTime,
 				endTime: gEndTime
-			}
+			};
 
 			playTimeline = $.timeline(playOptions);
 			var style = playTimeline.markerStyle();
 			var markers = gTimelineMarkers;
 			playTimeline.plot();
-			playTimeline.plotMarkers(style, markers, gPlayEndDate);
+			playTimeline.plotMarkers(style, markers, gPlayStartDate, gPlayEndDate);
 			this.playCount++;
 			if (gPlayEndDate >= gEndTime.getTime()/1000)
 			{
@@ -333,15 +335,15 @@
 				$('#playTimeline').html('PAUSE');
 				$('#playTimeline').parent().attr('class', 'play pause');
 				gTimeline = this;
-				gTimelinePlayHandle = window.setTimeout("gTimeline.playRainDrops()",500);
+				gTimelinePlayHandle = window.setTimeout("gTimeline.playRainDrops()",800);
 			}
 
 			return this;
 		};
 		
-		this.plotMarkers = function(style, markers, endDate)
+		this.plotMarkers = function(style, markers, startDate, endDate)
 		{
-			var startDate = this.startTime.getTime() / 1000;
+			//var startDate = this.startTime.getTime() / 1000;
 			endDate = endDate || this.endTime.getTime() / 1000;
 
 			// Uncomment to play at monthly intervals
@@ -363,10 +365,30 @@
 					property: "timestamp",
 					lowerBoundary: startDate,
 					upperBoundary: endDate
-				})
+				}),
+				symbolizer: {
+					fillOpacity: 1,
+					strokeColor: "black"
+				}
 			});
+			
+			var sliderfilter2 = new OpenLayers.Rule({
+				filter: new OpenLayers.Filter.Comparison(
+				{
+					type: OpenLayers.Filter.Comparison.BETWEEN,
+					property: "timestamp",
+					lowerBoundary: 0,
+					upperBoundary: endDate
+				}),
+				symbolizer: {
+					fillOpacity: 0.3,
+					strokeColor: "white",
+					strokeOpacity: 1
+				}
+			});
+			
 			style.rules = [];
-			style.addRules(sliderfilter);					
+			style.addRules([sliderfilter2, sliderfilter]);
 			markers.styleMap.styles["default"] = style;
 			markers.redraw();
 			return this;
@@ -379,7 +401,7 @@
 			params = [];
 			if (typeof(this.categoryId) != 'undefined' && this.categoryId.length > 0)
 			{
-				params.push('c=' + this.categoryId);
+				params.push('c=' +  this.categoryId);
 			}
 			if (typeof(startDate) != 'undefined')
 			{
@@ -389,9 +411,9 @@
 			{
 				params.push('e=' + endDate);
 			}
-			if (typeof(mediaType) != 'undefined')
+			if (typeof(this.mediaType) != 'undefined')
 			{
-			//params.push('m=' + mediaType);
+				params.push('m=' + this.mediaType);
 			}
 			return params;
 		};
@@ -404,14 +426,15 @@
 		{
 			// Set Feature Styles
 			style = new OpenLayers.Style({
-				'externalGraphic': "${icon}",
+				//'externalGraphic': "${icon}", //we don't like markers, we just like dots
 				'graphicTitle': "${cluster_count}",
 				pointRadius: "${radius}",
 				fillColor: "${color}",
-				fillOpacity: "${opacity}",
-				strokeColor: "${color}",
+				//fillOpacity: "${opacity}",
+				fillOpacity: "0.7",
+				strokeColor: "${strokeColor}",
 				strokeWidth: "${strokeWidth}",
-				strokeOpacity: "0.3",
+				strokeOpacity: "0.7",
 				label:"${clusterCount}",
 				//labelAlign: "${labelalign}", // IE doesn't like this for some reason
 				fontWeight: "${fontweight}",
@@ -524,46 +547,67 @@
 					},
 					strokeWidth: function(feature)
 					{
-						feature_count = feature.attributes.count;
-						if (feature_count > 10000)
+						if ( typeof(feature.attributes.strokewidth) != 'undefined' && 
+							feature.attributes.strokewidth != '')
 						{
-							return 45;
-						}
-						else if (feature_count > 5000)
-						{
-							return 30;
-						}
-						else if (feature_count > 1000)
-						{
-							return 22;
-						}
-						else if (feature_count > 100)
-						{
-							return 15;
-						}
-						else if (feature_count > 10)
-						{
-							return 10;
-						}
-						else if (feature_count >= 2)
-						{
-							return 5;
+							return feature.attributes.strokewidth;
 						}
 						else
 						{
-							return 1;
+							feature_count = feature.attributes.count;
+							if (feature_count > 10000)
+							{
+								return 45;
+							}
+							else if (feature_count > 5000)
+							{
+								return 30;
+							}
+							else if (feature_count > 1000)
+							{
+								return 22;
+							}
+							else if (feature_count > 100)
+							{
+								return 15;
+							}
+							else if (feature_count > 10)
+							{
+								return 10;
+							}
+							else if (feature_count >= 2)
+							{
+								return 5;
+							}
+							else
+							{
+								return 1;
+							}
 						}
 					},
 					color: function(feature)
 					{
 						return "#" + feature.attributes.color;
 					},
+					strokeColor: function(feature)
+					{
+						if ( typeof(feature.attributes.strokecolor) != 'undefined' && 
+							feature.attributes.strokecolor != '')
+						{
+							//changes the color of the extra marker's stroke
+							return "#"+feature.attributes.strokecolor;
+						}
+						else
+						{
+							return "#"+feature.attributes.color;
+						}
+					},
 					icon: function(feature)
 					{
 						feature_icon = feature.attributes.icon;
 						if (feature_icon!=="")
 						{
-							return baseUrl + feature_icon;
+							return baseUrl + 'media/img/openlayers/marker.png';
 						} 
 						else
 						{
@@ -716,19 +760,27 @@
 				});
 
 			map.addLayer(markers);
-
 			
-//			if (!newlayer)
-//			{ // Keep the Base Layer in Focus
-				selectControl = new OpenLayers.Control.SelectFeature(markers);
-				map.addControl(selectControl);
-				selectControl.activate();
-				markers.events.on({
-					"featureselected": onFeatureSelect,
-					"featureunselected": onFeatureUnselect
-				});
-//			}
-
+			/*
+			 - Added by E.Kala <emmanuel(at)ushahidi.com>
+			 - Part of the fix to issue #2168
+			*/
+			
+			// Check if the the new layer is a KML layer
+			if (thisLayer && thisLayerType == 'layers')
+			{
+				// Add layer object to the kmlOvelays array
+				kmlOverlays.push(markers);
+			}
+			
+			selectControl = new OpenLayers.Control.SelectFeature(markers);
+			map.addControl(selectControl);
+			selectControl.activate();
+			markers.events.on({
+				"featureselected": onFeatureSelect,
+				"featureunselected": onFeatureUnselect
+			});
+			
 			return markers;
 		};
 		
@@ -776,7 +828,7 @@
 	{
 		timeline = new Timeline(options);
 		return timeline;
-	}
+	};
 	
 	$.timelinePeriod = function(plotData)
 	{

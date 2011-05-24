@@ -306,6 +306,23 @@ ul.inf li a{
 	clear:both;
 	overflow:hidden;
 }
+.post-edit-log-red{
+	padding:3px;
+	background-color:#FFE7D5;
+	border:1px solid #FFB782;
+}
+.post-edit-log-gray{
+	padding:3px;
+	background-color:#eee;
+	border:1px solid #ccc;
+}
+.post-edit-log-red a, .post-edit-log-gray a{
+	color:#666;
+}
+.post-edit-log{
+	display:none;
+	padding:5px;
+}
 .post-trans-new{
 	margin:5px 0 2px 20px;
 	font-size:80%;
@@ -662,8 +679,8 @@ table td{
 .table .col-2{ width:539px;}
 .table .col-2_sub{
 	width:519px;
-	padding-left:20px;
-	background:url(../../img/admin/arrow.gif) no-repeat 3px 17px;
+	padding-left:30px;
+	background:url(../../img/admin/arrow.gif) no-repeat 13px 22px;
 }
 .table .col-3{
 	width:103px;
@@ -682,6 +699,15 @@ table td{
 	border-left:2px solid #bbb;
 	padding:12px 0 10px 10px;
 	border-right:2px solid #bbb;
+}
+.table .col-drag{
+	background-color:#ffffcc;
+}
+.table .col-show-handle{
+	background-image: url(../../img/admin/drag.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor: move;
 }
 .table .post{
 	margin:0;
@@ -789,7 +815,7 @@ ul.pager li a{
 
 }
 ul.pager li a:hover,
-ul.pager li a.active {background:#f2f7fa;}
+ul.pager li a.active {background:#BBBBFF;}
 /*------------------- inner-1 ---------------------*/
 /*-- report-form --*/
 .report-form,
@@ -879,6 +905,12 @@ ul.pager li a.active {background:#f2f7fa;}
 	font-size:10px;
 	line-height:12px;
 	color:#a1a1a1;
+}
+div.experimental{
+	float:left;
+	padding-left:20px;
+	font-weight:bold;
+	text-transform: uppercase;
 }
 /*-- f-col --*/
 .f-col {
@@ -1024,6 +1056,7 @@ ul.treeview li.lastExpandable { width:155px; }
 	float:left;
 }
 .incident-find-location {
+	margin-top:0;
 	margin-right:6px;
 	padding:0 9px 9px 9px;
 	background-color:#eee;
@@ -1251,6 +1284,7 @@ p.bold_desc{
 	float:left; 
 	margin:-1px; 
 	border:3px solid #c2c2c2;
+	position:relative;
 }
 .mini_map_holder{
 	margin: 0 0 20px 20px;	
@@ -2014,6 +2048,99 @@ h4 span.highlight{
 	.attachment_thumbs img{
 		border-width:0;
 	}
+	
+/* Upgrade Process */
+#upgrade_log .upgrade_log_message{
+	font-size:14px;
+	font-weight:bold;
+	border:2px solid #ccc;
+	background-color:#eee;
+	padding:8px;
+	margin-bottom:5px;
+}
+	#upgrade_log .log_success{
+		background-color:#d8f1d8;
+		border-color: #a7d1a7;
+	}
+	#upgrade_log .log_error{
+		background-color:#FFD8D9;
+		border-color: #990000;
+	}
+	.ftp-settings{
+		display:none;
+		width:600px;
+		margin-top:10px;
+		padding:10px;
+		background-color:#ffffcc;
+	}
+	
+/* Plugins/Addons/Themes */
+tr.addon_active td{
+	background-color:#ffffcc;
+}
 
+/* floaties */
+.right {
+	float:right;
+}
+.left {
+	float:left;
+}
+
+/* Map Toggles */
+ul.map-toggles { overflow:auto; clear:both; margin:3px 0 0 0; padding:0; }
+ul.map-toggles li { display:none; float:right; list-style-type: none; }
+
+ul.map-toggles li a, 
+ul.map-toggles li a:active { display:inline-block; padding:3px 5px 3px 17px; outline:none; }
+
+	a.wider-map		{ background:transparent url(../../img/admin/icon_sprite.png) -4px -202px no-repeat;  }
+	a.taller-map	{ background:transparent url(../../img/admin/icon_sprite.png) -4px -221px no-repeat;  }
+	a.shorter-map	{ background:transparent url(../../img/admin/icon_sprite.png) -4px -241px no-repeat;  }
+	a.smaller-map	{ background:transparent url(../../img/admin/icon_sprite.png) -4px -182px no-repeat;  }
+	
+/* Map Labeler */	
+#geometryLabelerHolder{
+	position:absolute;
+	bottom:0;
+	display:none;
+	width:100%;
+	background-color:darkblue;
+	opacity:0.8;
+	z-index:5000;
+}
+	#geometryLabeler{
+		padding:10px;
+	}
+		#geometryLabeler label{
+			font-weight:bold;
+			color:#fff;
+			margin-right:5px;
+		}
+		#geometryLabeler .lbl_text{
+			width:80px;
+			margin-right:15px;
+		}
+		#geometryLabeler .lbl_text2{
+			width:180px;
+		}
+		#geometryLabeler #geometryLabelComment{
+			padding-bottom:7px;
+			margin-bottom:7px;
+			border-bottom:1px dotted #fff;
+		}
+		#geometryLat, #geometryLon{
+			display:none;
+		}
+		#geometryLabelerClose{
+			z-index:5001;
+			position:absolute;
+			top:2px;
+			right:0;
+			width:18px;
+			height:18px;
+			background: url("../../img/openlayers/layer-switcher-minimize.png") no-repeat;
+			cursor: pointer;
+		}
 /*--  --*/
 /*--  --*/

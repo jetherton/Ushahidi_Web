@@ -20,19 +20,20 @@ function fillFields(id, page_title, page_tab,
  page_description )
 {
 	$("#page_id").attr("value", unescape(id));
+	page_title = decodeURIComponent(escape($.base64.decode(page_title)));
 	$("#page_title").attr("value", unescape(page_title));
+	page_tab = decodeURIComponent(escape($.base64.decode(page_tab)));
 	$("#page_tab").attr("value", unescape(page_tab));
-	$("#page_description").attr("value", 
-		unescape(page_description));
-	tinyMCE.getInstanceById("page_description").setContent(decodeURIComponent(page_description));
+	page_description = decodeURIComponent(escape($.base64.decode(page_description)));
+	$("#page_description").attr("value", unescape(page_description));
+	tinyMCE.getInstanceById("page_description").setContent(unescape(page_description));
 }
 
 // Ajax Submission
 function pageAction ( action, confirmAction, id )
 {
 	var statusMessage;
-	var answer = confirm('Are You Sure You Want To ' 
-		+ confirmAction + ' items?')
+	var answer = confirm('<?php echo Kohana::lang('ui_admin.are_you_sure_you_want_to'); ?> ' + confirmAction + '?')
 	if (answer){
 		// Set Category ID
 		$("#page_id_action").attr("value", id);
@@ -43,18 +44,72 @@ function pageAction ( action, confirmAction, id )
 	}
 }
 
-// Initialize tinyMCE Wysiwyg Editor
-tinyMCE.init({
-	mode : "exact",
-	elements : "page_description",
-	theme : "advanced",
-	theme_advanced_buttons1 : "mybutton,bold,italic,underline,separator,strikethrough,justifyleft,justifycenter,justifyright, justifyfull,bullist,numlist,undo,redo,link,unlink,code",
-	theme_advanced_buttons2 : "",
-	theme_advanced_buttons3 : "",
-	theme_advanced_toolbar_location : "top",
-	theme_advanced_toolbar_align : "left",
-	theme_advanced_statusbar_location : "bottom",
-	toolbar_location : "top",
-	height:"400px",
-	width:"700px"
-});
+
+
+
+		// Initialize tinyMCE Wysiwyg Editor
+		tinyMCE.init({
+		convert_urls : false,
+		relative_urls : false,
+		mode : "exact",
+		height: "400px",
+		width: "875px",
+		elements : "page_description",
+		theme : "advanced",
+		plugins : "pagebreak,advhr,advimage,advlink,iespell,inlinepopups,contextmenu,paste,directionality,noneditable,advlist",
+		// Theme options
+		theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect",
+		theme_advanced_buttons2 : "outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,code,|,forecolor,backcolor",
+		theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,hr,removeformat,visualaid,|,sub,sup,|,advhr,|,ltr,rtl",
+		theme_advanced_toolbar_location : "top",
+		theme_advanced_toolbar_align : "left",
+		file_browser_callback : "ajaxfilemanager"
+		});
+		
+		
+	function ajaxfilemanager(field_name, url, type, win) {
+		var ajaxfilemanagerurl = "<?php echo url::site(); ?>media/js/tinymce/plugins/ajaxfilemanager/ajaxfilemanager.php?editor=tinymce";
+		switch (type) {
+			case "image":
+			break;
+			case "media":
+			break;
+			case "flash":
+			break;
+			case "file":
+			break;
+			default:
+			return false;
+		}
+		var fileBrowserWindow = new Array();
+		fileBrowserWindow["file"] = ajaxfilemanagerurl;
+		fileBrowserWindow["title"] = "Ajax File Manager";
+		fileBrowserWindow["width"] = "782";
+		fileBrowserWindow["height"] = "440";
+		fileBrowserWindow["close_previous"] = "no";
+		/*
+		tinyMCE.openWindow(fileBrowserWindow, {
+			window : win,
+			input : field_name,
+			resizable : "yes",
+			inline : "yes",
+			editor_id : tinyMCE.getWindowArg("editor_id")
+		});
+		*/
+		
+		
+		tinyMCE.activeEditor.windowManager.open({
+			file : ajaxfilemanagerurl,
+			title : 'File Browser',
+			width : 782,  // Your dimensions may differ - toy around with them!
+			height : 440,
+			resizable : "yes",
+			inline : "yes",  // This parameter only has an effect if you use the inlinepopups plugin!
+			close_previous : "no"
+		}, {
+			window : win,
+			input : field_name
+		});
+
+		return false;
+	}

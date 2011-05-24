@@ -91,9 +91,11 @@ class Imap_Core {
 		//   the number of messages we want to allow. If there are too many messages, it
 		//   can fail and that's no good.
 		$msg_to_pull = $no_of_msgs;
-		if($msg_to_pull > $max_imap_messages){
-			$msg_to_pull = $max_imap_messages;
-		}
+		
+		//** Disabled this config setting for now - causing issues **
+		//if($msg_to_pull > $max_imap_messages){
+		//	$msg_to_pull = $max_imap_messages;
+		//}
 
 		$messages = array();
 
@@ -163,9 +165,16 @@ class Imap_Core {
 			// Fetch Attachments
 			$attachments = $this->_extract_attachments($this->imap_stream, $msgno);
 
+			// This isn't the perfect solution but windows-1256 encoding doesn't work with mb_detect_encoding()
+			//   so if it doesn't return an encoding, lets assume it's arabic. (sucks)
+			if(mb_detect_encoding($body, 'auto', true) == '')
+			{
+				$body = iconv("windows-1256", "UTF-8", $body);
+			}
+
 			// Convert to valid UTF8
-			$body = htmlentities($body);
-			$subject = htmlentities(strip_tags($subject));
+			$body = htmlentities($body,NULL,mb_detect_encoding($body, "auto"));
+			$subject = htmlentities(strip_tags($subject),NULL,'UTF-8');
 
 			array_push($messages, array('message_id' => $message_id,
 										'date' => $date,
@@ -206,6 +215,13 @@ class Imap_Core {
 
 		foreach ($elements as $element)
 		{
+			
+			// Make sure Arabic characters can be passed through as UTF-8
+			
+			if(strtoupper($element->charset) == 'WINDOWS-1256'){
+				$element->text = iconv("windows-1256", "UTF-8", $element->text);
+			}
+			
 			$text.= $element->text;
 		}
 
@@ -294,15 +310,25 @@ class Imap_Core {
 			fwrite($fp, $file_content);
 			fclose($fp);
 			
-			// Resize original file... make sure its max 408px wide
-			Image::factory($file)->resize(408,248,Image::AUTO)
-				->save(Kohana::config('upload.directory', TRUE) . $file_name.$file_type);
+			// IMAGE SIZES: 800X600, 400X300, 89X59
+			
+			// Large size
+			Image::factory($file)->resize(800,600,Image::AUTO)
+				->save(Kohana::config('upload.directory', TRUE).$file_name.$file_type);
 
-			// Create thumbnail
-			Image::factory($file)->resize(70,41,Image::AUTO)
-				->save(Kohana::config('upload.directory', TRUE) . $file_name."_t".$file_type);
+			// Medium size
+			Image::factory($file)->resize(400,300,Image::HEIGHT)
+				->save(Kohana::config('upload.directory', TRUE).$file_name."_m".$file_type);
+			
+			// Thumbnail
+			Image::factory($file)->resize(89,59,Image::HEIGHT)
+				->save(Kohana::config('upload.directory', TRUE).$file_name."_t".$file_type);
 				
-			$attachments[$file_name.$file_type] = $file_name."_t".$file_type;
+			$attachments[] = array(
+					$file_name.$file_type,
+					$file_name."_m".$file_type,
+					$file_name."_t".$file_type
+				);
 			return $attachments;
 		}
 		else
@@ -344,7 +370,7 @@ class Imap_Core {
 
 		// BODY
 		$s = imap_fetchstructure($mbox,$mid);
-		if (!$s->parts)	 // not multipart
+		if (@!$s->parts)	 // not multipart
 			$this->_getpart($mbox,$mid,$s,0);  // no part-number, so pass 0
 		else {	// multipart: iterate through each part
 			foreach ($s->parts as $partno0=>$p)

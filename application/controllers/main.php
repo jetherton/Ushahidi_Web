@@ -21,7 +21,7 @@ class Main_Controller extends Template_Controller {
 
     // Cache instance
 	protected $cache;
-	
+
 	// Cacheable Controller
 	public $is_cachable = FALSE;
 
@@ -30,7 +30,7 @@ class Main_Controller extends Template_Controller {
 
 	// Table Prefix
 	protected $table_prefix;
-	
+
 	// Themes Helper
 	protected $themes;
 
@@ -38,6 +38,18 @@ class Main_Controller extends Template_Controller {
 	{
 		parent::__construct();
 
+		if(Kohana::config('settings.private_deployment'))
+		{
+			$this->auth = new Auth();
+			$this->session = Session::instance();
+			$this->auth->auto_login();
+	
+			if ( ! $this->auth->logged_in('login'))
+			{
+				url::redirect('login/front');
+			}
+		}
+		
         // Load cache
 		$this->cache = new Cache;
 
@@ -47,7 +59,7 @@ class Main_Controller extends Template_Controller {
         // Load Header & Footer
 		$this->template->header  = new View('header');
 		$this->template->footer  = new View('footer');
-		
+
 		// Themes Helper
 		$this->themes = new Themes();
 		$this->themes->editor_enabled = false;
@@ -71,18 +83,20 @@ class Main_Controller extends Template_Controller {
 			{
 				$site_name_style = "";
 			}
+			
+		$this->template->header->private_deployment = Kohana::config('settings.private_deployment');
+		$this->template->header->loggedin_username = FALSE;
+		$this->template->header->loggedin_userid = FALSE;
+		
+		if( isset(Auth::instance()->get_user()->username) AND isset(Auth::instance()->get_user()->id) )
+		{
+			$this->template->header->loggedin_username = html::specialchars(Auth::instance()->get_user()->username);
+			$this->template->header->loggedin_userid = Auth::instance()->get_user()->id;
+		}
+		
 		$this->template->header->site_name = $site_name;
 		$this->template->header->site_name_style = $site_name_style;
 		$this->template->header->site_tagline = Kohana::config('settings.site_tagline');
-
-		// Display Contact Tab?
-		$this->template->header->site_contact_page = Kohana::config('settings.site_contact_page');
-
-		// Display Help Tab?
-		$this->template->header->site_help_page = Kohana::config('settings.site_help_page');
-
-		// Get Custom Pages
-		$this->template->header->pages = ORM::factory('page')->where('page_active', '1')->find_all();
 
 		$this->template->header->this_page = "";
 
@@ -93,22 +107,46 @@ class Main_Controller extends Template_Controller {
         // Load profiler
         // $profiler = new Profiler;
 
-        // Get tracking javascript for stats
-        if(Kohana::config('settings.allow_stat_sharing') == 1){
+		// Get tracking javascript for stats
+		if(Kohana::config('settings.allow_stat_sharing') == 1){
 			$this->template->footer->ushahidi_stats = Stats_Model::get_javascript();
 		}else{
 			$this->template->footer->ushahidi_stats = '';
 		}
+		
+		// add copyright info
+		$this->template->footer->site_copyright_statement = '';
+		$site_copyright_statement = trim(Kohana::config('settings.site_copyright_statement'));
+		if($site_copyright_statement != '')
+		{
+			$this->template->footer->site_copyright_statement = $site_copyright_statement;
+		}
+		
+	}
+
+	/**
+	 * Retrieves Categories
+	 */
+	protected function get_categories($selected_categories)
+	{
+	  $categories = ORM::factory('category')
+	    ->where('category_visible', '1')
+	    ->where('parent_id', '0')
+	    ->where('category_trusted != 1')
+	    ->orderby('category_title', 'ASC')
+	    ->find_all();
+
+	  return $categories;
 	}
 
     public function index()
     {
         $this->template->header->this_page = 'home';
         $this->template->content = new View('main');
-		
+
 		// Cacheable Main Controller
 		$this->is_cachable = TRUE;
-		
+
 		// Map and Slider Blocks
 		$div_map = new View('main_map');
 		$div_timeline = new View('main_timeline');
@@ -127,23 +165,40 @@ class Main_Controller extends Template_Controller {
 			$this->template->content->site_message = $site_message;
 		}
 
+		// Get locale
+		$l = Kohana::config('locale.language.0');
+
         // Get all active top level categories
 		$parent_categories = array();
 		foreach (ORM::factory('category')
 				->where('category_visible', '1')
 				->where('parent_id', '0')
+				->orderby('category_position', 'asc')
 				->find_all() as $category)
 		{
-            // Get The Children
+			// Get The Children
 			$children = array();
-			foreach ($category->children as $child)
+			foreach ($category->orderby('category_position', 'asc')->children as $child)
 			{
+				// Check for localization of child category
+
+				$translated_title = Category_Lang_Model::category_title($child->id,$l);
+
+				if($translated_title)
+				{
+					$display_title = $translated_title;
+				}
+				else
+				{
+					$display_title = $child->category_title;
+				}
+
 				$children[$child->id] = array(
-					$child->category_title,
+					$display_title,
 					$child->category_color,
 					$child->category_image
 				);
-				
+
 				if ($child->category_trusted)
 				{ // Get Trusted Category Count
 					$trusted = ORM::factory("incident")
@@ -156,14 +211,25 @@ class Main_Controller extends Template_Controller {
 				}
 			}
 
+			// Check for localization of parent category
+
+			$translated_title = Category_Lang_Model::category_title($category->id,$l);
+
+			if($translated_title)
+			{
+				$display_title = $translated_title;
+			}else{
+				$display_title = $category->category_title;
+			}
+
 			// Put it all together
 			$parent_categories[$category->id] = array(
-				$category->category_title,
+				$display_title,
 				$category->category_color,
 				$category->category_image,
 				$children
 			);
-			
+
 			if ($category->category_trusted)
 			{ // Get Trusted Category Count
 				$trusted = ORM::factory("incident")
@@ -240,32 +306,47 @@ class Main_Controller extends Template_Controller {
 		}
 		$this->template->content->phone_array = $phone_array;
 
-
 		// Get RSS News Feeds
 		$this->template->content->feeds = ORM::factory('feed_item')
 			->limit('10')
 			->orderby('item_date', 'desc')
 			->find_all();
 
-
-
-        // Get The START, END and most ACTIVE Incident Dates
-		$startDate = "";
+        // Get The START, END and Incident Dates
+        $startDate = "";
 		$endDate = "";
-		$active_month = 0;
-		$active_startDate = 0;
-		$active_endDate = 0;
+		$display_startDate = 0;
+		$display_endDate = 0;
 
 		$db = new Database();
-		// First Get The Most Active Month
-		$query = $db->query('SELECT incident_date, count(*) AS incident_count FROM '.$this->table_prefix.'incident WHERE incident_active = 1 GROUP BY DATE_FORMAT(incident_date, \'%Y-%m\') ORDER BY incident_count DESC LIMIT 1');
-		foreach ($query as $query_active)
+        // Next, Get the Range of Years
+		$query = $db->query('SELECT DATE_FORMAT(incident_date, \'%Y-%c\') AS dates FROM '.$this->table_prefix.'incident WHERE incident_active = 1 GROUP BY DATE_FORMAT(incident_date, \'%Y-%c\') ORDER BY incident_date');
+
+		$first_year = date('Y');
+		$last_year = date('Y');
+		$first_month = 1;
+		$last_month = 12;
+		$i = 0;
+
+		foreach ($query as $data)
 		{
-			$active_month = date('n', strtotime($query_active->incident_date));
-			$active_year = date('Y', strtotime($query_active->incident_date));
-			$active_startDate = strtotime($active_year . "-" . $active_month . "-01");
-			$active_endDate = strtotime($active_year . "-" . $active_month .
-				"-" . date('t', mktime(0,0,0,$active_month,1))." 23:59:59");
+			$date = explode('-',$data->dates);
+
+			$year = $date[0];
+			$month = $date[1];
+
+			// Set first year
+			if($i == 0)
+			{
+				$first_year = $year;
+				$first_month = $month;
+			}
+
+			// Set last dates
+			$last_year = $year;
+			$last_month = $month;
+
+			$i++;
 		}
 		
 		//run some custom events for the timeline plugin
@@ -273,46 +354,66 @@ class Main_Controller extends Template_Controller {
 		Event::run('ushahidi_filter.active_endDate', $active_endDate);
 		Event::run('ushahidi_filter.active_month', $active_month);
 
-        // Next, Get the Range of Years
-		$query = $db->query('SELECT DATE_FORMAT(incident_date, \'%Y\') AS incident_date FROM '.$this->table_prefix.'incident WHERE incident_active = 1 GROUP BY DATE_FORMAT(incident_date, \'%Y\') ORDER BY incident_date');
-		foreach ($query as $slider_date)
+		$show_year = $first_year;
+		$selected_start_flag = TRUE;
+		while($show_year <= $last_year)
 		{
-			$years = $slider_date->incident_date;
-			$startDate .= "<optgroup label=\"" . $years . "\">";
-			for ( $i=1; $i <= 12; $i++ ) {
+			$startDate .= "<optgroup label=\"".$show_year."\">";
+
+			$s_m = 1;
+			if($show_year == $first_year)
+			{
+				// If we are showing the first year, the starting month may not be January
+				$s_m = $first_month;
+			}
+
+			$l_m = 12;
+			if($show_year == $last_year)
+			{
+				// If we are showing the last year, the ending month may not be December
+				$l_m = $last_month;
+			}
+
+			for ( $i=$s_m; $i <= $l_m; $i++ ) {
 				if ( $i < 10 )
 				{
-					$i = "0" . $i;
+					// All months need to be two digits
+					$i = "0".$i;
 				}
-				$startDate .= "<option value=\"" . strtotime($years . "-" . $i . "-01") . "\"";
-				if ( $active_month &&
-						( (int) $i == ( $active_month - 1)) )
+				$startDate .= "<option value=\"".strtotime($show_year."-".$i."-01")."\"";
+				if($selected_start_flag == TRUE)
 				{
+					$display_startDate = strtotime($show_year."-".$i."-01");
 					$startDate .= " selected=\"selected\" ";
+					$selected_start_flag = FALSE;
 				}
-				$startDate .= ">" . date('M', mktime(0,0,0,$i,1)) . " " . $years . "</option>";
+				$startDate .= ">".date('M', mktime(0,0,0,$i,1))." ".$show_year."</option>";
 			}
 			$startDate .= "</optgroup>";
 
-			$endDate .= "<optgroup label=\"" . $years . "\">";
-			for ( $i=1; $i <= 12; $i++ )
+			$endDate .= "<optgroup label=\"".$show_year."\">";
+			for ( $i=$s_m; $i <= $l_m; $i++ )
 			{
 				if ( $i < 10 )
 				{
-					$i = "0" . $i;
+					// All months need to be two digits
+					$i = "0".$i;
 				}
-				$endDate .= "<option value=\"" . strtotime($years . "-" . $i . "-" . date('t', mktime(0,0,0,$i,1))." 23:59:59") . "\"";
-                // Focus on the most active month or set December as month of endDate
-				if ( $active_month &&
-						( ( (int) $i == ( $active_month + 1)) )
-						 	|| ($i == 12 && preg_match('/selected/', $endDate) == 0))
+				$endDate .= "<option value=\"".strtotime($show_year."-".$i."-".date('t', mktime(0,0,0,$i,1))." 23:59:59")."\"";
+
+                if($i == $l_m AND $show_year == $last_year)
 				{
+					$display_endDate = strtotime($show_year."-".$i."-".date('t', mktime(0,0,0,$i,1))." 23:59:59");
 					$endDate .= " selected=\"selected\" ";
 				}
-				$endDate .= ">" . date('M', mktime(0,0,0,$i,1)) . " " . $years . "</option>";
+				$endDate .= ">".date('M', mktime(0,0,0,$i,1))." ".$show_year."</option>";
 			}
 			$endDate .= "</optgroup>";
+
+			// Show next year
+			$show_year++;
 		}
+
 		
 		//run more custom events for the timeline plugin
 		Event::run('ushahidi_filter.startDate', $startDate);
@@ -345,7 +446,7 @@ class Main_Controller extends Template_Controller {
 
 		$this->themes->js = new View('main_js');
 		$this->themes->js->json_url = ($clustering == 1) ?
-			"json/cluster" : "json";
+			"bigmap_json/cluster" : "bigmap_json";
 		$this->themes->js->marker_radius =
 			($marker_radius >=1 && $marker_radius <= 10 ) ? $marker_radius : 5;
 		$this->themes->js->marker_opacity =
@@ -373,13 +474,13 @@ class Main_Controller extends Template_Controller {
 		$this->themes->js->latitude = Kohana::config('settings.default_lat');
 		$this->themes->js->longitude = Kohana::config('settings.default_lon');
 		$this->themes->js->default_map_all = Kohana::config('settings.default_map_all');
-		//
-		$this->themes->js->active_startDate = $active_startDate;
-		$this->themes->js->active_endDate = $active_endDate;
+
+		$this->themes->js->active_startDate = $display_startDate;
+		$this->themes->js->active_endDate = $display_endDate;
 
 		//$myPacker = new javascriptpacker($js , 'Normal', false, false);
 		//$js = $myPacker->pack();
-		
+
 		// Rebuild Header Block
 		$this->template->header->header_block = $this->themes->header_block();
 	}

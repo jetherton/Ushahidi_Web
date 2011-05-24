@@ -14,7 +14,46 @@
  * @copyright  Ushahidi - http://www.ushahidi.com
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
-?>		
+?>	
+
+
+
+		/***************************************
+		*Put things on the map based on a geolocation
+		****************************************/
+		function placeLocation(lat, lon, name)
+		{
+			var lonlat = new OpenLayers.LonLat(lon, lat);
+			lonlat.transform(proj_4326,proj_900913);
+			
+			m = new OpenLayers.Marker(lonlat);
+			markers.clearMarkers();
+			    markers.addMarker(m);
+			map.setCenter(lonlat, <?php echo $default_zoom; ?>);
+			
+			// Update form values
+			$("#latitude").attr("value", lat);
+			$("#longitude").attr("value", lon);
+			$("#location_name").attr("value", name);
+			return false;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 		// jQuery Textbox Hints Plugin
 		// Will move to separate file later or attach to forms plugin
 		jQuery.fn.hint = function (blurClass) {
@@ -54,7 +93,7 @@
 		  });
 		};
 
-		$().ready(function() {
+		/*$().ready(function() {
 			// validate signup form on keyup and submit
 			$("#reportForm").validate({
 				rules: {
@@ -166,7 +205,7 @@
 					}
 				}
 			});
-		});
+		});*/
 		
 		function addFormField(div, field, hidden_id, field_type) {
 			var id = document.getElementById(hidden_id).value;
@@ -179,7 +218,7 @@
 		}
 
 		function removeFormField(id) {
-			var answer = confirm("Are You Sure You Want To Delete This Item?");
+			var answer = confirm("<?php echo Kohana::lang('ui_admin.are_you_sure_you_want_to_delete_this_item'); ?>?");
 		    if (answer){
 				$(id).remove();
 		    }
@@ -189,35 +228,21 @@
 		}
 		
 		/**
-		 * Google GeoCoder
+		 * Specialized geo coder for Liberia
 		 */
 		function geoCode()
 		{
 			$('#find_loading').html('<img src="<?php echo url::base() . "media/img/loading_g.gif"; ?>">');
 			address = $("#location_find").val();
-			$.post("<?php echo url::site() . 'reports/geocode/' ?>", { address: address },
+			$.get("<?php echo url::site() . 'findlocation/geocode/' ?>", { address: address },
 				function(data){
-					if (data.status == 'success'){
-						var lonlat = new OpenLayers.LonLat(data.message[1], data.message[0]);
-						lonlat.transform(proj_4326,proj_900913);
-					
-						m = new OpenLayers.Marker(lonlat);
-						markers.clearMarkers();
-				    	markers.addMarker(m);
-						map.setCenter(lonlat, <?php echo $default_zoom; ?>);
-						
-						// Update form values
-						$("#latitude").attr("value", data.message[0]);
-						$("#longitude").attr("value", data.message[1]);
-						$("#location_name").attr("value", $("#location_find").val());
-					} else {
-						alert(address + " not found!\n\n***************************\nEnter more details like city, town, country\nor find a city or town close by and zoom in\nto find your precise location");
-					}
+				
+					$('#find_location_results').html(data);
 					$('#find_loading').html('');
-				}, "json");
+					
+				}); 
 			return false;
-		}
-		
+		}		
 		
 		var map;
 		var thisLayer;
@@ -229,7 +254,7 @@
 			// Now initialise the map
 			var options = {
 			units: "m"
-			, numZoomLevels: 16
+			, numZoomLevels: 18
 			, controls:[],
 			projection: proj_900913,
 			'displayProjection': proj_4326
@@ -327,3 +352,71 @@
 	      });
 	
 		});
+
+
+
+
+				// Initialize tinyMCE Wysiwyg Editor
+				tinyMCE.init({
+				convert_urls : false,
+				relative_urls : false,
+				mode : "exact",
+				elements : "incident_description",
+				theme : "advanced",
+				plugins : "pagebreak,advhr,advimage,advlink,iespell,inlinepopups,contextmenu,paste,directionality,noneditable,advlist",
+				// Theme options
+				theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,fontselect,fontsizeselect",
+				theme_advanced_buttons2 : "outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,code,|,forecolor,backcolor",
+				theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,hr,removeformat,visualaid,|,sub,sup,|,advhr,|,ltr,rtl",
+				theme_advanced_toolbar_location : "top",
+				theme_advanced_toolbar_align : "left",
+				file_browser_callback : "ajaxfilemanager"
+		});
+		
+		
+	function ajaxfilemanager(field_name, url, type, win) {
+		var ajaxfilemanagerurl = "<?php echo url::site(); ?>media/js/tinymce/plugins/ajaxfilemanager/ajaxfilemanager.php?editor=tinymce";
+		switch (type) {
+			case "image":
+			break;
+			case "media":
+			break;
+			case "flash":
+			break;
+			case "file":
+			break;
+			default:
+			return false;
+		}
+		var fileBrowserWindow = new Array();
+		fileBrowserWindow["file"] = ajaxfilemanagerurl;
+		fileBrowserWindow["title"] = "Ajax File Manager";
+		fileBrowserWindow["width"] = "782";
+		fileBrowserWindow["height"] = "440";
+		fileBrowserWindow["close_previous"] = "no";
+		/*
+		tinyMCE.openWindow(fileBrowserWindow, {
+			window : win,
+			input : field_name,
+			resizable : "yes",
+			inline : "yes",
+			editor_id : tinyMCE.getWindowArg("editor_id")
+		});
+		*/
+		
+		
+		tinyMCE.activeEditor.windowManager.open({
+			file : ajaxfilemanagerurl,
+			title : 'File Browser',
+			width : 782,  // Your dimensions may differ - toy around with them!
+			height : 440,
+			resizable : "yes",
+			inline : "yes",  // This parameter only has an effect if you use the inlinepopups plugin!
+			close_previous : "no"
+		}, {
+			window : win,
+			input : field_name
+		});
+
+		return false;
+	}
