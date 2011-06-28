@@ -322,6 +322,7 @@
 			// GeoCode
 			$('.btn_find').live('click', function () {
 				geoCode();
+				return false;
 			});
 			$('#location_find').bind('keypress', function(e) {
 				var code = (e.keyCode ? e.keyCode : e.which);
