@@ -1132,7 +1132,7 @@ class Reports_Controller extends Admin_Controller
 
 			// Add some rules, the input field, followed by a list of checks, carried out in order
 			$post->add_rules('data_point.*','required','numeric','between[1,4]');
-			$post->add_rules('data_include.*','numeric','between[1,5]');
+			$post->add_rules('data_include.*','numeric','between[1,6]');
 			$post->add_rules('from_date','date_mmddyyyy');
 			$post->add_rules('to_date','date_mmddyyyy');
 
