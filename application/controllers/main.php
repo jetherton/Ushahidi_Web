@@ -351,7 +351,9 @@ class Main_Controller extends Template_Controller {
 		
 		//run some custom events for the timeline plugin
 		Event::run('ushahidi_filter.active_startDate', $active_startDate);
+		$display_startDate = $active_startDate;
 		Event::run('ushahidi_filter.active_endDate', $active_endDate);
+		$display_endDate = $active_endDate;
 		Event::run('ushahidi_filter.active_month', $active_month);
 
 		$show_year = $first_year;
@@ -414,12 +416,15 @@ class Main_Controller extends Template_Controller {
 			$show_year++;
 		}
 
+		//custom so the time span plugin can overwrite stuff if it needs to.
+		$display_startDate = $active_startDate;		
+		$display_endDate = $active_endDate;
 		
 		//run more custom events for the timeline plugin
 		Event::run('ushahidi_filter.startDate', $startDate);
 		Event::run('ushahidi_filter.endDate', $endDate);	
 		
-		$this->template->content->div_timeline->startDate = $startDate;
+		$this->template->content->div_timeline->startDate = $startDate; 
 		$this->template->content->div_timeline->endDate = $endDate;
 
 		// Javascript Header
