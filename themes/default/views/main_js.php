@@ -797,7 +797,8 @@
 						var endTime = new Date(endDate * 1000);
 						if ((endTime - startTime) / (1000 * 60 * 60 * 24) <?php echo '<'; ?>= 32)
 						{
-							json_url = "json";
+							//json_url = "json";
+							json_url = default_json_url;
 						} 
 						else
 						{
